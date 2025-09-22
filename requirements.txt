@@ -1,0 +1,55 @@
+# Core Streamlit and web dependencies
+streamlit>=1.28.0
+altair
+blinker
+cachetools
+click
+gitdb
+GitPython
+jinja2
+jsonschema
+markdown
+pillow
+protobuf
+pyarrow
+pydeck
+pympler
+requests
+rich
+tenacity
+toml
+tornado
+tzdata
+tzlocal
+validators
+watchdog
+
+# Data processing essentials
+numpy>=1.24.0
+pandas>=2.0.0
+openpyxl
+xlrd
+xlsxwriter
+
+# Plotting
+plotly
+
+# Scientific computing - only what's actually used
+scipy>=1.10.0  # You use scipy.stats and scipy.optimize
+
+# Your specific dependencies
+D47crunch
+D47calib
+ogls
+lmfit
+uncertainties
+
+# Database
+# (SQLite is included with Python)
+
+# Authentication/extras
+streamlit-extras
+
+# Other essentials from your code
+python-dateutil
+pytz
