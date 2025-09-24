@@ -48,6 +48,8 @@ class WelcomePageManager:
         return rf"""## Welcome to D4Xgui v{__version__}!
 :red[ATTENTION!! D4Xgui is now backed with a database. Please don't push any data into the database when using the online-hosted test version!]
 <br><br>
+Please find the [code documentation here](https://itsmig.github.io/D4Xgui/index.html).
+
 D4Xgui is developed to enable easy access to state-of-the-art CO$_{{2}}$ clumped isotope (∆$_{{47}}$, ∆$_{{48}}$ and ∆$_{{49}}$) data processing.
 A recently developed optimizer algorithm allows pre-processing of mass spectrometric raw intensities utilizing a m/z47.5 half-mass Faraday cup correction to account for the effect of a negative pressure baseline, which is essential for accurate and highest precision clumped isotope analysis of CO$_{{2}}$ ([Bernecker et al., 2023](https://doi.org/10.1016/j.chemgeo.2023.121803)).
 It is backed with the recently published processing tool [D47crunch (v.{D47crunch.__version__})](https://github.com/mdaeron/D47crunch) (following the methodology outlined in [Daeron, 2021](https://doi.org/10.1029/2020GC009592)), which allows standardization under consideration of full error propagation and has been used for the InterCarb community effort ([Bernasconi et al., 2021](https://doi.org/10.1029/2020GC009588)).
