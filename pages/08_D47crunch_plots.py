@@ -11,7 +11,7 @@ import plotly.express as px
 from tools.authenticator import Authenticator
 from tools.page_config import PageConfigManager
 from tools.sidebar_logo import SidebarLogoManager
-from tools.commons import modify_text_label_sizes
+from tools.commons import modify_text_label_sizes, PlotlyConfig
 
 
 class D47CrunchPlotsPage:
@@ -298,7 +298,7 @@ class D47CrunchPlotsPage:
                 if session_err_obj:
                     with st.expander(f"Session {session}", expanded=True):
                         fig = self._create_plot(session, selected_mz, session_err_obj)
-                        st.plotly_chart(fig, width="stretch")
+                        st.plotly_chart(fig, config=PlotlyConfig.CONFIG)
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ from scipy import stats
 from tools.page_config import PageConfigManager
 from tools.sidebar_logo import SidebarLogoManager
 from tools.authenticator import Authenticator
-from tools.commons import PLOT_PARAMS, modify_text_label_sizes
+from tools.commons import PLOT_PARAMS, modify_text_label_sizes, PlotlyConfig
 
 
 class DataType(Enum):
@@ -521,7 +521,7 @@ class DiscoverResultsPage:
         
         # Create and display plot
         fig = self._create_plot(df, plot_config, error_x, error_y, ogls_object)
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, config=PlotlyConfig.CONFIG)
     
     def _get_plot_config(self) -> PlotConfig:
         """Get the current plot configuration.

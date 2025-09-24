@@ -17,7 +17,7 @@ from scipy import optimize as so
 
 import tools.Pysotope_fork as tP
 from tools import sidebar_logo
-from tools.commons import PLOT_PARAMS
+from tools.commons import PLOT_PARAMS, PlotlyConfig
 from tools.page_config import set_page_config
 from tools.sidebar_logo import SidebarLogoManager
 
@@ -350,7 +350,7 @@ class DualClumpedSpacePage:
         
         st.plotly_chart(
             fig,
-            width="stretch",
+            config=PlotlyConfig.CONFIG,
         )
         
         # Provide download link
@@ -766,7 +766,7 @@ class DualClumpedSpacePage:
         """Create a download link for the plot as HTML."""
         import plotly.io as pio
         
-        pio.templates.default = "plotly"
+        #pio.templates.default = "plotly"
         html_buffer = io.StringIO()
         fig.write_html(html_buffer)
         

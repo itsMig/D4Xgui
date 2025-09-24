@@ -16,7 +16,7 @@ from tools.page_config import PageConfigManager
 from tools.sidebar_logo import SidebarLogoManager
 from tools.authenticator import Authenticator
 from tools.database import DatabaseManager
-from tools.commons import PlotParameters, modify_plot_text_sizes
+from tools.commons import PlotParameters, modify_plot_text_sizes, PlotlyConfig
 
 
 class BaselineCorrectionPage:
@@ -516,7 +516,7 @@ class BaselineCorrectionPage:
         )
 
         fig = self._create_intensity_plot()
-        st.plotly_chart(modify_plot_text_sizes(fig), width="stretch")
+        st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
 
     def _render_delta_plots(self) -> None:
         """Render the delta/Delta overview plots."""
@@ -527,7 +527,7 @@ class BaselineCorrectionPage:
             pass  # Reserved for future controls
 
         fig = self._create_delta_overview_plot(self.sss.mz_03)
-        st.plotly_chart(modify_plot_text_sizes(fig), width="stretch")
+        st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
 
     def _render_heated_gas_lines(self) -> None:
         """Render the heated gas line plots."""
@@ -546,7 +546,7 @@ class BaselineCorrectionPage:
                 selected_gas = st.selectbox("Select gas standard", options=available_gases)
             
             fig = self._create_heated_gas_line_plot(selected_gas, self.sss.mz_03)
-            st.plotly_chart(modify_plot_text_sizes(fig), width="stretch")
+            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
         else:
             st.info("No heated gas standards (25C/1000C) found in the data.")
 
@@ -557,7 +557,7 @@ class BaselineCorrectionPage:
             if len(numeric_cols) > 1:
                 corr_matrix = self.sss.input_rep[numeric_cols].corr()
                 fig = self._create_correlation_matrix_plot(corr_matrix)
-                st.plotly_chart(fig, width="stretch")
+                st.plotly_chart(fig, config=PlotlyConfig.CONFIG)
             else:
                 st.info("Not enough numeric columns for correlation matrix.")
 

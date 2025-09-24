@@ -10,7 +10,7 @@ from typing import List, Tuple, Optional
 
 from tools.page_config import set_page_config
 from tools import sidebar_logo
-from tools.commons import PlotParameters, modify_plot_text_sizes
+from tools.commons import PlotParameters, modify_plot_text_sizes, PlotlyConfig
 
 # Configure page
 set_page_config(5)
@@ -812,37 +812,37 @@ class StandardizationResultsPage:
             fig = self.plot_generator.create_delta_plot(
                 self.df_rep, standards_list, show_residuals=False
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), width="stretch")
+            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
         
         with tabs[1]:  # Delta residuals
             fig = self.plot_generator.create_delta_plot(
                 self.df_rep, standards_list, show_residuals=True
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), width="stretch")
+            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
         
         with tabs[2]:  # Bulk isotopes
             fig = self.plot_generator.create_bulk_isotope_plot(
                 self.df_rep, standards_list, show_residuals=False
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), width="stretch")
+            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
         
         with tabs[3]:  # Bulk isotope residuals
             fig = self.plot_generator.create_bulk_isotope_plot(
                 self.df_rep, standards_list, show_residuals=True
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), width="stretch")
+            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
         
         with tabs[4]:  # δ18O residuals over time
             fig = self.plot_generator.create_bulk_isotope_plot(
                 self.df_rep, standards_list, show_residuals=True, over_time=True, bulk_isotope="18"
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), width="stretch")
+            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
         
         with tabs[5]:  # δ13C residuals over time
             fig = self.plot_generator.create_bulk_isotope_plot(
                 self.df_rep, standards_list, show_residuals=True, over_time=True, bulk_isotope="13"
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), width="stretch")
+            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
         
         # Heated gas lines tab (if available)
         if has_heated_gas:
