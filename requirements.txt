@@ -40,9 +40,7 @@ xlsxwriter
 plotly
 
 # Scientific computing - only what's actually used
-# scipy>=1.10.0
-scipy.stats
-scipy.optimize
+scipy
 
 # project specific dependencies
 D47crunch
