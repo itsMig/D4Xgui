@@ -1,5 +1,5 @@
 ---
-title: "D4Xgui: A Streamlit App for Carbonate Clumped Isotope Data Processing"
+title: "D4Xgui -- a tool for baseline correction and standardization of carbonate clumped isotope raw data"
 authors:
   - name: Miguel Bernecker
     affiliation: 1
