@@ -80,7 +80,6 @@ With our D4Xgui app, we make a user-friendly data processing scheme available fo
 ## Data architecture and interfaces
 ![Flowchart illustrating the internal data architecture of D4Xgui. It is possible to upload eithe raw m/z$_{44-49}$ data or pre-processed $\delta^{45}$-$\delta^{49}$ data directly into D4Xgui. The (optional) baseline-correction algorithm is utilizing a half-mass cup signal; if this signal is not available, the user can directly calculate $\delta^{45}$-$\delta^{49}$ values from mass-spectrometric raw data. In order to simply use D47crunch, the user can directly upload pre-processed $\delta^{45}$-$\delta^{49}$ data. Uploaded or calculated $\delta^{45}$-$\delta^{49}$ data can (optionally) be stored in the `pre_replicates` table for later use. The session state may (optionally) be stored with an identifier in the `session_state` table, including uploaded data and processing results -- dependend on a user's current session. The (optional) `sample_metadata` table is utilized to apply post- or pre-processing filters, based on sample metadata.\label{fig:data_scheme}](figs/schemeData.pdf)
 
-.
 D4Xgui is equipped with multiple data input interfaces, a graphical overview can be found in \autoref{fig:data_scheme}.
 Input data (mass-spectrometric m/z$_{44-49}$ data or pre-processed $\delta^{45}$-$\delta^{49}$) can be directly uploaded into D4Xgui using a file navigation context menu and via drag-and-drop functionality.
 Internally, D4Xgui is backed by a self-contained, disk-based local SQLite database containing a table for pre-processed $\delta^{45}$-$\delta^{49}$ values (`pre_replicates` table).
@@ -160,9 +159,9 @@ D4Xgui offers access to a wealth of graphical outputs:
 - standardization-derived contribution of analytical uncertainties in $\delta^{i}$ /$\Delta_{i}$ space [@Daeron_2021] (Figure~\ref{fig:example3}),
 - custom plots in which any two columns (e.g., sample name, acquisition time, isotopic composition, etc.) of the final dataset are plotted against each other, can be generated in the *Discover Results* page (Figure~\ref{fig:example4}). For this purpose, both replicate- and sample-specific values can be displayed and, optionally, linear or higher-order regression analysis can be performed on selected data.
 
-![Demonstrative screenshot of the *Standardization Results* page, displaying $\Delta\Delta_{47}$ residuals over time. Repeatability (2SD) characteristic for the selected interval is automatically calculated and displayed as horizontal line.\label{fig:example1}](figs/example1.pdf){ width=65% }
+![Demonstrative screenshot of the *Standardization Results* page, displaying $\Delta\Delta_{47}$ residuals over time. Repeatability (2SD) characteristic for the selected interval is automatically calculated and displayed as horizontal line.\label{fig:example1}](figs/example1.pdf){ width=45% }
 
-![Demonstrative screenshot of the *Dual Clumped Space* page, displaying $\Delta_{47}$ and $\Delta_{48}$ data relative to the position of equilibrium [@Fiebig_2024].\label{fig:example2}](figs/example2.pdf){ width=65% }
+![Demonstrative screenshot of the *Dual Clumped Space* page, displaying $\Delta_{47}$ and $\Delta_{48}$ data relative to the position of equilibrium [@Fiebig_2024].\label{fig:example2}](figs/example2.pdf){ width=45% }
 
 ![Demonstrative screenshot of the *Standardization Error* page, displaying standardization-related uncertainties in $\delta_{47}$/$\Delta_{47}$-space [@Daeron_2021].\label{fig:example3}](figs/example3.pdf){ width=65% }
 
@@ -184,7 +183,7 @@ Samples whose $\Delta_{47}$ and $\Delta_{48}$ values are significantly biased by
 The visualization capabilities of D4Xgui make identification of NO$_2$ and other isobaric interferents in $\Delta_{47}$/$\Delta_{48}$ and $\Delta_{48}$/$\Delta_{49}$ space straightforward, as affected data follows predicted deviation slopes [@Fiebig_2024].
 Compromised samples can, therefore, be reliably identified and mitigation strategies (that eliminate isobaric bias) easily be tested for their efficacy.
 
-![Demonstrative screenshot of the *Discover Results* page, showing compromised sample Dolomite_80-1 [@Bonifacie_2017; @Bernecker_2025], whose replicates show variable extents of NO$_2$ bias in their $\Delta_{47}$, $\Delta_{48}$ values.\label{fig:example5_new}](figs/example5_new.pdf){ width=100% }
+![Demonstrative screenshot of the *Discover Results* page, showing compromised sample Dolomite_80-1 [@Bonifacie_2017; @Bernecker_2025], whose replicates show variable extents of NO$_2$ bias in their $\Delta_{47}$, $\Delta_{48}$ values.\label{fig:example5_new}](figs/example5_new.pdf){ width=45% }
 
 # Statement of need
 D4Xgui represents a state-of-the-art processing tool for carbonate clumped isotope data processing.
