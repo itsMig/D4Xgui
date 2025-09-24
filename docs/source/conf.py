@@ -46,6 +46,9 @@ autodoc_mock_imports = [
     "dill",
     "scipy",
     "PIL",
+    'D47crunch',
+    'ogls',
+    'matplotlib'
 ]
 
 
