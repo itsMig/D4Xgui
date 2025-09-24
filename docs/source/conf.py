@@ -38,7 +38,16 @@ release = 'v1.0.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-autodoc_mock_imports = ["streamlit"]
+autodoc_mock_imports = [
+    "streamlit",
+    "pandas",
+    "numpy",
+    "plotly",
+    "dill",
+    "scipy",
+    "PIL",
+]
+
 
 extensions = [
         'sphinx.ext.autodoc',
