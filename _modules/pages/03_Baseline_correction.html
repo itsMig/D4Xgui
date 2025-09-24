@@ -106,7 +106,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">tools.sidebar_logo</span><span class="w"> </span><span class="kn">import</span> <span class="n">SidebarLogoManager</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tools.authenticator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Authenticator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tools.database</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatabaseManager</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">tools.commons</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotParameters</span><span class="p">,</span> <span class="n">modify_plot_text_sizes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.commons</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotParameters</span><span class="p">,</span> <span class="n">modify_plot_text_sizes</span><span class="p">,</span> <span class="n">PlotlyConfig</span>
 
 
 <div class="viewcode-block" id="BaselineCorrectionPage">
@@ -676,7 +676,7 @@
         <span class="p">)</span>
 
         <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_intensity_plot</span><span class="p">()</span>
-        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span></div>
+        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">PlotlyConfig</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BaselineCorrectionPage._render_delta_plots">
@@ -690,7 +690,7 @@
             <span class="k">pass</span>  <span class="c1"># Reserved for future controls</span>
 
         <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_delta_overview_plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">mz_03</span><span class="p">)</span>
-        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span></div>
+        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">PlotlyConfig</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BaselineCorrectionPage._render_heated_gas_lines">
@@ -712,7 +712,7 @@
                 <span class="n">selected_gas</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span><span class="s2">&quot;Select gas standard&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">available_gases</span><span class="p">)</span>
             
             <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_heated_gas_line_plot</span><span class="p">(</span><span class="n">selected_gas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">mz_03</span><span class="p">)</span>
-            <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">PlotlyConfig</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No heated gas standards (25C/1000C) found in the data.&quot;</span><span class="p">)</span></div>
 
@@ -726,7 +726,7 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_cols</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">corr_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">[</span><span class="n">numeric_cols</span><span class="p">]</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
                 <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_correlation_matrix_plot</span><span class="p">(</span><span class="n">corr_matrix</span><span class="p">)</span>
-                <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">PlotlyConfig</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Not enough numeric columns for correlation matrix.&quot;</span><span class="p">)</span></div>
 

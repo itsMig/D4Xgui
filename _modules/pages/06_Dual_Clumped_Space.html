@@ -107,7 +107,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">tools.Pysotope_fork</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tP</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">sidebar_logo</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">tools.commons</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLOT_PARAMS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.commons</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLOT_PARAMS</span><span class="p">,</span> <span class="n">PlotlyConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tools.page_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_page_config</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tools.sidebar_logo</span><span class="w"> </span><span class="kn">import</span> <span class="n">SidebarLogoManager</span>
 
@@ -486,7 +486,7 @@
         
         <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span>
             <span class="n">fig</span><span class="p">,</span>
-            <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">PlotlyConfig</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">,</span>
         <span class="p">)</span>
         
         <span class="c1"># Provide download link</span>
@@ -935,7 +935,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a download link for the plot as HTML.&quot;&quot;&quot;</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.io</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pio</span>
         
-        <span class="n">pio</span><span class="o">.</span><span class="n">templates</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="s2">&quot;plotly&quot;</span>
+        <span class="c1">#pio.templates.default = &quot;plotly&quot;</span>
         <span class="n">html_buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
         <span class="n">fig</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span><span class="n">html_buffer</span><span class="p">)</span>
         
