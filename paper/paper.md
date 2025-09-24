@@ -29,11 +29,7 @@ tags:
 ---
 
 
-# Optional fields if submitting to a AAS journal too, see this blog post:
-# https://blog.joss.theoj.org/2018/12/a-new-collaboration-with-aas-publishing
-# aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
-# aas-journal: Astrophysical Journal <- The name of the AAS journal.
----
+
 
 # Summary
 Clumped isotope geochemistry is the study of small deviations between measured and expected relative abundances of multiply-substituted isotopologues.
@@ -54,7 +50,7 @@ Beyond facilitating fast and most accurate determination of $\Delta_{47}$, $\Del
 
 # Introduction
 Carbonate clumped isotope thermometry enables determination of carbonate formation temperatures [@Ghosh_2006a] and allows to identify effects of isotopic disequilibrium [@Tripati2010] or secondary alteration [@Dennis2010; @Huntington_2011], among others.
-Its application relies on thermodynamically driven fractionation of stable carbon and oxygen isotopes among different carbonate isotopologues, a phenomenon which favors increasing excess formation (relative to stochastically predicted isotope partitioning) of multiply heavy substituted isotopologues (\textit{clumped isotopes}) with decreasing temperature [@Schauble_2006].
+Its application relies on thermodynamically driven fractionation of stable carbon and oxygen isotopes among different carbonate isotopologues, a phenomenon which favors increasing excess formation (relative to stochastically predicted isotope partitioning) of multiply heavy substituted isotopologues (*clumped isotopes*) with decreasing temperature [@Schauble_2006].
 Since excess abundances of multiply substituted isotopologues cannot be analysed from within the carbonate directly, samples are quantitatively reacted with phosphoric acid and measurements are performed on the evolved CO$_2$.
 Precise analysis of excess abundances of multiply substituted isotopologues was initially restricted to CO$_2$ of mass 47 (mainly made up of  $^{13}$C$^{18}$O$^{16}$O) and the corresponding metric defined as the $\Delta_{47}$ value.
 Recent improvements in instrumentation also enabled highly precise quantification of excess abundances of mass 48 (mainly made up of  $^{12}$C$^{18}$O$^{18}$O) and 49 (exclusively made up of $^{13}$C$^{18}$O$^{18}$O) isotopologues [@Fiebig_2021; @Swart_2021; @Bernecker_2023].
@@ -67,7 +63,7 @@ Precise and accurate determination of $\Delta_{47}$, $\Delta_{48}$ and $\Delta_{
 State-of-the-art processing schemes for the determination of $\delta^{13}$C, $\delta^{18}$O, and $\Delta_{47}$-$\Delta_{49}$ values from mass spectrometric raw $\delta^{i}$ values generally consider corrections for i) isobaric contributions from $^{17}$O-bearing isotopologues [@Santrock_1985; @Daeron_2016; @Schauer2016], ii) compositional non-linearity [@Huntington_2009] and iii) scale compression [@Dennis_2011].
 Compositional non-linearity can arise from secondary electrons which affect measured m/z$_{47}$--m/z$_{49}$ intensities.
 These drive the baseline below m/z$_{47}$--m/z$_{49}$ to negative intensities, the extent of which depends on the pressure of CO$_2$ in the ion source [pressure baseline effect, PBL; @He_2012].
-Compositional non-linearity is expressed by slopes $\neq$ zero in correlation plots of $\delta^{i}$ vs $\Delta_{i}$ values for CO$_2$ gases (or carbonates) of different bulk isotopic compositions, that were equilibrated at a given temperature.
+Compositional non-linearity is expressed by slopes ≠ zero in correlation plots of $\delta^{i}$ vs $\Delta_{i}$ values for CO$_2$ gases (or carbonates) of different bulk isotopic compositions, that were equilibrated at a given temperature.
 This bias is driven by a mismatch of bulk isotopic compositions, when comparing the sample analyte with that of the working gas.
 Since the negative PBL signal scales with the fixed-intensity m/z$_{44}$ beam and --over a short term-- the PBL signal doesn't change in magnitude, samples characterized by a more light $\delta^{i}$ composition compared to that of the working gas will have a negative $\Delta_{i}$ bias, and vice versa.
 Recently developed software allows correction of mass spectrometric raw data for i), ii) and iii)~[e.g., @John_2016; @Daeron_2021], but lacks optimized scaling-factor-based correction of mass-spectrometric raw intensities utilizing a half-mass cup, which can introduce artificial bias on $\delta^{i}$ values, ultimately influencing final $\Delta_{i}$ values [@Fiebig_2016; @Bernecker_2023].
@@ -82,58 +78,58 @@ With our D4Xgui app, we make a user-friendly data processing scheme available fo
 
 # Methodology
 ## Data architecture and interfaces
-![Flowchart illustrating the internal data architecture of D4Xgui. It is possible to upload eithe raw m/z$_{44-49}$ data or pre-processed $\delta^{45}$-$\delta^{49}$ data directly into D4Xgui. The (optional) baseline-correction algorithm is utilizing a half-mass cup signal; if this signal is not available, the user can directly calculate $\delta^{45}$-$\delta^{49}$ values from mass-spectrometric raw data. In order to simply use D47crunch, the user can directly upload pre-processed $\delta^{45}$-$\delta^{49}$ data. Uploaded or calculated $\delta^{45}$-$\delta^{49}$ data can (optionally) be stored in the \texttt{pre\_replicates} table for later use. The session state may (optionally) be stored with an identifier in the {\texttt{session\_state}} table, including uploaded data and processing results -- dependend on a user's current session. The (optional) {\texttt{sample\_metadata}} table is utilized to apply post- or pre-processing filters, based on sample metadata.\label{fig:data_scheme}](figs/schemeData.pdf)
+![Flowchart illustrating the internal data architecture of D4Xgui. It is possible to upload eithe raw m/z$_{44-49}$ data or pre-processed $\delta^{45}$-$\delta^{49}$ data directly into D4Xgui. The (optional) baseline-correction algorithm is utilizing a half-mass cup signal; if this signal is not available, the user can directly calculate $\delta^{45}$-$\delta^{49}$ values from mass-spectrometric raw data. In order to simply use D47crunch, the user can directly upload pre-processed $\delta^{45}$-$\delta^{49}$ data. Uploaded or calculated $\delta^{45}$-$\delta^{49}$ data can (optionally) be stored in the `pre_replicates` table for later use. The session state may (optionally) be stored with an identifier in the `session_state` table, including uploaded data and processing results -- dependend on a user's current session. The (optional) `sample_metadata` table is utilized to apply post- or pre-processing filters, based on sample metadata.\label{fig:data_scheme}](figs/schemeData.pdf)
 
 .
 D4Xgui is equipped with multiple data input interfaces, a graphical overview can be found in \autoref{fig:data_scheme}.
 Input data (mass-spectrometric m/z$_{44-49}$ data or pre-processed $\delta^{45}$-$\delta^{49}$) can be directly uploaded into D4Xgui using a file navigation context menu and via drag-and-drop functionality.
-Internally, D4Xgui is backed by a self-contained, disk-based local SQLite database containing a table for pre-processed $\delta^{45}$-$\delta^{49}$ values ({\verb+pre_replicates+} table).
-In addition to this, a metadata database ({\verb+sample_metadata+} table) is used to store metadata such as sample name, session, and other sample-specific information, all of which can be used for pre- and post-processing filtering.
-All databases can be managed through the \textit{Database Management} page (Figure~\ref{fig:db_meta}).
+Internally, D4Xgui is backed by a self-contained, disk-based local SQLite database containing a table for pre-processed $\delta^{45}$-$\delta^{49}$ values (`pre_replicates` table).
+In addition to this, a metadata database (`sample_metadata` table) is used to store metadata such as sample name, session, and other sample-specific information, all of which can be used for pre- and post-processing filtering.
+All databases can be managed through the *Database Management* page (Figure~\ref{fig:db_meta}).
 D4Xgui is designed to also allow processing without the use of any database functionality, provided that the necessary data is uploaded prior to processing.
 
 ### Internal data structure
 No significant differences were obtained if data evaluation started from cycle or replicate level, for this reason D4Xgui will always calculate mean replicate values before adding data into the internal database.
 
-\textbf{Database – pre\_replicates table:}
-The {\verb+pre_replicates+} table is used to store pre-processed $\delta^{45}$-$\delta^{49}$ values together with information on \verb|UID|, \verb|Sample|, \verb|Session| and \verb|Timetag|.
+**Database – pre_replicates table:**
+The `pre_replicates` table is used to store pre-processed $\delta^{45}$-$\delta^{49}$ values together with information on `UID`, `Sample`, `Session` and `Timetag`.
 These data can be derived from the upload, or from D4Xgui's internal calculation.
 
-\textbf{Database – metadata table:}
-Sample metadata is internally managed through the {\verb+sample_metadata+} table, and can be provided in \textit{.xlsx} format to make advanced filtering accessible in both, the \textit{Data-I/O} page for pre-processing and, moreover, in pages dedicated for graphical representation of post-processing results.
-Metadata can additionally be modified and new entries added to it via the \textit{Database Management} page, \textit{Sample Metadata} tab.
+**Database – metadata table:**
+Sample metadata is internally managed through the `sample_metadata` table, and can be provided in *.xlsx* format to make advanced filtering accessible in both, the *Data-I/O* page for pre-processing and, moreover, in pages dedicated for graphical representation of post-processing results.
+Metadata can additionally be modified and new entries added to it via the *Database Management* page, *Sample Metadata* tab.
 These filtering capabilities allow users to, for example, select a specific sample type, whereupon the app will provide all session data that includes archived samples of the chosen type, facilitating easy (re-)processing of multi-session datasets.
-Metadata filters are based on \verb|Sample|, \verb|Session|, \verb|Project|, \verb|Publication|, \verb|Type|, \verb|Mineralogy| and \verb|in charge| in the actual build.
+Metadata filters are based on `Sample`, `Session`, `Project`, `Publication`, `Type`, `Mineralogy` and `in charge` in the actual build.
 
-\textbf{Database – D4Xgui session state:}
-At any point, it is additionally possible to dump the entire session cache of D4Xgui into another self-contained database {\verb+session_states+}.
+**Database – D4Xgui session state:**
+At any point, it is additionally possible to dump the entire session cache of D4Xgui into another self-contained database (`session_states`).
 This functionality allows the user to store the session state at any point, and either continue processing at a later point, or to archive the results for future inspection.
-To do so, the \textit{Save\&Reload} page can be utilized by saving the actual session state of the app together with a custom identifier.
+To do so, the *Save&Reload* page can be utilized by saving the actual session state of the app together with a custom identifier.
 
 ### Upload options
 Before uploading data directly to D4Xgui, it is necessary to format machine-generated raw data to ensure compatibility.
-While some vendors for analytical setups provide automated \textit{.csv} outputs, others store raw data in undocumented proprietary formats or require human interaction to produce exports.
-Available tools for parsing raw data from binary files are e.g., isoreader [@isoreader] as a script-based option for R users, or Easotope [@John_2016] as multi-platform GUI tool for \textit{*.did} files, produced by IsoDat (Thermo Scientific, MAT253 or 253+).
-Basic implementations of Python-based file parsers for \textit{*.did}-files (Thermo Scientific) and \textit{*.csv}-files (Nu Instruments) can be found within this project's repository (\verb+tools/parse_isodat.py+ and \verb+tools/parse_nu-csv.py+, respectively), and might be utilized to extract raw intensity data.
+While some vendors for analytical setups provide automated *.csv* outputs, others store raw data in undocumented proprietary formats or require human interaction to produce exports.
+Available tools for parsing raw data from binary files are e.g., isoreader [@isoreader] as a script-based option for R users, or Easotope [@John_2016] as multi-platform GUI tool for **.did* files, produced by IsoDat (Thermo Scientific, MAT253 or 253+).
+Basic implementations of Python-based file parsers for **.did*-files (Thermo Scientific) and **.csv*-files (Nu Instruments) can be found within this project's repository (`tools/parse_isodat.py` and `tools/parse_nu-csv.py`, respectively), and might be utilized to extract raw intensity data.
 
-\textbf{Upload option A – Uploading raw intensity data:}
+**Upload option A – Uploading raw intensity data:**
 Raw intensity data can either be uploaded in cycle, acquisition or replicate hierarchy.
 In the current version, uploaded raw m/z intensities can only be corrected for a negative PBL (i.e., for the contribution of secondary electrons) if the gas-source mass spectrometer is equipped with an additional half-mass cup that continuously monitors the PBL intensity [e.g. at m/z$_{47.5}$, see @Fiebig_2019].
 If no half-mass cup is available, we advise to employ a custom, baseline scan-based correction of raw intensities [e.g., @He_2012; @Bernasconi_2013; @Fiebig_2016].
 Otherwise, data can also be processed without prior correction of raw intensities, ignoring potential bias in $\delta^{i}$ values, which ultimately increases uncertainty in final results [@Bernecker_2023].
 The following features are required for each instance:
-\foreach \key in {UID	Sample	Session	Timetag	Replicate raw\_r44 raw\_r45	raw\_r46	raw\_r47	raw\_r48	raw\_r49	(raw\_r47.5) raw\_s44	raw\_s45	raw\_s46	raw\_s47	raw\_s48	raw\_s49	(raw\_s47.5)} {\verb+\key}
+`UID`, `Sample`, `Session`, `Timetag`, `Replicate`, `raw_r44`, `raw_r45`, `raw_r46`, `raw_r47`, `raw_r48`, `raw_r49`, `(raw_r47.5)`, `raw_s44`, `raw_s45`, `raw_s46`, `raw_s47`, `raw_s48`, `raw_s49`, `(raw_s47.5)`
 
-\textbf{Upload option B – Uploading pre-processed $\delta^{45}$-$\delta^{49}$ values:}
+**Upload option B – Uploading pre-processed $\delta^{45}$-$\delta^{49}$ values:**
 Replicate-level $\delta^{45}$-$\delta^{49}$ values, either PBL-corrected or not, can be uploaded.
 Given that the D47crunch module is invoked for standardization, its relevant features must be uploaded per instance:
-		\foreach \key in {UID	Sample	Session	Timetag	d45	d46	d47	d48	d49} {\verb+\key}
+`UID`, `Sample`, `Session`, `Timetag`, `d45`, `d46`, `d47`, `d48`, `d49`
 
-![Screenshot of the \textit{Database Management} page, displaying the Sample Metadata Management dashboard.\label{fig:db_meta}](figs/db_metadata.png)
+![Screenshot of the *Database Management* page, displaying the Sample Metadata Management dashboard.\label{fig:db_meta}](figs/db_metadata.png)
 
 
 ## Baseline correction and standardization
-An overview of the processing pipeline for carbonate clumped isotope data is given in Figure~\protect\ref{fig:processing_scheme}.
+An overview of the processing pipeline for carbonate clumped isotope data is given in Figure~\ref{fig:processing_scheme}.
 
 ![Schematic overview of the processing steps involved in the process of calculating baseline-corrected, standardized and fully error-propagated clumped isotope values from mass spectrometric raw intensity data. The major difference between commonly used processing schemes [e.g., @John_2016] is the optimized scaling factor determination for baseline correction – this part already requires calculating $\delta^{i}$ and $\Delta_{i}$ metrics by iteratively refining scaling factors (orange in the flowchart). Once the best-fit scaling factors are determined, m/z$_{47-49}$ raw intensity data gets corrected and the processing scheme is conducted one last time with the final intensites. Abbreviations: WG=working gas, SG=sample gas.\label{fig:processing_scheme}](figs/processing_scheme.pdf)
 
@@ -141,7 +137,7 @@ Pressure baseline (PBL)-correction of mass spectrometric raw data has been shown
 For D4Xgui, we implemented the methodology proposed by @Fiebig_2021 and later refined by @Bernecker_2023.
 The PBL (i.e., the negative signal arising from secondary electrons) is continuously monitored at half mass cup m/z$_{47.5}$, and subtracted from m/z$_{47}$, m/z$_{48}$ and m/z$_{49}$ intensities after scaling the m/z$_{47.5}$ intensity by cup-specific scaling factors utilizing an optimizer algorithm.
 Optimal scaling factors are determined iteratively based on the prerequisite that PBL-corrected $\delta^{i}$ and $\Delta_{i}$ values (vs reference gas) obtained for CO$_2$ gases or carbonates equilibrated at a given temperature should be characterized by slopes closest to zero if plotted against each other [@Fiebig_2021; @Bernecker_2023].
-These pre-processed data can be stored in the {\verb+pre_replicates+} table, where they will be accessible for future processing.
+These pre-processed data can be stored in the `pre_replicates` table, where they will be accessible for future processing.
 
 Pre-processed carbonate clumped isotope data ($\delta^{45}$-$\delta^{49}$) is finally standardized relative to equilibrated gas- and/or carbonate-anchors of well-defined $\Delta_{i}$ compositions [e.g., @Wang_2004; @Petersen_2019; @Fiebig_2024; @Bernasconi_2021].
 For this step, the optimized correction algorithm implemented for D47crunch is used, which is outlined in detail by @Daeron_2021.
@@ -162,13 +158,13 @@ D4Xgui offers access to a wealth of graphical outputs:
 - temporal evolution of replicate $\delta^{13}$C, $\delta^{18}$O, raw and final $\Delta_{i}$ values and corresponding residuals (Figure~\ref{fig:example1}),
 - presentation of $\Delta_{i}$ data in dual clumped isotope space (sample mean values including fully propagated ±1SE or ±2SE uncertainties, or individual replicate values) relative to the equilibrium $\Delta_{47}$/$\Delta_{48}$ and  $\Delta_{47}$/$\Delta_{49}$ relationships [@Fiebig_2024; @Bernecker_2023] (Figure~\ref{fig:example2}),
 - standardization-derived contribution of analytical uncertainties in $\delta^{i}$ /$\Delta_{i}$ space [@Daeron_2021] (Figure~\ref{fig:example3}),
-- custom plots in which any two columns (e.g., sample name, acquisition time, isotopic composition, etc.) of the final dataset are plotted against each other, can be generated in the \textit{Discover Results} page (Figure~\ref{fig:example4}). For this purpose, both replicate- and sample-specific values can be displayed and, optionally, linear or higher-order regression analysis can be performed on selected data.
+- custom plots in which any two columns (e.g., sample name, acquisition time, isotopic composition, etc.) of the final dataset are plotted against each other, can be generated in the *Discover Results* page (Figure~\ref{fig:example4}). For this purpose, both replicate- and sample-specific values can be displayed and, optionally, linear or higher-order regression analysis can be performed on selected data.
 
-![Demonstrative screenshot of the \textit{Standardization Results} page, displaying $\Delta\Delta_{47}$ residuals over time. Repeatability (2SD) characteristic for the selected interval is automatically calculated and displayed as horizontal line.\label{fig:example1}](figs/example1.pdf)
+![Demonstrative screenshot of the *Standardization Results* page, displaying $\Delta\Delta_{47}$ residuals over time. Repeatability (2SD) characteristic for the selected interval is automatically calculated and displayed as horizontal line.\label{fig:example1}](figs/example1.pdf)
 
-![Demonstrative screenshot of the \textit{Dual Clumped Space} page, displaying $\Delta_{47}$ and $\Delta_{48}$ data relative to the position of equilibrium [@Fiebig_2024].\label{fig:example2}](figs/example2.pdf)
+![Demonstrative screenshot of the *Dual Clumped Space* page, displaying $\Delta_{47}$ and $\Delta_{48}$ data relative to the position of equilibrium [@Fiebig_2024].\label{fig:example2}](figs/example2.pdf)
 
-![Demonstrative screenshot of the \textit{Standardization Error} page, displaying standardization-related uncertainties in $\delta_{47}$/$\Delta_{47}$-space [@Daeron_2021].\label{fig:example3}](figs/example3.pdf)
+![Demonstrative screenshot of the *Standardization Error* page, displaying standardization-related uncertainties in $\delta_{47}$/$\Delta_{47}$-space [@Daeron_2021].\label{fig:example3}](figs/example3.pdf)
 
 
 # Quality assurance of data
@@ -180,7 +176,7 @@ These correlations are especially pronounced for samples with extreme oxygen and
 Due to multiple factors influencing the final result, like varying degrees of re-equilibration on a sample-to-sample base or distinct oxygen isotope values of the analyte leading to differently pronounced mixing effects, this effect can not be corrected for.
 It is therefore of upmost importance to identify re-equilibration bias [@Staudigel2025].
 
-![Demonstrative screenshot of the \textit{Discover Results} page, displaying $\delta^{18}$O data vs. $\Delta_{47,\,raw}$ data for individual replicates of carbonate standard ETH-2. CO$_2$-H$_2$O re-equilibration is indicated for replicates showing both elevated  $\Delta_{47,\,raw}$ and $\delta^{18}$O values. $\Delta_{47,\,CDES90}$ values of these samples plot outside the long-term repeatability interval characteristic of ETH-2 (0.2093±0.0017$\permil$) in the absence of significant analytical bias [@Staudigel2025].\label{fig:example4}](figs/example4.pdf)
+![Demonstrative screenshot of the *Discover Results* page, displaying $\delta^{18}$O data vs. $\Delta_{47,\,raw}$ data for individual replicates of carbonate standard ETH-2. CO$_2$-H$_2$O re-equilibration is indicated for replicates showing both elevated  $\Delta_{47,\,raw}$ and $\delta^{18}$O values. $\Delta_{47,\,CDES90}$ values of these samples plot outside the long-term repeatability interval characteristic of ETH-2 (0.2093±0.0017‰) in the absence of significant analytical bias [@Staudigel2025].\label{fig:example4}](figs/example4.pdf)
 
 ## Identifying isobaric interferences
 @Fiebig_2024 have recently shown that the presence of a few hundreds of ppb-quantities of NO$_2$ in the analyte CO$_2$ can introduce significant bias in measured $\Delta_{47}$ and $\Delta_{48}$ values measured by isotope-ratio mass-spectrometry.
@@ -188,7 +184,7 @@ Samples whose $\Delta_{47}$ and $\Delta_{48}$ values are significantly biased by
 The visualization capabilities of D4Xgui make identification of NO$_2$ and other isobaric interferents in $\Delta_{47}$/$\Delta_{48}$ and $\Delta_{48}$/$\Delta_{49}$ space straightforward, as affected data follows predicted deviation slopes [@Fiebig_2024].
 Compromised samples can, therefore, be reliably identified and mitigation strategies (that eliminate isobaric bias) easily be tested for their efficacy.
 
-![Demonstrative screenshot of the \textit{Discover Results} page, showing compromised sample Dolomite\_80-1 [@Bonifacie_2017; @Bernecker_2025], whose replicates show variable extents of NO$_2$ bias in their $\Delta_{47}$, $\Delta_{48}$ values.\label{fig:example5_new}](figs/example5_new.pdf){ width=100% }
+![Demonstrative screenshot of the *Discover Results* page, showing compromised sample Dolomite_80-1 [@Bonifacie_2017; @Bernecker_2025], whose replicates show variable extents of NO$_2$ bias in their $\Delta_{47}$, $\Delta_{48}$ values.\label{fig:example5_new}](figs/example5_new.pdf){ width=100% }
 
 # Statement of need
 D4Xgui represents a state-of-the-art processing tool for carbonate clumped isotope data processing.
@@ -197,7 +193,7 @@ The extensive graphical outputs facilitate data visualization and real-time asse
 
 By providing a common platform for data processing and analysis, D4Xgui not only simplifies complex workflows but also promotes consistency and transparency in carbonate clumped isotope research.
 Developed using the flexible \href{https://streamlit.io}{Streamlit} framework, D4Xgui is designed to allow further community-driven customization.
-Its modular plug\&play architecture enables for easy integration of new features as the field of clumped isotope research steadily evolves.
+Its modular plug&play architecture enables for easy integration of new features as the field of clumped isotope research steadily evolves.
 Planned future updates include the integration of an Application Programming Interface (API), which will enhance data management and enable script-based interaction with the database.
 Moreover, we are already working on the integration of Easotope databases, which will enable seamless integration of archived datasets.
 This addition will also ensure that data processed through D4Xgui adheres to the FAIR principles, promoting findability, accessibility, interoperability, and long-term data reuse across laboratories.
