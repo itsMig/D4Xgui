@@ -96,7 +96,7 @@ The `pre_replicates` table is used to store pre-processed $\delta^{45}$-$\delta^
 These data can be derived from the upload, or from D4Xgui's internal calculation.
 
 **Database – metadata table:**
-Sample metadata is internally managed through the `sample_metadata` table, and can be provided in *.xlsx* format to make advanced filtering accessible in both, the *Data-I/O* page for pre-processing and, moreover, in pages dedicated for graphical representation of post-processing results.
+Sample metadata is internally managed through the `sample_metadata` table, and can be provided in \*.xlsx format to make advanced filtering accessible in both, the *Data-I/O* page for pre-processing and, moreover, in pages dedicated for graphical representation of post-processing results.
 Metadata can additionally be modified and new entries added to it via the *Database Management* page, *Sample Metadata* tab.
 These filtering capabilities allow users to, for example, select a specific sample type, whereupon the app will provide all session data that includes archived samples of the chosen type, facilitating easy (re-)processing of multi-session datasets.
 Metadata filters are based on `Sample`, `Session`, `Project`, `Publication`, `Type`, `Mineralogy` and `in charge` in the actual build.
@@ -108,9 +108,9 @@ To do so, the *Save&Reload* page can be utilized by saving the actual session st
 
 ### Upload options
 Before uploading data directly to D4Xgui, it is necessary to format machine-generated raw data to ensure compatibility.
-While some vendors for analytical setups provide automated *.csv* outputs, others store raw data in undocumented proprietary formats or require human interaction to produce exports.
-Available tools for parsing raw data from binary files are e.g., isoreader [@isoreader] as a script-based option for R users, or Easotope [@John_2016] as multi-platform GUI tool for **.did* files, produced by IsoDat (Thermo Scientific, MAT253 or 253+).
-Basic implementations of Python-based file parsers for **.did*-files (Thermo Scientific) and **.csv*-files (Nu Instruments) can be found within this project's repository (`tools/parse_isodat.py` and `tools/parse_nu-csv.py`, respectively), and might be utilized to extract raw intensity data.
+While some vendors for analytical setups provide automated \*.csv outputs, others store raw data in undocumented proprietary formats or require human interaction to produce exports.
+Available tools for parsing raw data from binary files are e.g., isoreader [@isoreader] as a script-based option for R users, or Easotope [@John_2016] as multi-platform GUI tool for \*.did files, produced by IsoDat (Thermo Scientific, MAT253 or 253+).
+Basic implementations of Python-based file parsers for \*.did-files (Thermo Scientific) and \*.csv-files (Nu Instruments) can be found within this project's repository (`tools/parse_isodat.py` and `tools/parse_nu-csv.py`, respectively), and might be utilized to extract raw intensity data.
 
 **Upload option A – Uploading raw intensity data:**
 Raw intensity data can either be uploaded in cycle, acquisition or replicate hierarchy.
@@ -160,11 +160,11 @@ D4Xgui offers access to a wealth of graphical outputs:
 - standardization-derived contribution of analytical uncertainties in $\delta^{i}$ /$\Delta_{i}$ space [@Daeron_2021] (Figure~\ref{fig:example3}),
 - custom plots in which any two columns (e.g., sample name, acquisition time, isotopic composition, etc.) of the final dataset are plotted against each other, can be generated in the *Discover Results* page (Figure~\ref{fig:example4}). For this purpose, both replicate- and sample-specific values can be displayed and, optionally, linear or higher-order regression analysis can be performed on selected data.
 
-![Demonstrative screenshot of the *Standardization Results* page, displaying $\Delta\Delta_{47}$ residuals over time. Repeatability (2SD) characteristic for the selected interval is automatically calculated and displayed as horizontal line.\label{fig:example1}](figs/example1.pdf)
+![Demonstrative screenshot of the *Standardization Results* page, displaying $\Delta\Delta_{47}$ residuals over time. Repeatability (2SD) characteristic for the selected interval is automatically calculated and displayed as horizontal line.\label{fig:example1}](figs/example1.pdf){ width=65% }
 
-![Demonstrative screenshot of the *Dual Clumped Space* page, displaying $\Delta_{47}$ and $\Delta_{48}$ data relative to the position of equilibrium [@Fiebig_2024].\label{fig:example2}](figs/example2.pdf)
+![Demonstrative screenshot of the *Dual Clumped Space* page, displaying $\Delta_{47}$ and $\Delta_{48}$ data relative to the position of equilibrium [@Fiebig_2024].\label{fig:example2}](figs/example2.pdf){ width=65% }
 
-![Demonstrative screenshot of the *Standardization Error* page, displaying standardization-related uncertainties in $\delta_{47}$/$\Delta_{47}$-space [@Daeron_2021].\label{fig:example3}](figs/example3.pdf)
+![Demonstrative screenshot of the *Standardization Error* page, displaying standardization-related uncertainties in $\delta_{47}$/$\Delta_{47}$-space [@Daeron_2021].\label{fig:example3}](figs/example3.pdf){ width=65% }
 
 
 # Quality assurance of data
@@ -176,11 +176,11 @@ These correlations are especially pronounced for samples with extreme oxygen and
 Due to multiple factors influencing the final result, like varying degrees of re-equilibration on a sample-to-sample base or distinct oxygen isotope values of the analyte leading to differently pronounced mixing effects, this effect can not be corrected for.
 It is therefore of upmost importance to identify re-equilibration bias [@Staudigel2025].
 
-![Demonstrative screenshot of the *Discover Results* page, displaying $\delta^{18}$O data vs. $\Delta_{47,\,raw}$ data for individual replicates of carbonate standard ETH-2. CO$_2$-H$_2$O re-equilibration is indicated for replicates showing both elevated  $\Delta_{47,\,raw}$ and $\delta^{18}$O values. $\Delta_{47,\,CDES90}$ values of these samples plot outside the long-term repeatability interval characteristic of ETH-2 (0.2093±0.0017‰) in the absence of significant analytical bias [@Staudigel2025].\label{fig:example4}](figs/example4.pdf)
+![Demonstrative screenshot of the *Discover Results* page, displaying $\delta^{18}$O data vs. $\Delta_{47,\,raw}$ data for individual replicates of carbonate standard ETH-2. CO$_2$-H$_2$O re-equilibration is indicated for replicates showing both elevated  $\Delta_{47,\,raw}$ and $\delta^{18}$O values. $\Delta_{47,\,CDES90}$ values of these samples plot outside the long-term repeatability interval characteristic of ETH-2 (0.2093±0.0017‰) in the absence of significant analytical bias [@Staudigel2025].\label{fig:example4}](figs/example4.pdf){ width=65% }
 
 ## Identifying isobaric interferences
 @Fiebig_2024 have recently shown that the presence of a few hundreds of ppb-quantities of NO$_2$ in the analyte CO$_2$ can introduce significant bias in measured $\Delta_{47}$ and $\Delta_{48}$ values measured by isotope-ratio mass-spectrometry.
-Samples whose $\Delta_{47}$ and $\Delta_{48}$ values are significantly biased by variable amounts of NO$_2$ plot along a characteristic slope of -0.30±0.05 (Figure~\ref{fig:example5}).
+Samples whose $\Delta_{47}$ and $\Delta_{48}$ values are significantly biased by variable amounts of NO$_2$ plot along a characteristic slope of -0.30±0.05 (Figure~\ref{fig:example5_new}).
 The visualization capabilities of D4Xgui make identification of NO$_2$ and other isobaric interferents in $\Delta_{47}$/$\Delta_{48}$ and $\Delta_{48}$/$\Delta_{49}$ space straightforward, as affected data follows predicted deviation slopes [@Fiebig_2024].
 Compromised samples can, therefore, be reliably identified and mitigation strategies (that eliminate isobaric bias) easily be tested for their efficacy.
 
