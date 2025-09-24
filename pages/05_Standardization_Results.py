@@ -651,7 +651,7 @@ class StandardizationResultsPage:
                    "(:violet[Upload m/z44-m/z49 intensities] tab).")
         st.markdown("- Or, directly upload δ⁴⁵-δ⁴⁹ replicate data "
                    "(:violet[Upload δ⁴⁵-δ⁴⁹ replicates] tab).")
-        st.page_link("pages/01_Data-IO.py", label="→ Data-IO page")
+        st.page_link("pages/01_Data_IO.py", label="→ Data-IO page")
         st.markdown(" ")
         st.markdown("Finally, process the dataset")
         st.page_link("pages/04_Processing.py", label="→ Processing page")

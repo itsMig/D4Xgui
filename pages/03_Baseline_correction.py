@@ -108,7 +108,7 @@ class BaselineCorrectionPage:
                 "Please upload raw intensity data to perform a baseline correction "
                 "(:violet[Upload m/z44-m/z49 intensities] tab)."
             )
-            st.page_link("pages/01_Data-IO.py", label=r"$\rightarrow  \textit{Data-IO}$  page")
+            st.page_link("pages/01_Data_IO.py", label=r"$\rightarrow  \textit{Data-IO}$  page")
             
             if "input_rep" in self.sss and len(self.sss.input_rep) > 0:
                 st.markdown(

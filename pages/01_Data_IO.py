@@ -184,7 +184,7 @@ class DataIOPage:
             return pd.read_excel(sample_db_path, engine="openpyxl")
         except FileNotFoundError:
             st.warning(f"SampleDatabase not found at {sample_db_path}.")
-            st.page_link("pages/97_Database Management.py", label="→ Database Management", icon="🔗")
+            st.page_link("pages/97_Database_Management.py", label="→ Database Management", icon="🔗")
             return None
 
     def _render_sample_db_filters(self, sample_db: pd.DataFrame, col1, col2) -> tuple:

@@ -336,7 +336,7 @@ class DiscoverResultsPage:
     def _show_data_requirement_message(self) -> None:
         """Display message when no data is available."""
         st.markdown("Please upload (and process) a dataset in order to screen results.")
-        st.page_link("pages/01_Data-IO.py", label=r"$\rightarrow  \textit{Data-IO}$  page")
+        st.page_link("pages/01_Data_IO.py", label=r"$\rightarrow  \textit{Data-IO}$  page")
         st.page_link("pages/04_Processing.py", label=r"$\rightarrow  \textit{Processing}$  page")
         st.stop()
     

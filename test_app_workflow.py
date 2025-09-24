@@ -23,13 +23,13 @@ def run_app_workflow():
         at.run(timeout=DEFAULT_TIMEOUT)
        
         try:
-            at.switch_page("pages/01_Data-IO.py")
+            at.switch_page("pages/01_Data_IO.py")
             at.run(timeout=DEFAULT_TIMEOUT)
             assertion_results.append({
             "step": "Open Data IO page",
             "variable": "page_dataIO",
             "passed": True,
-            "description": "App can resolve path `pages/01_Data-IO.py`"
+            "description": "App can resolve path `pages/01_Data_IO.py`"
              })
 
 
@@ -38,7 +38,7 @@ def run_app_workflow():
             "step": "Open Data IO page",
             "variable": "page_dataIO",
             "passed": False,
-            "description": "App can not resolve path `pages/01_Data-IO.py`"
+            "description": "App can not resolve path `pages/01_Data_IO.py`"
              })
 
 
@@ -73,7 +73,7 @@ def run_app_workflow():
             })
             
             
-        at.switch_page("pages/03_Baseline correction.py")
+        at.switch_page("pages/03_Baseline_correction.py")
         at.run(timeout=DEFAULT_TIMEOUT)
         
         method_radio = None

@@ -44,7 +44,7 @@ class D47CrunchPlotsPage:
         
         if not has_input_rep and not has_input_intensities:
             st.markdown("Please provide input data to be processed!")
-            st.page_link("pages/01_Data-IO.py", label=r"$\rightarrow  \textit{Data-IO}$  page")
+            st.page_link("pages/01_Data_IO.py", label=r"$\rightarrow  \textit{Data-IO}$  page")
             st.stop()
 
         # Check for processing results

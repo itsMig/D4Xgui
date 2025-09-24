@@ -771,7 +771,7 @@ class ProcessingPage:
                 r"Please upload δ⁴⁵-δ⁴⁹ replicate data to be processed "
                 r"(:violet[Upload δ⁴⁵-δ⁴⁹ replicates] tab)."
             )
-            st.page_link("pages/01_Data-IO.py", label=r"→ Data-IO page")
+            st.page_link("pages/01_Data_IO.py", label=r"→ Data-IO page")
             return False
         return True
     

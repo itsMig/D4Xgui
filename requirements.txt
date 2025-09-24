@@ -24,6 +24,11 @@ tzlocal
 validators
 watchdog
 
+
+python-dateutil
+pytz
+
+
 # Data processing essentials
 numpy>=1.24.0
 pandas>=2.0.0
@@ -35,21 +40,22 @@ xlsxwriter
 plotly
 
 # Scientific computing - only what's actually used
-scipy>=1.10.0  # You use scipy.stats and scipy.optimize
+# scipy>=1.10.0
+scipy.stats
+scipy.optimize
 
-# Your specific dependencies
+# project specific dependencies
 D47crunch
 D47calib
 ogls
 lmfit
 uncertainties
 
-# Database
-# (SQLite is included with Python)
 
 # Authentication/extras
 streamlit-extras
 
-# Other essentials from your code
-python-dateutil
-pytz
+
+# Documentation
+sphinx 
+sphinx-autobuild
