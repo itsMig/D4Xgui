@@ -7,12 +7,15 @@ authors:
     corresponding: true
   - name: Mathieu Daëron
     affiliation: 2
+    orcid: 0000-0003-1210-9786
   - name: Philip Tauxe Staudigel
     affiliation: 1
+    orcid: 0000-0001-6895-508X
   - name: Sven Hofmann
     affiliation: 1
   - name: Jens Fiebig
     affiliation: 1
+    orcid: 0000-0001-5074-1462
 affiliations:
   - name: Institut für Geowissenschaften, Goethe-Universität Frankfurt, Germany
     index: 1
@@ -35,9 +38,10 @@ tags:
 Clumped isotope geochemistry is the study of small deviations between measured and expected relative abundances of multiply-substituted isotopologues.
 Determination of ppm-ppb quantities of mass 47--49 isotopologues of CO${_2}$ is achieved through gas-source isotope-ratio mass spectrometers, and more recently became possible through laser spectroscopy, with resulting metrics being defined as $\Delta_{47}$--$\Delta_{49}$ values, respectively.
 @Bernasconi_2021 demonstrated that $\Delta_{47}$ results became indistinguishable between 22 laboratories, if raw data were corrected using carbonate anchors and unique standardization parameters.
-In their study, data were processed using the open-source Python library \href{https://github.com/mdaeron/D47crunch}{D47crunch} [@Daeron_2021], that considers standardization parameter optimization through least-squares regression and full error propagation, enabling straightforward and fast processing of multi-session datasets.
+In their study, data were processed using the open-source Python library \href{https://github.com/mdaeron/D47crunch}{D47crunch}[^1] [@Daeron_2021], that considers standardization parameter optimization through least-squares regression and full error propagation, enabling straightforward and fast processing of multi-session datasets.
 
-Here, we introduce \href{https://github.com/itsMig/D4Xgui}{D4Xgui}, a graphical user interface (GUI) tool that builds upon D47crunch.
+
+Here, we introduce \href{https://github.com/itsMig/D4Xgui}{D4Xgui}[^2], a graphical user interface (GUI) tool that builds upon D47crunch.
 It enables correction of mass spectrometric raw intensities for pressure baseline (PBL) bias induced by secondary electrons, before data is standardized using D47crunch.
 Correcting mass-spectrometric raw intensity data for the contribution of a PBL is essential for most accurate determination of $\Delta_{i}$ values [@Bernecker_2023].
 Metrics resulting from PBL correction and D47crunch-based standardization, alongside their corresponding statistics, can be explored on interactive plots and spreadsheets, all of which are downloadable.
@@ -46,6 +50,9 @@ A database can optionally be used to archive replicate data, and additional meta
 
 With D4Xgui, we provide a user-friendly, state-of-the-art app, whose operation does not require any prior knowledge of Python.
 Beyond facilitating fast and most accurate determination of $\Delta_{47}$, $\Delta_{48}$ and $\Delta_{49}$ values of carbonate-derived CO$_2$, this app enables immediate inspection and visualization of data for purposes of quality assurance and data interpretation.
+
+[^1]: https://github.com/mdaeron/D47crunch
+[^2]: https://github.com/itsMig/D4Xgui
 
 
 # Introduction
@@ -148,7 +155,9 @@ Custom standardization sets can be defined prior to processing, allowing to anch
 
 ## Formation temperature estimates
 D4Xgui allows calculation of apparent formation temperatures from standardized $\Delta_{47}$ values considering empirical $\Delta_{47}$-T calibrations of @Fiebig_2024, @Swart_2021 and @Anderson_2021.
-Additional calibrations [i.e., @Breitenbach_2018; @Peral_2018; @Jautzy_2020; @Anderson_2021; @Huyghe_2022; @Daeron_2019], re-processed by @Daeron_2024 using OGLS regression, are available form the \href{https://github.com/mdaeron/D47calib}{D47calib} module.
+Additional calibrations [i.e., @Breitenbach_2018; @Peral_2018; @Jautzy_2020; @Anderson_2021; @Huyghe_2022; @Daeron_2019], re-processed by @Daeron_2024 using OGLS regression, are available form the \href{https://github.com/mdaeron/D47calib}{D47calib}[^3] module.
+
+[^3]: https://github.com/mdaeron/D47calib
 
 
 # Graphical representation
@@ -159,11 +168,11 @@ D4Xgui offers access to a wealth of graphical outputs:
 - standardization-derived contribution of analytical uncertainties in $\delta^{i}$ /$\Delta_{i}$ space [@Daeron_2021] (Figure~\ref{fig:example3}),
 - custom plots in which any two columns (e.g., sample name, acquisition time, isotopic composition, etc.) of the final dataset are plotted against each other, can be generated in the *Discover Results* page (Figure~\ref{fig:example4}). For this purpose, both replicate- and sample-specific values can be displayed and, optionally, linear or higher-order regression analysis can be performed on selected data.
 
-![Demonstrative screenshot of the *Standardization Results* page, displaying $\Delta\Delta_{47}$ residuals over time. Repeatability (2SD) characteristic for the selected interval is automatically calculated and displayed as horizontal line.\label{fig:example1}](figs/example1.pdf){ width=45% }
+![Demonstrative screenshot of the *Standardization Results* page, displaying $\Delta\Delta_{47}$ residuals over time. Repeatability (2SD) characteristic for the selected interval is automatically calculated and displayed as horizontal line.\label{fig:example1}](figs/example1.pdf){ width=50% }
 
-![Demonstrative screenshot of the *Dual Clumped Space* page, displaying $\Delta_{47}$ and $\Delta_{48}$ data relative to the position of equilibrium [@Fiebig_2024].\label{fig:example2}](figs/example2.pdf){ width=45% }
+![Demonstrative screenshot of the *Dual Clumped Space* page, displaying $\Delta_{47}$ and $\Delta_{48}$ data relative to the position of equilibrium [@Fiebig_2024].\label{fig:example2}](figs/example2.pdf){ width=50% }
 
-![Demonstrative screenshot of the *Standardization Error* page, displaying standardization-related uncertainties in $\delta_{47}$/$\Delta_{47}$-space [@Daeron_2021].\label{fig:example3}](figs/example3.pdf){ width=65% }
+![Demonstrative screenshot of the *Standardization Error* page, displaying standardization-related uncertainties in $\delta_{47}$/$\Delta_{47}$-space [@Daeron_2021].\label{fig:example3}](figs/example3.pdf){ width=60% }
 
 
 # Quality assurance of data
@@ -175,7 +184,7 @@ These correlations are especially pronounced for samples with extreme oxygen and
 Due to multiple factors influencing the final result, like varying degrees of re-equilibration on a sample-to-sample base or distinct oxygen isotope values of the analyte leading to differently pronounced mixing effects, this effect can not be corrected for.
 It is therefore of upmost importance to identify re-equilibration bias [@Staudigel2025].
 
-![Demonstrative screenshot of the *Discover Results* page, displaying $\delta^{18}$O data vs. $\Delta_{47,\,raw}$ data for individual replicates of carbonate standard ETH-2. CO$_2$-H$_2$O re-equilibration is indicated for replicates showing both elevated  $\Delta_{47,\,raw}$ and $\delta^{18}$O values. $\Delta_{47,\,CDES90}$ values of these samples plot outside the long-term repeatability interval characteristic of ETH-2 (0.2093±0.0017‰) in the absence of significant analytical bias [@Staudigel2025].\label{fig:example4}](figs/example4.pdf){ width=65% }
+![Demonstrative screenshot of the *Discover Results* page, displaying $\delta^{18}$O data vs. $\Delta_{47,\,raw}$ data for individual replicates of carbonate standard ETH-2. CO$_2$-H$_2$O re-equilibration is indicated for replicates showing both elevated  $\Delta_{47,\,raw}$ and $\delta^{18}$O values. $\Delta_{47,\,CDES90}$ values of these samples plot outside the long-term repeatability interval characteristic of ETH-2 (0.2093±0.0017‰) in the absence of significant analytical bias [@Staudigel2025].\label{fig:example4}](figs/example4.pdf){ width=60% }
 
 ## Identifying isobaric interferences
 @Fiebig_2024 have recently shown that the presence of a few hundreds of ppb-quantities of NO$_2$ in the analyte CO$_2$ can introduce significant bias in measured $\Delta_{47}$ and $\Delta_{48}$ values measured by isotope-ratio mass-spectrometry.
@@ -183,7 +192,7 @@ Samples whose $\Delta_{47}$ and $\Delta_{48}$ values are significantly biased by
 The visualization capabilities of D4Xgui make identification of NO$_2$ and other isobaric interferents in $\Delta_{47}$/$\Delta_{48}$ and $\Delta_{48}$/$\Delta_{49}$ space straightforward, as affected data follows predicted deviation slopes [@Fiebig_2024].
 Compromised samples can, therefore, be reliably identified and mitigation strategies (that eliminate isobaric bias) easily be tested for their efficacy.
 
-![Demonstrative screenshot of the *Discover Results* page, showing compromised sample Dolomite_80-1 [@Bonifacie_2017; @Bernecker_2025], whose replicates show variable extents of NO$_2$ bias in their $\Delta_{47}$, $\Delta_{48}$ values.\label{fig:example5_new}](figs/example5_new.pdf){ width=45% }
+![Demonstrative screenshot of the *Discover Results* page, showing compromised sample Dolomite_80-1 [@Bonifacie_2017; @Bernecker_2025], whose replicates show variable extents of NO$_2$ bias in their $\Delta_{47}$, $\Delta_{48}$ values.\label{fig:example5_new}](figs/example5_new.pdf){ width=65% }
 
 # Statement of need
 D4Xgui represents a state-of-the-art processing tool for carbonate clumped isotope data processing.
@@ -191,34 +200,19 @@ This user-friendly, open-source tool provides a streamlined workflow for accurat
 The extensive graphical outputs facilitate data visualization and real-time assessment of data quality, all through an accessible interface that doesn't require prior programming knowledge.
 
 By providing a common platform for data processing and analysis, D4Xgui not only simplifies complex workflows but also promotes consistency and transparency in carbonate clumped isotope research.
-Developed using the flexible \href{https://streamlit.io}{Streamlit} framework, D4Xgui is designed to allow further community-driven customization.
+Developed using the flexible \href{https://streamlit.io}{Streamlit} framework[^4], D4Xgui is designed to allow further community-driven customization.
 Its modular plug&play architecture enables for easy integration of new features as the field of clumped isotope research steadily evolves.
 Planned future updates include the integration of an Application Programming Interface (API), which will enhance data management and enable script-based interaction with the database.
 Moreover, we are already working on the integration of Easotope databases, which will enable seamless integration of archived datasets.
 This addition will also ensure that data processed through D4Xgui adheres to the FAIR principles, promoting findability, accessibility, interoperability, and long-term data reuse across laboratories.
 
-The \href{https://github.com/mdaeron/D47crunch}{D47crunch} [@Daeron_D47crunch], \href{https://github.com/mdaeron/D47calib}{D47calib} [@Daeron_D47calib] and \href{https://github.com/mdaeron/OGLS}{OGLS} [@Daeron_OGLS] modules represent dependencies for our app, and are developed and actively maintained by Mathieu Daëron (daeron@lsce.ipsl.fr) at LSCE/IPSL Paris, France.
+The \href{https://github.com/mdaeron/D47crunch}{D47crunch} [@Daeron_D47crunch], \href{https://github.com/mdaeron/D47calib}{D47calib} [@Daeron_D47calib] and \href{https://github.com/mdaeron/OGLS}{OGLS}[^5] [@Daeron_OGLS] modules represent dependencies for our app, and are developed and actively maintained by Mathieu Daëron (daeron@lsce.ipsl.fr) at LSCE/IPSL Paris, France.
 
 \href{https://github.com/itsMig/D4Xgui}{D4Xgui} was developed as open-source Python module by Miguel Bernecker et al{.} (bernecker@em.uni-frankfurt.de), tested at Goethe University Frankfurt am Main, and already successfully utilized for peer-reviewed publications [@Arndt2025; @Ballian2025; @Bernecker_2023; @Bernecker_2025; @Staudigel_2023a; @Staudigel_2023b; @Staudigel_2024; @Staudigel2025; @Fiebig_2024; @Kniest_2024; @Davies_2022; @Davies_2023; @Meijer2025; @Meijers2025; @Schlidt2025; @Clark2025; @Peral2024; @Petrash2025].
 It is developed in \href{www.streamlit.io}{Streamlit}, a Python framework for fast browser-based app production, works on low-cost hardware, can be deployed locally or online, and is hosted as open-source project (https://github.com/itsMig/D4Xgui).
 
-
-
-
-
-# Citations
-
-Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
-
-If you want to cite a software repository URL (e.g. something on GitHub without a preferred
-citation) then you can do it with the example BibTeX entry below for @fidgit.
-
-For a quick reference, the following citation commands can be used:
-- `@author:2001`  ->  "Author et al. (2001)"
-- `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
+[^4]: https://streamlit.io
+[^5]: https://github.com/mdaeron/OGLS
 
 
 # Acknowledgements
