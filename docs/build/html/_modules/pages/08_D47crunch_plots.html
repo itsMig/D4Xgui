@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pages.08_D47crunch_plots &mdash; D4Xgui v1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=76e2d817"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            D4Xgui
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../01_Data_IO.html">01_Data_IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../03_Baseline_correction.html">03_Baseline_correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../04_Processing.html">04_Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../05_Standardization_Results.html">05_Standardization_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../06_Dual_Clumped_Space.html">06_Dual_Clumped_Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../07_Discover_Results.html">07_Discover_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../08_D47crunch_plots.html">08_D47crunch_plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../100_Save_and_Reload.html">100_Save_and_Reload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../97_Database_Management.html">97_Database_Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_Pysotope_fork.html">Pysotope_fork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_authenticator.html">authenticator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_calc_temperature.html">calc_temperature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_commons.html">commons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_database.html">database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_init_params.html">init_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_page_config.html">page_config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_sidebar_logo.html">sidebar_logo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">D4Xgui</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pages.08_D47crunch_plots</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pages.08_D47crunch_plots</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.authenticator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Authenticator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.page_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageConfigManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.sidebar_logo</span><span class="w"> </span><span class="kn">import</span> <span class="n">SidebarLogoManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.commons</span><span class="w"> </span><span class="kn">import</span> <span class="n">modify_text_label_sizes</span>
+
+
+<div class="viewcode-block" id="D47CrunchPlotsPage">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">D47CrunchPlotsPage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages the D47crunch plots page of the D4Xgui application.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the D47CrunchPlotsPage.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_page</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">()</span>
+
+<div class="viewcode-block" id="D47CrunchPlotsPage._setup_page">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage._setup_page">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up page configuration, logo, and authentication.&quot;&quot;&quot;</span>
+        <span class="n">page_config_manager</span> <span class="o">=</span> <span class="n">PageConfigManager</span><span class="p">()</span>
+        <span class="n">page_config_manager</span><span class="o">.</span><span class="n">configure_page</span><span class="p">(</span><span class="n">page_number</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        
+        <span class="n">logo_manager</span> <span class="o">=</span> <span class="n">SidebarLogoManager</span><span class="p">()</span>
+        <span class="n">logo_manager</span><span class="o">.</span><span class="n">add_logo</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;PYTEST_CURRENT_TEST&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">authenticator</span> <span class="o">=</span> <span class="n">Authenticator</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">authenticator</span><span class="o">.</span><span class="n">require_authentication</span><span class="p">():</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="D47CrunchPlotsPage._validate_data">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage._validate_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that required data is available in session state.&quot;&quot;&quot;</span>
+        <span class="c1"># Check for input data</span>
+        <span class="n">has_input_rep</span> <span class="o">=</span> <span class="s2">&quot;input_rep&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="n">has_input_intensities</span> <span class="o">=</span> <span class="s2">&quot;input_intensities&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_input_rep</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_input_intensities</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;Please provide input data to be processed!&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span><span class="s2">&quot;pages/01_Data_IO.py&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\rightarrow  \textit{Data-IO}$  page&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="c1"># Check for processing results</span>
+        <span class="k">if</span> <span class="s2">&quot;correction_output_summary&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;Please process your dataset to view D47crunch plots!&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span>
+                <span class="s2">&quot;pages/04_Processing.py&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\rightarrow  \textit</span><span class="si">{Processing}</span><span class="s2">$  page&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="D47CrunchPlotsPage._get_available_isotopes">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage._get_available_isotopes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_available_isotopes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of available isotopes based on processing parameters.&quot;&quot;&quot;</span>
+        <span class="n">isotopes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">isotope</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">49</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;process_D</span><span class="si">{</span><span class="n">isotope</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">isotopes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">isotope</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">isotopes</span></div>
+
+
+<div class="viewcode-block" id="D47CrunchPlotsPage._render_sidebar_controls">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage._render_sidebar_controls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_sidebar_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render sidebar controls for isotope selection and plot options.&quot;&quot;&quot;</span>
+        <span class="n">available_isotopes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_available_isotopes</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">available_isotopes</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No processed isotopes available!&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">radio</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$∆_i$&quot;</span><span class="p">,</span> 
+            <span class="n">options</span><span class="o">=</span><span class="n">available_isotopes</span><span class="p">,</span> 
+            <span class="n">key</span><span class="o">=</span><span class="s2">&quot;D47c_plots_mz&quot;</span>
+        <span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Shape filling&quot;</span><span class="p">,</span> 
+            <span class="n">key</span><span class="o">=</span><span class="s2">&quot;D47c_plots_shape&quot;</span><span class="p">,</span> 
+            <span class="n">value</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="D47CrunchPlotsPage._get_hover_data">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage._get_hover_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_hover_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">std_err_obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get hover data for sample names and timestamps.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            session: Session identifier</span>
+<span class="sd">            data_type: Either &#39;anchors&#39; or &#39;unknowns&#39;</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary containing sample names and timestamps for hover display</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hover_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sample_names&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;timestamps&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;UID&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+    
+        <span class="n">df_session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">[</span><span class="s1">&#39;Session&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">session</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;Timetag&#39;</span><span class="p">)</span>    
+        <span class="n">df_anchors_unknowns</span> <span class="o">=</span> <span class="n">df_session</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_session</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">D47c_plots_mz</span><span class="si">}</span><span class="s2">_standardization_error_</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])]</span>
+        <span class="n">hover_data</span><span class="p">[</span><span class="s2">&quot;sample_names&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_anchors_unknowns</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">hover_data</span><span class="p">[</span><span class="s2">&quot;UID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_anchors_unknowns</span><span class="p">[</span><span class="s1">&#39;UID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">hover_data</span><span class="p">[</span><span class="s2">&quot;timestamps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">df_anchors_unknowns</span><span class="p">[</span><span class="s1">&#39;Timetag&#39;</span><span class="p">]]</span>
+       
+        <span class="k">return</span> <span class="n">hover_data</span></div>
+
+
+<div class="viewcode-block" id="D47CrunchPlotsPage._get_standard_samples">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage._get_standard_samples">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_standard_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of standard sample names from session state.&quot;&quot;&quot;</span>
+        <span class="n">standards</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="s2">&quot;standards_nominal&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="s2">&quot;Fiebig2024 carb&quot;</span><span class="p">)</span>
+            <span class="n">isotope_key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">D47c_plots_mz</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">scale</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">standards_nominal</span> <span class="ow">and</span> <span class="n">isotope_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">standards_nominal</span><span class="p">[</span><span class="n">scale</span><span class="p">]:</span>
+                <span class="n">standards</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">standards_nominal</span><span class="p">[</span><span class="n">scale</span><span class="p">][</span><span class="n">isotope_key</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">standards</span></div>
+
+
+<div class="viewcode-block" id="D47CrunchPlotsPage._create_scatter_trace">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage._create_scatter_trace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_scatter_trace</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">x_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> 
+        <span class="n">y_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> 
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+        <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+        <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+        <span class="n">hover_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a scatter trace with enhanced hover information.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            x_data: X-axis data points</span>
+<span class="sd">            y_data: Y-axis data points</span>
+<span class="sd">            name: Trace name</span>
+<span class="sd">            color: Marker color</span>
+<span class="sd">            symbol: Marker symbol</span>
+<span class="sd">            hover_data: Optional hover data containing sample names and timestamps</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Plotly Scatter trace</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Prepare hover text</span>
+        <span class="n">hover_text</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Check if we have reliable hover data (both sample names and timestamps)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">hover_data</span> <span class="ow">and</span> 
+            <span class="n">hover_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sample_names&quot;</span><span class="p">)</span> <span class="ow">and</span> 
+            <span class="n">hover_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timestamps&quot;</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">hover_data</span><span class="p">[</span><span class="s2">&quot;sample_names&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_data</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">hover_data</span><span class="p">[</span><span class="s2">&quot;timestamps&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_data</span><span class="p">)):</span>
+            
+            <span class="c1"># We have matching data - create detailed hover text</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">UID</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
+                <span class="n">hover_data</span><span class="p">[</span><span class="s2">&quot;sample_names&quot;</span><span class="p">],</span> 
+                <span class="n">hover_data</span><span class="p">[</span><span class="s2">&quot;timestamps&quot;</span><span class="p">],</span>
+                <span class="n">hover_data</span><span class="p">[</span><span class="s2">&quot;UID&quot;</span><span class="p">]</span>
+            <span class="p">)):</span>
+                <span class="n">hover_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;UID: </span><span class="si">{</span><span class="n">UID</span><span class="si">}</span><span class="s2">&lt;br&gt;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Sample: </span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2">&lt;br&gt;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Timestamp: </span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&lt;br&gt;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;δ</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">D47c_plots_mz</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">x_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">‰&lt;br&gt;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;∆</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">D47c_plots_mz</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">y_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">‰&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use default hover with just coordinates and data type</span>
+            <span class="n">data_type_label</span> <span class="o">=</span> <span class="s2">&quot;Standard&quot;</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;anchors&quot;</span> <span class="k">else</span> <span class="s2">&quot;Sample&quot;</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">)):</span>
+                <span class="n">hover_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_type_label</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&lt;br&gt;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;δ</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">D47c_plots_mz</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">‰&lt;br&gt;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;∆</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">D47c_plots_mz</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">‰&quot;</span>
+                <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">x_data</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">),</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">hovertemplate</span><span class="o">=</span><span class="s2">&quot;%</span><span class="si">{text}</span><span class="s2">&lt;extra&gt;&lt;/extra&gt;&quot;</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">hover_text</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="D47CrunchPlotsPage._create_contour_plot">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage._create_contour_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_contour_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contour_data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Contour</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the contour plot for standardization error.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            contour_data: Contour data from session state</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Plotly Contour trace</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">go</span><span class="o">.</span><span class="n">Contour</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">contour_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">contour_data</span><span class="p">[</span><span class="mi">1</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">z</span><span class="o">=</span><span class="n">contour_data</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">colorscale</span><span class="o">=</span><span class="n">px</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">sequential</span><span class="o">.</span><span class="n">YlGnBu</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">:],</span>
+            <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">),</span>
+            <span class="n">contours</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="n">coloring</span><span class="o">=</span><span class="s2">&quot;heatmap&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">D47c_plots_shape</span> <span class="k">else</span> <span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+                <span class="n">showlabels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">labelfont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">),</span>
+            <span class="p">),</span>
+            <span class="n">colorbar</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Standardization error [‰]&quot;</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="D47CrunchPlotsPage._create_plot">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage._create_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mz</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">std_err_obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the complete standardization error plot.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            session: Session identifier</span>
+<span class="sd">            mz: Mass number (47, 48, or 49)</span>
+<span class="sd">            std_err_obj: Standardization error data object</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Complete Plotly figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create layout</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Standardization error including standards and sample data points&quot;</span><span class="p">,</span>
+            <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;δ&lt;sup&gt;</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&lt;/sup&gt; [‰]&quot;</span><span class="p">),</span>
+            <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;∆&lt;sub&gt;</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&lt;/sub&gt; [‰]&quot;</span><span class="p">),</span>
+            <span class="n">hoverlabel</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s2">&quot;sans-serif&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">18</span><span class="p">)),</span>
+        <span class="p">)</span>
+        
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+        
+        <span class="c1"># Add contour plot</span>
+        <span class="n">contour_data</span> <span class="o">=</span> <span class="n">std_err_obj</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">_standardization_error_</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_contour&quot;</span><span class="p">]</span>
+        <span class="n">contour_trace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_contour_plot</span><span class="p">(</span><span class="n">contour_data</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">contour_trace</span><span class="p">)</span>
+        
+        <span class="c1"># Add anchors (standards) scatter plot</span>
+        <span class="n">anchors_x</span> <span class="o">=</span> <span class="n">std_err_obj</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">_standardization_error_</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_anchors_d&quot;</span><span class="p">]</span>
+        <span class="n">anchors_y</span> <span class="o">=</span> <span class="n">std_err_obj</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">_standardization_error_</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_anchors_D&quot;</span><span class="p">]</span>
+        <span class="n">anchors_hover</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hover_data</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="s2">&quot;anchors&quot;</span><span class="p">,</span> <span class="n">std_err_obj</span><span class="p">)</span>
+        
+        
+        <span class="n">anchors_trace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_scatter_trace</span><span class="p">(</span>
+            <span class="n">anchors_x</span><span class="p">,</span> <span class="n">anchors_y</span><span class="p">,</span> <span class="s2">&quot;anchors&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;circle&quot;</span><span class="p">,</span> <span class="n">anchors_hover</span>
+        <span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">anchors_trace</span><span class="p">)</span>
+        
+        <span class="c1"># Add unknowns scatter plot</span>
+        <span class="n">unknowns_x</span> <span class="o">=</span> <span class="n">std_err_obj</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">_standardization_error_</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_unknowns_d&quot;</span><span class="p">]</span>
+        <span class="n">unknowns_y</span> <span class="o">=</span> <span class="n">std_err_obj</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">_standardization_error_</span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">_unknowns_D&quot;</span><span class="p">]</span>
+        <span class="n">unknowns_hover</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hover_data</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="s2">&quot;unknowns&quot;</span><span class="p">,</span> <span class="n">std_err_obj</span><span class="p">)</span>
+        
+        <span class="n">unknowns_trace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_scatter_trace</span><span class="p">(</span>
+            <span class="n">unknowns_x</span><span class="p">,</span> <span class="n">unknowns_y</span><span class="p">,</span> <span class="s2">&quot;unknowns&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">unknowns_hover</span>
+        <span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">unknowns_trace</span><span class="p">)</span>
+        
+        <span class="c1"># Apply text size modifications</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">modify_text_label_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="D47CrunchPlotsPage._get_standardization_error_data">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage._get_standardization_error_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_standardization_error_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get standardization error data from session state.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary containing standardization error data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">selected_mz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">D47c_plots_mz</span>
+        <span class="n">std_err_obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> 
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> 
+            <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">selected_mz</span><span class="si">}</span><span class="s2">_standardization_error_&quot;</span> <span class="ow">in</span> <span class="n">key</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">std_err_obj</span></div>
+
+
+<div class="viewcode-block" id="D47CrunchPlotsPage.run">
+<a class="viewcode-back" href="../../08_D47crunch_plots.html#pages.08_D47crunch_plots.D47CrunchPlotsPage.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the main application page.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;D47crunch Plots&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Render sidebar controls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_sidebar_controls</span><span class="p">()</span>
+        
+        <span class="c1"># Get standardization error data</span>
+        <span class="n">std_err_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_standardization_error_data</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">std_err_obj</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No standardization error data available for the selected isotope.&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        
+        <span class="c1"># Get processing sessions</span>
+        <span class="n">sessions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;processing_sessions&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">selected_mz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">D47c_plots_mz</span>
+        
+        <span class="c1"># Display plots for each session</span>
+        <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;process_D</span><span class="si">{</span><span class="n">selected_mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="c1"># Filter data for this session</span>
+                <span class="n">session_err_obj</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">std_err_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> 
+                    <span class="k">if</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">key</span>
+                <span class="p">}</span>
+                
+                <span class="k">if</span> <span class="n">session_err_obj</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Session </span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">expanded</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_plot</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">selected_mz</span><span class="p">,</span> <span class="n">session_err_obj</span><span class="p">)</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">D47CrunchPlotsPage</span><span class="p">()</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Miguel Bernecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

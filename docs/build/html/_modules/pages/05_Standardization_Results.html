@@ -1,0 +1,1131 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pages.05_Standardization_Results &mdash; D4Xgui v1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=76e2d817"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            D4Xgui
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../01_Data_IO.html">01_Data_IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../03_Baseline_correction.html">03_Baseline_correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../04_Processing.html">04_Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../05_Standardization_Results.html">05_Standardization_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../06_Dual_Clumped_Space.html">06_Dual_Clumped_Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../07_Discover_Results.html">07_Discover_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../08_D47crunch_plots.html">08_D47crunch_plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../100_Save_and_Reload.html">100_Save_and_Reload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../97_Database_Management.html">97_Database_Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_Pysotope_fork.html">Pysotope_fork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_authenticator.html">authenticator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_calc_temperature.html">calc_temperature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_commons.html">commons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_database.html">database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_init_params.html">init_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_page_config.html">page_config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_sidebar_logo.html">sidebar_logo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">D4Xgui</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pages.05_Standardization_Results</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pages.05_Standardization_Results</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">linregress</span><span class="p">,</span> <span class="n">t</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.page_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_page_config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">sidebar_logo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.commons</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotParameters</span><span class="p">,</span> <span class="n">modify_plot_text_sizes</span>
+
+<span class="c1"># Configure page</span>
+<span class="n">set_page_config</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Add logo</span>
+<span class="n">sidebar_logo</span><span class="o">.</span><span class="n">add_logo</span><span class="p">()</span>
+
+<span class="c1"># Authentication check</span>
+<span class="k">if</span> <span class="s2">&quot;PYTEST_CURRENT_TEST&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">authenticator</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">authenticator</span><span class="o">.</span><span class="n">check_password</span><span class="p">():</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="DataFilter">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.DataFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataFilter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles filtering of DataFrame data based on sample name patterns.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span>
+    
+<div class="viewcode-block" id="DataFilter.apply_filters">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.DataFilter.apply_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Sample&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply include/exclude filters to DataFrame based on sample names.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df: DataFrame to filter</span>
+<span class="sd">            column: Column name to apply filters on</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Filtered DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="c1"># Apply include filter</span>
+        <span class="n">include_keywords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter_keywords</span><span class="p">(</span><span class="s2">&quot;05_sample_contains&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">include_keywords</span><span class="p">:</span>
+            <span class="n">filtered_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_include_samples</span><span class="p">(</span><span class="n">filtered_df</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">include_keywords</span><span class="p">)</span>
+        
+        <span class="c1"># Apply exclude filter</span>
+        <span class="n">exclude_keywords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter_keywords</span><span class="p">(</span><span class="s2">&quot;05_sample_not_contains&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">exclude_keywords</span><span class="p">:</span>
+            <span class="n">filtered_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_samples</span><span class="p">(</span><span class="n">filtered_df</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">exclude_keywords</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">filtered_df</span></div>
+
+    
+<div class="viewcode-block" id="DataFilter._get_filter_keywords">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.DataFilter._get_filter_keywords">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_filter_keywords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract filter keywords from session state.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">keyword</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">keyword</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+    
+<div class="viewcode-block" id="DataFilter._include_samples">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.DataFilter._include_samples">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_include_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">keywords</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Include samples containing any of the specified keywords.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">any</span><span class="p">(</span><span class="n">keyword</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">))]</span></div>
+
+    
+<div class="viewcode-block" id="DataFilter._exclude_samples">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.DataFilter._exclude_samples">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_exclude_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">keywords</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exclude samples containing any of the specified keywords.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">any</span><span class="p">(</span><span class="n">keyword</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">))]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PlotGenerator">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PlotGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates various plots for standardization results visualization.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">symbols</span> <span class="o">=</span> <span class="n">PlotParameters</span><span class="o">.</span><span class="n">SYMBOLS</span>
+    
+<div class="viewcode-block" id="PlotGenerator.to_subscript">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator.to_subscript">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_subscript</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number_str</span><span class="p">):</span>
+        <span class="n">subscript_map</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="s2">&quot;0123456789&quot;</span><span class="p">,</span> <span class="s2">&quot;₀₁₂₃₄₅₆₇₈₉&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">number_str</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">subscript_map</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PlotGenerator.create_delta_plot">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator.create_delta_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_delta_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_data</span><span class="p">,</span> <span class="n">standards_list</span><span class="p">,</span> <span class="n">show_residuals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create delta isotope plots (D47, D48, D49).</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df_data: DataFrame containing the data</span>
+<span class="sd">            standards_list: List of standards or samples to plot</span>
+<span class="sd">            show_residuals: Whether to show residuals or absolute values</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Plotly figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mz</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">result_mz</span><span class="p">)</span>
+        <span class="n">plotting_sessions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plotting_sessions</span><span class="p">(</span><span class="n">standards_list</span><span class="p">)</span>
+        <span class="n">df_filtered</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="n">df_data</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">plotting_sessions</span><span class="p">)]</span>
+        
+        <span class="c1"># Setup plot</span>
+        <span class="n">y_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;∆∆</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">to_subscript</span><span class="p">(</span><span class="n">mz</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">show_residuals</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;∆</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">to_subscript</span><span class="p">(</span><span class="n">mz</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">]</span>
+        
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+            <span class="n">xaxis_title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="p">,</span>
+            <span class="n">yaxis_title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">y_label</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">scale</span><span class="si">}</span><span class="s2">) [‰]&quot;</span><span class="p">,</span>
+            <span class="n">legend_title</span><span class="o">=</span><span class="s2">&quot;Samples&quot;</span><span class="p">,</span>
+            <span class="n">hoverlabel</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s2">&quot;sans-serif&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">18</span><span class="p">)),</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">600</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Track residuals for confidence intervals</span>
+        <span class="n">residuals_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">degrees_freedom</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">has_data</span> <span class="o">=</span> <span class="kc">False</span>
+        
+        <span class="c1"># Plot each standard/sample</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">sample_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">standards_list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">sample_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df_filtered</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+                <span class="k">continue</span>
+                
+            <span class="n">has_data</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">sample_df</span> <span class="o">=</span> <span class="n">df_filtered</span><span class="p">[</span><span class="n">df_filtered</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">sample_name</span><span class="p">]</span>
+            
+            <span class="c1"># Calculate y-values</span>
+            <span class="k">if</span> <span class="n">show_residuals</span><span class="p">:</span>
+                <span class="n">y_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">sample_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_df</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">degrees_freedom</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_values</span><span class="p">)</span>
+                    <span class="n">residuals_data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">y_values</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y_values</span> <span class="o">=</span> <span class="n">sample_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+            
+            <span class="c1"># Add scatter trace</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_scatter_trace</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">sample_df</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">mz</span><span class="p">)</span>
+            
+            <span class="c1"># Add reference lines for standards</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">show_residuals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_standard</span><span class="p">(</span><span class="n">sample_name</span><span class="p">,</span> <span class="n">mz</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_reference_line</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">sample_df</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">mz</span><span class="p">)</span>
+        
+        <span class="c1"># Add confidence interval lines for residuals</span>
+        <span class="k">if</span> <span class="n">show_residuals</span> <span class="ow">and</span> <span class="n">residuals_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_confidence_intervals</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">df_filtered</span><span class="p">,</span> <span class="n">residuals_data</span><span class="p">,</span> <span class="n">degrees_freedom</span><span class="p">)</span>
+        
+        <span class="c1"># Add session interval lines</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span> <span class="o">==</span> <span class="s2">&quot;Timetag&quot;</span> <span class="ow">and</span> <span class="n">has_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_session_intervals</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_plot_styling</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator.create_bulk_isotope_plot">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator.create_bulk_isotope_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_bulk_isotope_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_data</span><span class="p">,</span> <span class="n">standards_list</span><span class="p">,</span> <span class="n">show_residuals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+                               <span class="n">over_time</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">bulk_isotope</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create bulk isotope plots (δ18O vs δ13C or over time).</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df_data: DataFrame containing the data</span>
+<span class="sd">            standards_list: List of standards or samples to plot</span>
+<span class="sd">            show_residuals: Whether to show residuals</span>
+<span class="sd">            over_time: Whether to plot over time</span>
+<span class="sd">            bulk_isotope: &quot;13&quot; or &quot;18&quot; for specific isotope when over_time=True</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Plotly figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plotting_sessions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plotting_sessions</span><span class="p">(</span><span class="n">standards_list</span><span class="p">)</span>
+        <span class="n">df_filtered</span> <span class="o">=</span> <span class="n">df_data</span><span class="p">[</span><span class="n">df_data</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">plotting_sessions</span><span class="p">)]</span>
+        
+        <span class="c1"># Determine axis labels</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;∆&quot;</span> <span class="k">if</span> <span class="n">show_residuals</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">over_time</span><span class="p">:</span>
+            <span class="n">x_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span>
+            <span class="k">if</span> <span class="n">bulk_isotope</span> <span class="o">==</span> <span class="s2">&quot;13&quot;</span><span class="p">:</span>
+                <span class="n">y_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">δ¹³C VPDB [‰]&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">δ¹⁸O VSMOW [‰]&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">δ¹⁸O VSMOW [‰]&quot;</span>
+            <span class="n">y_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">δ¹³C VPDB [‰]&quot;</span>
+        
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+            <span class="n">xaxis_title</span><span class="o">=</span><span class="n">x_label</span><span class="p">,</span>
+            <span class="n">yaxis_title</span><span class="o">=</span><span class="n">y_label</span><span class="p">,</span>
+            <span class="n">hoverlabel</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s2">&quot;sans-serif&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">18</span><span class="p">)),</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">600</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Track residual ranges for session lines</span>
+        <span class="n">residual_min</span><span class="p">,</span> <span class="n">residual_max</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">0</span>
+        
+        <span class="c1"># Plot each sample</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">sample_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">standards_list</span><span class="p">):</span>
+            <span class="n">sample_df</span> <span class="o">=</span> <span class="n">df_filtered</span><span class="p">[</span><span class="n">df_filtered</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">sample_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">sample_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="k">continue</span>
+            
+            <span class="c1"># Calculate x and y values</span>
+            <span class="n">x_vals</span><span class="p">,</span> <span class="n">y_vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_bulk_coordinates</span><span class="p">(</span>
+                <span class="n">sample_df</span><span class="p">,</span> <span class="n">show_residuals</span><span class="p">,</span> <span class="n">over_time</span><span class="p">,</span> <span class="n">bulk_isotope</span>
+            <span class="p">)</span>
+            
+            <span class="c1"># Update residual ranges</span>
+            <span class="k">if</span> <span class="n">show_residuals</span> <span class="ow">and</span> <span class="n">over_time</span><span class="p">:</span>
+                <span class="n">residual_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">residual_min</span><span class="p">,</span> <span class="n">y_vals</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+                <span class="n">residual_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">residual_max</span><span class="p">,</span> <span class="n">y_vals</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+            
+            <span class="c1"># Create marker configuration</span>
+            <span class="n">marker_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_marker_config</span><span class="p">(</span><span class="n">df_filtered</span><span class="p">,</span> <span class="n">sample_df</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+            
+            <span class="c1"># Add scatter trace</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_bulk_scatter_trace</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">x_vals</span><span class="p">,</span> <span class="n">y_vals</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> 
+                                       <span class="n">sample_df</span><span class="p">,</span> <span class="n">marker_config</span><span class="p">)</span>
+        
+        <span class="c1"># Add session intervals for time plots</span>
+        <span class="k">if</span> <span class="n">over_time</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span> <span class="o">==</span> <span class="s2">&quot;Timetag&quot;</span><span class="p">:</span>
+            <span class="n">y_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">residual_min</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">)</span> <span class="k">if</span> <span class="n">show_residuals</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_session_intervals_bulk</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">df_filtered</span><span class="p">,</span> <span class="n">y_range</span><span class="p">)</span>
+        
+        <span class="c1"># Apply color bar layout if enabled</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;05_cbar&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_colorbar_layout</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_plot_styling</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator.create_heated_gas_line_plot">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator.create_heated_gas_line_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_heated_gas_line_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gas_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create heated gas line plot with linear regression.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            gas_name: Name of the gas standard (e.g., &#39;25C&#39;, &#39;1000C&#39;)</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (Plotly figure, regression equation string)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">result_mz</span>
+        <span class="n">df_full</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">correction_output_full_dataset</span>
+        
+        <span class="c1"># Filter data</span>
+        <span class="n">df_filtered</span> <span class="o">=</span> <span class="n">df_full</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">df_full</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">plotting_sessions</span><span class="p">))</span> <span class="o">&amp;</span>
+            <span class="p">(</span><span class="n">df_full</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">gas_name</span><span class="p">)</span>
+        <span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">df_filtered</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(),</span> <span class="s2">&quot;No data available&quot;</span>
+        
+        <span class="c1"># Setup plot</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">]</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+            <span class="n">xaxis_title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;δ</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2"> [‰]&quot;</span><span class="p">,</span>
+            <span class="n">yaxis_title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;∆</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">to_subscript</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">mz</span><span class="p">))</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">scale</span><span class="si">}</span><span class="s2"> [‰]&quot;</span><span class="p">,</span>
+            <span class="n">hoverlabel</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">16</span><span class="p">),</span>
+            <span class="n">legend</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Add scatter plot</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span> <span class="k">if</span> <span class="n">gas_name</span> <span class="o">==</span> <span class="s2">&quot;1000C&quot;</span> <span class="k">else</span> <span class="s2">&quot;blue&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_gas_scatter_trace</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">df_filtered</span><span class="p">,</span> <span class="n">gas_name</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">mz</span><span class="p">)</span>
+        
+        <span class="c1"># Perform linear regression</span>
+        <span class="n">x_data</span> <span class="o">=</span> <span class="n">df_filtered</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">delta</span><span class="p">]</span>
+        <span class="n">y_data</span> <span class="o">=</span> <span class="n">df_filtered</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">Delta</span><span class="p">]</span>
+        <span class="n">regression_result</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">)</span>
+        
+        <span class="c1"># Add regression line</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_regression_line</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">x_data</span><span class="p">,</span> <span class="n">regression_result</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        
+        <span class="c1"># Create equation string and annotation</span>
+        <span class="n">equation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_regression_equation</span><span class="p">(</span><span class="n">regression_result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_regression_annotation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">equation</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">equation</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._get_plotting_sessions">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._get_plotting_sessions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_plotting_sessions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">standards_list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of sessions to plot.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">standards_list</span><span class="p">,</span> <span class="s1">&#39;unique&#39;</span><span class="p">):</span>  <span class="c1"># It&#39;s a pandas Series/Index</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;plotting_sessions&#39;</span><span class="p">,</span> <span class="n">standards_list</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;plotting_sessions&#39;</span><span class="p">,</span> <span class="p">[])</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._add_scatter_trace">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._add_scatter_trace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_scatter_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">sample_df</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">mz</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add scatter trace to delta plot.&quot;&quot;&quot;</span>
+        <span class="n">hover_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_hover_text</span><span class="p">(</span><span class="n">sample_df</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">mz</span><span class="p">)</span>
+        
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">sample_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">y_values</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">sample_name</span><span class="p">,</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+            <span class="n">legendgroup</span><span class="o">=</span><span class="n">sample_name</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">symbol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">symbols</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">hover_text</span><span class="p">,</span>
+            <span class="n">textfont_size</span><span class="o">=</span><span class="mi">15</span>
+        <span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._add_reference_line">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._add_reference_line">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_reference_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">sample_df</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">mz</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add reference line for standard values.&quot;&quot;&quot;</span>
+        <span class="n">standards</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;standards_nominal&quot;</span><span class="p">]</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">sample_name</span> <span class="ow">in</span> <span class="n">standards</span><span class="p">[</span><span class="n">scale</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">mz</span><span class="p">)]:</span>
+            <span class="n">reference_value</span> <span class="o">=</span> <span class="n">standards</span><span class="p">[</span><span class="n">scale</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">mz</span><span class="p">)][</span><span class="n">sample_name</span><span class="p">]</span>
+            <span class="n">x_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">sample_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> 
+                      <span class="n">sample_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+            
+            <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">x_range</span><span class="p">,</span>
+                <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">reference_value</span><span class="p">,</span> <span class="n">reference_value</span><span class="p">],</span>
+                <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+                <span class="n">legendgroup</span><span class="o">=</span><span class="n">sample_name</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._add_confidence_intervals">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._add_confidence_intervals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_confidence_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">df_filtered</span><span class="p">,</span> <span class="n">residuals_data</span><span class="p">,</span> <span class="n">degrees_freedom</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add 95% confidence interval lines for residuals.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">degrees_freedom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">student_t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.975</span><span class="p">,</span> <span class="n">degrees_freedom</span><span class="p">)</span>
+            <span class="n">confidence_95</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">residuals_data</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">*</span> <span class="n">student_t</span>
+            
+            <span class="n">x_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">df_filtered</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+                      <span class="n">df_filtered</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+            
+            <span class="k">for</span> <span class="n">ci_value</span> <span class="ow">in</span> <span class="p">[</span><span class="n">confidence_95</span><span class="p">,</span> <span class="o">-</span><span class="n">confidence_95</span><span class="p">]:</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">x_range</span><span class="p">,</span>
+                    <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">ci_value</span><span class="p">,</span> <span class="n">ci_value</span><span class="p">],</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+                    <span class="n">line_color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+                    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;95% CI = ±</span><span class="si">{</span><span class="n">confidence_95</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._add_session_intervals">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._add_session_intervals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_session_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add vertical lines for session intervals.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="p">,</span> <span class="s1">&#39;session_intervals&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+        
+        <span class="n">shapes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">session_intervals</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">session_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">plotting_sessions</span><span class="p">:</span>
+                <span class="k">continue</span>
+            
+            <span class="c1"># Add start and end lines</span>
+            <span class="k">for</span> <span class="n">time_point</span> <span class="ow">in</span> <span class="p">[</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">]:</span>
+                <span class="n">shapes</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;line&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;xref&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;yref&quot;</span><span class="p">:</span> <span class="s2">&quot;paper&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;y0&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;y1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="s2">&quot;x0&quot;</span><span class="p">:</span> <span class="n">time_point</span><span class="p">,</span>
+                    <span class="s2">&quot;x1&quot;</span><span class="p">:</span> <span class="n">time_point</span><span class="p">,</span>
+                    <span class="s2">&quot;line&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;rgb(55, 128, 191)&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+                <span class="p">})</span>
+        
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">shapes</span><span class="o">=</span><span class="n">shapes</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._calculate_bulk_coordinates">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._calculate_bulk_coordinates">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_bulk_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_df</span><span class="p">,</span> <span class="n">show_residuals</span><span class="p">,</span> <span class="n">over_time</span><span class="p">,</span> <span class="n">bulk_isotope</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate x and y coordinates for bulk isotope plots.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">show_residuals</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">over_time</span><span class="p">:</span>
+                <span class="n">x_vals</span> <span class="o">=</span> <span class="n">sample_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">bulk_isotope</span> <span class="o">==</span> <span class="s2">&quot;13&quot;</span><span class="p">:</span>
+                    <span class="n">y_vals</span> <span class="o">=</span> <span class="n">sample_df</span><span class="p">[</span><span class="s2">&quot;d13C_VPDB&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">sample_df</span><span class="p">[</span><span class="s2">&quot;d13C_VPDB&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">y_vals</span> <span class="o">=</span> <span class="n">sample_df</span><span class="p">[</span><span class="s2">&quot;d18O_VSMOW&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">sample_df</span><span class="p">[</span><span class="s2">&quot;d18O_VSMOW&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x_vals</span> <span class="o">=</span> <span class="n">sample_df</span><span class="p">[</span><span class="s2">&quot;d18O_VSMOW&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">sample_df</span><span class="p">[</span><span class="s2">&quot;d18O_VSMOW&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                <span class="n">y_vals</span> <span class="o">=</span> <span class="n">sample_df</span><span class="p">[</span><span class="s2">&quot;d13C_VPDB&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">sample_df</span><span class="p">[</span><span class="s2">&quot;d13C_VPDB&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x_vals</span> <span class="o">=</span> <span class="n">sample_df</span><span class="p">[</span><span class="s2">&quot;d18O_VSMOW&quot;</span><span class="p">]</span>
+            <span class="n">y_vals</span> <span class="o">=</span> <span class="n">sample_df</span><span class="p">[</span><span class="s2">&quot;d13C_VPDB&quot;</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">x_vals</span><span class="p">,</span> <span class="n">y_vals</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._create_marker_config">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._create_marker_config">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_marker_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_filtered</span><span class="p">,</span> <span class="n">sample_df</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create marker configuration for bulk isotope plots.&quot;&quot;&quot;</span>
+        <span class="n">base_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">symbol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">symbols</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;05_cbar&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">z_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;05_dd_zaxis&quot;</span><span class="p">,</span> <span class="s2">&quot;D47&quot;</span><span class="p">)</span>
+            <span class="n">base_config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s2">&quot;showscale&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;cmax&quot;</span><span class="p">:</span> <span class="n">df_filtered</span><span class="p">[</span><span class="n">z_axis</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+                <span class="s2">&quot;cmin&quot;</span><span class="p">:</span> <span class="n">df_filtered</span><span class="p">[</span><span class="n">z_axis</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+                <span class="s2">&quot;colorbar&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">z_axis</span><span class="p">},</span>
+                <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">sample_df</span><span class="p">[</span><span class="n">z_axis</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                <span class="s2">&quot;colorscale&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;rgba(204, 121, 167, 1)&quot;</span><span class="p">],</span>    <span class="c1"># Reddish Purple</span>
+                    <span class="p">[</span><span class="mf">0.28</span><span class="p">,</span> <span class="s2">&quot;rgba(213, 94, 0, 1)&quot;</span><span class="p">],</span>    <span class="c1"># Vermilion</span>
+                    <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="s2">&quot;rgba(0, 158, 115, 1)&quot;</span><span class="p">],</span>    <span class="c1"># Green</span>
+                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;rgba(86, 180, 233, 1)&quot;</span><span class="p">]</span>      <span class="c1"># Sky Blue</span>
+                <span class="p">]</span>
+            <span class="p">})</span>
+        
+        <span class="k">return</span> <span class="n">base_config</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._add_bulk_scatter_trace">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._add_bulk_scatter_trace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_bulk_scatter_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">x_vals</span><span class="p">,</span> <span class="n">y_vals</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">sample_df</span><span class="p">,</span> <span class="n">marker_config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add scatter trace for bulk isotope plots.&quot;&quot;&quot;</span>
+        <span class="n">mz</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">result_mz</span><span class="p">)</span>
+        <span class="n">hover_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_hover_text</span><span class="p">(</span><span class="n">sample_df</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">mz</span><span class="p">)</span>
+        
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">x_vals</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">y_vals</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">sample_name</span><span class="p">,</span>
+            <span class="n">legendgroup</span><span class="o">=</span><span class="n">sample_name</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="n">marker_config</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">hover_text</span><span class="p">,</span>
+            <span class="n">hoverlabel</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s2">&quot;sans-serif&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">18</span><span class="p">))</span>
+        <span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._add_session_intervals_bulk">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._add_session_intervals_bulk">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_session_intervals_bulk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">df_filtered</span><span class="p">,</span> <span class="n">y_range</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add session interval lines for bulk isotope plots.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="p">,</span> <span class="s1">&#39;session_intervals&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+        
+        <span class="c1"># Determine y-range</span>
+        <span class="k">if</span> <span class="n">y_range</span><span class="p">:</span>
+            <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">y_range</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mz</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">result_mz</span><span class="p">)</span>
+            <span class="n">y_min</span> <span class="o">=</span> <span class="n">df_filtered</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">y_max</span> <span class="o">=</span> <span class="n">df_filtered</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">session_intervals</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">session_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">plotting_sessions</span><span class="p">:</span>
+                <span class="k">continue</span>
+            
+            <span class="c1"># Add start and end lines</span>
+            <span class="k">for</span> <span class="n">time_point</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">start_time</span><span class="p">,</span> <span class="s2">&quot;Begin&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">end_time</span><span class="p">,</span> <span class="s2">&quot;End&quot;</span><span class="p">)]:</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                    <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">time_point</span><span class="p">,</span> <span class="n">time_point</span><span class="p">],</span>
+                    <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">],</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+                    <span class="n">line_color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+                    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Session: </span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2">&lt;br&gt;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">time_point</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._apply_colorbar_layout">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._apply_colorbar_layout">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_colorbar_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply layout adjustments for colorbar.&quot;&quot;&quot;</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+            <span class="n">legend</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span>
+                <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;v&quot;</span><span class="p">,</span>
+                <span class="n">yanchor</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+                <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">xanchor</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span>
+                <span class="n">x</span><span class="o">=-</span><span class="mf">0.1</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._add_gas_scatter_trace">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._add_gas_scatter_trace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_gas_scatter_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">df_filtered</span><span class="p">,</span> <span class="n">gas_name</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">mz</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add scatter trace for heated gas line plot.&quot;&quot;&quot;</span>
+        <span class="n">hover_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_hover_text</span><span class="p">(</span><span class="n">df_filtered</span><span class="p">,</span> <span class="n">gas_name</span><span class="p">,</span> <span class="n">mz</span><span class="p">)</span>
+        
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">df_filtered</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">delta</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">df_filtered</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">Delta</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">gas_name</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">hover_text</span>
+        <span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._add_regression_line">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._add_regression_line">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_regression_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">x_data</span><span class="p">,</span> <span class="n">regression_result</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add regression line to heated gas plot.&quot;&quot;&quot;</span>
+        <span class="c1"># Calculate confidence intervals</span>
+        <span class="n">degrees_freedom</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_data</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>
+        <span class="n">t_value</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.025</span><span class="p">,</span> <span class="n">degrees_freedom</span><span class="p">))</span>  <span class="c1"># 95% confidence</span>
+        
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">regression_result</span><span class="o">.</span><span class="n">intercept</span> <span class="o">+</span> <span class="n">regression_result</span><span class="o">.</span><span class="n">slope</span> <span class="o">*</span> <span class="n">x_data</span>
+        
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">x_data</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">y_pred</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+            <span class="n">line_color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Slope (95%): </span><span class="si">{</span><span class="n">regression_result</span><span class="o">.</span><span class="n">slope</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;±</span><span class="si">{</span><span class="n">t_value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">regression_result</span><span class="o">.</span><span class="n">stderr</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;Intercept (95%): </span><span class="si">{</span><span class="n">regression_result</span><span class="o">.</span><span class="n">intercept</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;±</span><span class="si">{</span><span class="n">t_value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">regression_result</span><span class="o">.</span><span class="n">intercept_stderr</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._format_regression_equation">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._format_regression_equation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_regression_equation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regression_result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format regression equation with scientific notation.&quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_scientific_html</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Convert number to scientific notation HTML.&quot;&quot;&quot;</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">num</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">)</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">exponent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base</span><span class="si">}</span><span class="s2"> × 10&lt;sup&gt;</span><span class="si">{</span><span class="n">exponent</span><span class="si">}</span><span class="s2">&lt;/sup&gt;&quot;</span>
+        
+        <span class="n">slope_str</span> <span class="o">=</span> <span class="n">to_scientific_html</span><span class="p">(</span><span class="n">regression_result</span><span class="o">.</span><span class="n">slope</span><span class="p">)</span>
+        <span class="n">slope_err_str</span> <span class="o">=</span> <span class="n">to_scientific_html</span><span class="p">(</span><span class="n">regression_result</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="n">intercept_str</span> <span class="o">=</span> <span class="n">to_scientific_html</span><span class="p">(</span><span class="n">regression_result</span><span class="o">.</span><span class="n">intercept</span><span class="p">)</span>
+        <span class="n">intercept_err_str</span> <span class="o">=</span> <span class="n">to_scientific_html</span><span class="p">(</span><span class="n">regression_result</span><span class="o">.</span><span class="n">intercept_stderr</span><span class="p">)</span>
+        
+        <span class="n">sign</span> <span class="o">=</span> <span class="s2">&quot;+&quot;</span> <span class="k">if</span> <span class="n">regression_result</span><span class="o">.</span><span class="n">intercept</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;f(x) = (</span><span class="si">{</span><span class="n">slope_str</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">slope_err_str</span><span class="si">}</span><span class="s2">)x &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sign</span><span class="si">}{</span><span class="n">intercept_str</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">intercept_err_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._add_regression_annotation">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._add_regression_annotation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_regression_annotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">equation</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add regression equation annotation to plot.&quot;&quot;&quot;</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_annotation</span><span class="p">(</span>
+            <span class="n">xref</span><span class="o">=</span><span class="s2">&quot;paper&quot;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s2">&quot;paper&quot;</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.06</span><span class="p">,</span>
+            <span class="n">showarrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&lt;b&gt;</span><span class="si">{</span><span class="n">equation</span><span class="si">}</span><span class="s2">&lt;/b&gt;&quot;</span><span class="p">,</span>
+            <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._create_hover_text">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._create_hover_text">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_hover_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_df</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">mz</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create hover text for data points.&quot;&quot;&quot;</span>
+        <span class="n">xval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">]</span>
+        
+        <span class="n">hover_texts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sample_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">x_val</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">xval</span><span class="p">]</span>
+            <span class="n">x_display</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x_val</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ‰&quot;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">x_val</span><span class="p">)</span>
+            
+            <span class="n">text</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sample_name</span><span class="si">}</span><span class="s2">&lt;br&gt;&quot;</span>
+                   <span class="sa">f</span><span class="s2">&quot;UID=</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;UID&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;br&gt;&quot;</span>
+                   <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">xval</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">x_display</span><span class="si">}</span><span class="s2">&lt;br&gt;&quot;</span>
+                   <span class="sa">f</span><span class="s2">&quot;∆</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">to_subscript</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">mz</span><span class="p">))</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">scale</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ‰&lt;br&gt;&quot;</span>
+                   <span class="sa">f</span><span class="s2">&quot;δ¹⁸O_VSMOW(CO₂)=</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;d18O_VSMOW&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ‰&lt;br&gt;&quot;</span>
+                   <span class="sa">f</span><span class="s2">&quot;δ¹³C_VPDB=</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;d13C_VPDB&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ‰&quot;</span><span class="p">)</span>
+            <span class="n">hover_texts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">hover_texts</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._is_standard">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._is_standard">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_standard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">mz</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if sample is a standard.&quot;&quot;&quot;</span>
+        <span class="n">standards</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;standards_nominal&quot;</span><span class="p">]</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">sample_name</span> <span class="ow">in</span> <span class="n">standards</span><span class="p">[</span><span class="n">scale</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">mz</span><span class="p">)]</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._apply_plot_styling">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.PlotGenerator._apply_plot_styling">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_plot_styling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply consistent styling to plots.&quot;&quot;&quot;</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">textfont_size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="StandardizationResultsPage">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StandardizationResultsPage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main class for the Standardization Results page.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the page with required components.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_filter</span> <span class="o">=</span> <span class="n">DataFilter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span> <span class="o">=</span> <span class="n">PlotGenerator</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_page</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_session_state</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="StandardizationResultsPage._setup_page">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._setup_page">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up page configuration and sidebar controls.&quot;&quot;&quot;</span>
+        <span class="c1"># Page title</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;## Stable and clumped isotope results&quot;</span><span class="p">)</span></div>
+
+        
+        <span class="c1"># Sidebar filters</span>
+        <span class="c1">#self._render_sidebar_filters()</span>
+    
+<div class="viewcode-block" id="StandardizationResultsPage._initialize_session_state">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._initialize_session_state">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize_session_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize session state variables with defaults.&quot;&quot;&quot;</span>
+        <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;05_sample_contains&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;05_sample_not_contains&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;05_cbar&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">&#39;05_dd_zaxis&#39;</span><span class="p">:</span> <span class="s1">&#39;D47&#39;</span>
+        <span class="p">}</span>
+        
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">default_value</span> <span class="ow">in</span> <span class="n">defaults</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_value</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._render_sidebar_filters">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._render_sidebar_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_sidebar_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render sidebar filter controls.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span>
+            <span class="s2">&quot;Sample name contains (KEEP):&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set multiple keywords by separating them through semicolons ;&quot;</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="s2">&quot;05_sample_contains&quot;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span>
+            <span class="s2">&quot;Sample name contains (DROP):&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set multiple keywords by separating them through semicolons ;&quot;</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="s2">&quot;05_sample_not_contains&quot;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">toggle</span><span class="p">(</span><span class="s1">&#39;Scaled marker colors&#39;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;05_cbar&#39;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage.run">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Main function to run the standardization results page.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_input_data</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_show_data_requirements</span><span class="p">()</span>
+            <span class="k">return</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_processed_data</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_show_processing_requirements</span><span class="p">()</span>
+            <span class="k">return</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_sidebar_filters</span><span class="p">()</span>
+        <span class="c1"># Apply data filters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_data_filters</span><span class="p">()</span>
+        
+        <span class="c1"># Setup colorbar controls if enabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_colorbar_controls</span><span class="p">()</span>
+        
+        <span class="c1"># Render main controls and results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_main_controls</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_results_tabs</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._validate_input_data">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._validate_input_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_input_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that input data is available.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;input_rep&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span> <span class="ow">and</span> 
+                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;input_rep&quot;</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._validate_processed_data">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._validate_processed_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_processed_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that processed data is available.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;correction_output_summary&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._show_data_requirements">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._show_data_requirements">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_show_data_requirements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show data upload requirements.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;Please upload a dataset and process it, before you can explore results:&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;- Either, upload raw intensity data to perform a baseline correction &quot;</span>
+                   <span class="s2">&quot;(:violet[Upload m/z44-m/z49 intensities] tab).&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;- Or, directly upload δ⁴⁵-δ⁴⁹ replicate data &quot;</span>
+                   <span class="s2">&quot;(:violet[Upload δ⁴⁵-δ⁴⁹ replicates] tab).&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span><span class="s2">&quot;pages/01_Data_IO.py&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;→ Data-IO page&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;Finally, process the dataset&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span><span class="s2">&quot;pages/04_Processing.py&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;→ Processing page&quot;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._show_processing_requirements">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._show_processing_requirements">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_show_processing_requirements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show processing requirements.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;Please process the dataset, before you can explore results &quot;</span>
+                   <span class="s2">&quot;(:violet[Processing] page).&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._apply_data_filters">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._apply_data_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_data_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply data filters to datasets.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;correction_output_summary&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_filter</span><span class="o">.</span><span class="n">apply_filters</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">correction_output_full_dataset</span><span class="p">,</span> <span class="s2">&quot;Sample&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df_summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_filter</span><span class="o">.</span><span class="n">apply_filters</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">correction_output_summary</span><span class="p">,</span> <span class="s2">&quot;Sample&quot;</span>
+            <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._setup_colorbar_controls">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._setup_colorbar_controls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_colorbar_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup colorbar controls if enabled.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;05_cbar&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">numeric_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_rep</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
+            <span class="n">default_index</span> <span class="o">=</span> <span class="mi">0</span>
+            
+            <span class="c1"># Try to find D47 as default</span>
+            <span class="k">if</span> <span class="s2">&quot;D47&quot;</span> <span class="ow">in</span> <span class="n">numeric_columns</span><span class="p">:</span>
+                <span class="n">default_index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">numeric_columns</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;D47&quot;</span><span class="p">)</span>
+            
+            <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+                <span class="s2">&quot;Metric for marker color in ¹⁸O/¹³C plots&quot;</span><span class="p">,</span>
+                <span class="n">numeric_columns</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;05_dd_zaxis&quot;</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">default_index</span>
+            <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._render_main_controls">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._render_main_controls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_main_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render main control widgets.&quot;&quot;&quot;</span>
+        <span class="c1"># Get available isotope options</span>
+        <span class="n">isotope_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_available_isotopes</span><span class="p">()</span>
+        
+        <span class="c1"># Isotope selection</span>
+        <span class="n">selected_isotope</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">radio</span><span class="p">(</span>
+            <span class="s2">&quot;Show results for:&quot;</span><span class="p">,</span> <span class="n">isotope_options</span><span class="p">,</span> <span class="n">horizontal</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># X-axis selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">radio</span><span class="p">(</span>
+            <span class="s2">&quot;Choose x-axis:&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;Timetag&quot;</span><span class="p">,</span> <span class="s2">&quot;UID&quot;</span><span class="p">),</span> <span class="n">horizontal</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Setup session intervals for time plots</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span> <span class="o">==</span> <span class="s2">&quot;Timetag&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setup_session_intervals</span><span class="p">()</span>
+        
+        <span class="c1"># Set isotope-specific variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_isotope_variables</span><span class="p">(</span><span class="n">selected_isotope</span><span class="p">)</span>
+        
+        <span class="c1"># Session selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_session_selection</span><span class="p">()</span>
+        
+        <span class="c1"># Sample type selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_display_type</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">radio</span><span class="p">(</span>
+            <span class="s2">&quot;What to display:&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s2">&quot;All together&quot;</span><span class="p">,</span> <span class="s2">&quot;Samples only&quot;</span><span class="p">,</span> <span class="s2">&quot;Standards only&quot;</span><span class="p">),</span>
+            <span class="n">horizontal</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_type_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sample_type_code</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_display_type</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._get_available_isotopes">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._get_available_isotopes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_available_isotopes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of available isotopes based on processing parameters.&quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">params_last_run</span>
+        
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;process_D47&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;∆47&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;process_D48&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;∆48&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;process_D49&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;∆49&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">options</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._setup_session_intervals">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._setup_session_intervals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_session_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup session intervals for time-based plots.&quot;&quot;&quot;</span>
+        <span class="n">session_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">correction_output_full_dataset</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Session&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">session_intervals</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;Timetag&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;Timetag&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">session_groups</span>
+        <span class="p">]</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._set_isotope_variables">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._set_isotope_variables">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_isotope_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected_isotope</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set session state variables based on selected isotope.&quot;&quot;&quot;</span>
+        <span class="n">isotope_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;∆47&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="s2">&quot;D47&quot;</span><span class="p">,</span> <span class="s2">&quot;d47&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;∆48&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="s2">&quot;D48&quot;</span><span class="p">,</span> <span class="s2">&quot;d48&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;∆49&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="s2">&quot;D49&quot;</span><span class="p">,</span> <span class="s2">&quot;d49&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+        
+        <span class="k">if</span> <span class="n">selected_isotope</span> <span class="ow">in</span> <span class="n">isotope_map</span><span class="p">:</span>
+            <span class="n">mz</span><span class="p">,</span> <span class="n">delta_var</span><span class="p">,</span> <span class="n">delta_lower</span> <span class="o">=</span> <span class="n">isotope_map</span><span class="p">[</span><span class="n">selected_isotope</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">result_mz</span> <span class="o">=</span> <span class="n">mz</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">Delta</span> <span class="o">=</span> <span class="n">delta_var</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">delta_lower</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._setup_session_selection">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._setup_session_selection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_session_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup session selection multiselect.&quot;&quot;&quot;</span>
+        <span class="n">standards_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">standards</span>
+        <span class="n">all_sessions</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">standards_data</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">plotting_sessions</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+            <span class="s2">&quot;Select sessions:&quot;</span><span class="p">,</span> <span class="n">all_sessions</span><span class="p">,</span> <span class="n">all_sessions</span>
+        <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._get_sample_type_code">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._get_sample_type_code">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_sample_type_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">display_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert display type to internal code.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;tandard&quot;</span> <span class="ow">in</span> <span class="n">display_type</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;std&quot;</span>
+        <span class="k">elif</span> <span class="s2">&quot;ample&quot;</span> <span class="ow">in</span> <span class="n">display_type</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;sample&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;all&quot;</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._render_results_tabs">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._render_results_tabs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_results_tabs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the main results tabs.&quot;&quot;&quot;</span>
+        <span class="c1"># Check if heated gas standards are available</span>
+        <span class="n">standards_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">standards</span>
+        <span class="n">has_heated_gas</span> <span class="o">=</span> <span class="s2">&quot;25C&quot;</span> <span class="ow">in</span> <span class="n">standards_data</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        
+        <span class="c1"># Create tabs</span>
+        <span class="k">if</span> <span class="n">has_heated_gas</span><span class="p">:</span>
+            <span class="n">tabs</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">tabs</span><span class="p">([</span>
+                <span class="sa">f</span><span class="s2">&quot;∆</span><span class="si">{</span><span class="n">PlotGenerator</span><span class="o">.</span><span class="n">to_subscript</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">result_mz</span><span class="p">))</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;∆∆</span><span class="si">{</span><span class="n">PlotGenerator</span><span class="o">.</span><span class="n">to_subscript</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">result_mz</span><span class="p">))</span><span class="si">}</span><span class="s2"> residuals/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;δ¹⁸O/δ¹³C&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;∆δ¹⁸O/∆δ¹³C&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;∆¹⁸O residuals/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;∆¹³C residuals/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Heated gas line(s)&quot;</span>
+            <span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tabs</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">tabs</span><span class="p">([</span>
+                <span class="sa">f</span><span class="s2">&quot;∆</span><span class="si">{</span><span class="n">PlotGenerator</span><span class="o">.</span><span class="n">to_subscript</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">result_mz</span><span class="p">))</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;∆∆</span><span class="si">{</span><span class="n">PlotGenerator</span><span class="o">.</span><span class="n">to_subscript</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">result_mz</span><span class="p">))</span><span class="si">}</span><span class="s2"> residuals/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;δ¹⁸O/δ¹³C&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;∆δ¹⁸O/∆δ¹³C&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;∆¹⁸O residuals/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;∆¹³C residuals/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">xval</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">])</span>
+        
+        <span class="c1"># Get standards list for plotting</span>
+        <span class="n">standards_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_standards_list</span><span class="p">()</span>
+        
+        <span class="c1"># Render each tab</span>
+        <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>  <span class="c1"># Delta values</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span><span class="o">.</span><span class="n">create_delta_plot</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_rep</span><span class="p">,</span> <span class="n">standards_list</span><span class="p">,</span> <span class="n">show_residuals</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># Delta residuals</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span><span class="o">.</span><span class="n">create_delta_plot</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_rep</span><span class="p">,</span> <span class="n">standards_list</span><span class="p">,</span> <span class="n">show_residuals</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>  <span class="c1"># Bulk isotopes</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span><span class="o">.</span><span class="n">create_bulk_isotope_plot</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_rep</span><span class="p">,</span> <span class="n">standards_list</span><span class="p">,</span> <span class="n">show_residuals</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>  <span class="c1"># Bulk isotope residuals</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span><span class="o">.</span><span class="n">create_bulk_isotope_plot</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_rep</span><span class="p">,</span> <span class="n">standards_list</span><span class="p">,</span> <span class="n">show_residuals</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span>  <span class="c1"># δ18O residuals over time</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span><span class="o">.</span><span class="n">create_bulk_isotope_plot</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_rep</span><span class="p">,</span> <span class="n">standards_list</span><span class="p">,</span> <span class="n">show_residuals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">over_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bulk_isotope</span><span class="o">=</span><span class="s2">&quot;18&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span>  <span class="c1"># δ13C residuals over time</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span><span class="o">.</span><span class="n">create_bulk_isotope_plot</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df_rep</span><span class="p">,</span> <span class="n">standards_list</span><span class="p">,</span> <span class="n">show_residuals</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">over_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bulk_isotope</span><span class="o">=</span><span class="s2">&quot;13&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Heated gas lines tab (if available)</span>
+        <span class="k">if</span> <span class="n">has_heated_gas</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="mi">6</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">gas_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;25C&quot;</span><span class="p">,</span> <span class="s2">&quot;1000C&quot;</span><span class="p">]:</span>
+                    <span class="n">fig</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span><span class="o">.</span><span class="n">create_heated_gas_line_plot</span><span class="p">(</span><span class="n">gas_name</span><span class="p">)</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="StandardizationResultsPage._get_standards_list">
+<a class="viewcode-back" href="../../05_Standardization_Results.html#pages.05_Standardization_Results.StandardizationResultsPage._get_standards_list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_standards_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of standards or samples based on selection.&quot;&quot;&quot;</span>
+        <span class="n">mz</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">result_mz</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_type_code</span> <span class="o">==</span> <span class="s2">&quot;std&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;standards_nominal&quot;</span><span class="p">]</span>
+                       <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]][</span><span class="n">mz</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_type_code</span> <span class="o">==</span> <span class="s2">&quot;sample&quot;</span><span class="p">:</span>
+            <span class="n">all_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_rep</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+            <span class="n">standards</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;standards_nominal&quot;</span><span class="p">][</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]][</span><span class="n">mz</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">sample</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">all_samples</span> <span class="k">if</span> <span class="n">sample</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">standards</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># &quot;all&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_rep</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="c1"># Main execution</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">StandardizationResultsPage</span><span class="p">()</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Miguel Bernecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
