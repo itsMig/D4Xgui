@@ -92,6 +92,86 @@
              
   <section id="pysotope-fork">
 <h1>Pysotope_fork<a class="headerlink" href="#pysotope-fork" title="Link to this heading"></a></h1>
+<p>Pysotope_fork.py - Minimal fork containing only required functions from Pysotope</p>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">tools.Pysotope_fork.</span></span><span class="sig-name descname"><span class="pre">K47_t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#K47_t"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Temperature calibration function for D47.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">tools.Pysotope_fork.</span></span><span class="sig-name descname"><span class="pre">K48_t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#K48_t"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Temperature calibration function for D48.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">tools.Pysotope_fork.</span></span><span class="sig-name descname"><span class="pre">K49_t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#K49_t"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Temperature calibration function for D49.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tools.Pysotope_fork.</span></span><span class="sig-name descname"><span class="pre">Pysotope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'replicate'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level_etf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'replicate'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'leastSquare'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#Pysotope"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Minimal Pysotope class with only required functionality for D4Xgui.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">add_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#Pysotope.add_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Add data to the object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">add_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#Pysotope.add_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Add a session to the object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">calc_sample_ratios_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#Pysotope.calc_sample_ratios_1"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate sample ratios (first part - baseline independent).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">calc_sample_ratios_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#Pysotope.calc_sample_ratios_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate sample ratios (second part - baseline dependent).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">calc_wg_ratios</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#Pysotope.calc_wg_ratios"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate isotopic ratios of the working gas.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">correctBaseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaling_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'scale'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling_factors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D47std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D48std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D49std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#Pysotope.correctBaseline"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Correct for negative pressure baseline.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_standards</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">standards</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#Pysotope.set_standards"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Set standards for a given system.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_wg_ratios</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wg_ratios</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#Pysotope.set_wg_ratios"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Set working gas ratios.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">tools.Pysotope_fork.</span></span><span class="sig-name descname"><span class="pre">f_poly4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">poly</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/Pysotope_fork.html#f_poly4"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate 4th order polynomial.</p>
+</dd></dl>
+
 </section>
 
 

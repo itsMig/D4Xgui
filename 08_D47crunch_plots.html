@@ -92,6 +92,115 @@
              
   <section id="d47crunch-plots">
 <h1>08_D47crunch_plots<a class="headerlink" href="#d47crunch-plots" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pages.08_D47crunch_plots.</span></span><span class="sig-name descname"><span class="pre">D47CrunchPlotsPage</span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages the D47crunch plots page of the D4Xgui application.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_create_contour_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contour_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">plotly.graph_objects.Contour</span></span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage._create_contour_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Create the contour plot for standardization error.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>contour_data: Contour data from session state</p>
+</dd>
+<dt>Returns:</dt><dd><p>Plotly Contour trace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_create_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_err_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">plotly.graph_objects.Figure</span></span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage._create_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Create the complete standardization error plot.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>session: Session identifier
+mz: Mass number (47, 48, or 49)
+std_err_obj: Standardization error data object</p>
+</dd>
+<dt>Returns:</dt><dd><p>Complete Plotly figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_create_scatter_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'circle'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hover_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">plotly.graph_objects.Scatter</span></span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage._create_scatter_trace"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Create a scatter trace with enhanced hover information.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>x_data: X-axis data points
+y_data: Y-axis data points
+name: Trace name
+color: Marker color
+symbol: Marker symbol
+hover_data: Optional hover data containing sample names and timestamps</p>
+</dd>
+<dt>Returns:</dt><dd><p>Plotly Scatter trace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_get_available_isotopes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage._get_available_isotopes"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get list of available isotopes based on processing parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_get_hover_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_err_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage._get_hover_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get hover data for sample names and timestamps.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>session: Session identifier
+data_type: Either ‘anchors’ or ‘unknowns’</p>
+</dd>
+<dt>Returns:</dt><dd><p>Dictionary containing sample names and timestamps for hover display</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_get_standard_samples</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage._get_standard_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get list of standard sample names from session state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_get_standardization_error_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage._get_standardization_error_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get standardization error data from session state.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Dictionary containing standardization error data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_sidebar_controls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage._render_sidebar_controls"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render sidebar controls for isotope selection and plot options.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_setup_page</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage._setup_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Set up page configuration, logo, and authentication.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_validate_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage._validate_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Validate that required data is available in session state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/08_D47crunch_plots.html#D47CrunchPlotsPage.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Run the main application page.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

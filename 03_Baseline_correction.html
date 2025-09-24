@@ -92,6 +92,249 @@
              
   <section id="baseline-correction">
 <h1>03_Baseline_correction<a class="headerlink" href="#baseline-correction" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pages.03_Baseline_correction.</span></span><span class="sig-name descname"><span class="pre">BaselineCorrectionPage</span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages the Baseline Correction page of the D4Xgui application.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">LEVEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'replicate'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">LEVEL_ETF</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'replicate'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">METHOD_ETH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Correct</span> <span class="pre">baseline</span> <span class="pre">using</span> <span class="pre">ETH-1</span> <span class="pre">&amp;</span> <span class="pre">ETH-2'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">METHOD_MINIMIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Minimize</span> <span class="pre">equilibrated</span> <span class="pre">gase</span> <span class="pre">slope'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">METHOD_NONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Without</span> <span class="pre">baseline</span> <span class="pre">correction'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">OPTIMIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'leastSquares'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">STANDARD_D47</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'1000C':</span> <span class="pre">0.0266,</span> <span class="pre">'25C':</span> <span class="pre">0.9196,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.2052,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085}</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">STANDARD_D48</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">0.345,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.1286,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.1286}</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">STANDARD_D49</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">2.228,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.562,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.707}</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WG_RATIOS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'d13C':</span> <span class="pre">-4.2,</span> <span class="pre">'d18O':</span> <span class="pre">25.26}</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_apply_eth_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pysotope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Pysotope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._apply_eth_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Apply the ETH standards method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_apply_minimize_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pysotope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Pysotope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._apply_minimize_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Apply the minimize equilibrated gas slope method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_configure_pysotope_standards</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pysotope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Pysotope</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._configure_pysotope_standards"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Configure standards for pysotope based on the selected method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_create_correlation_matrix_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">corr_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">plotly.graph_objects.Figure</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._create_correlation_matrix_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Create a correlation matrix heatmap.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_create_delta_overview_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">plotly.graph_objects.Figure</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._create_delta_overview_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Create the delta/Delta overview plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_create_heated_gas_line_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">plotly.graph_objects.Figure</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._create_heated_gas_line_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Create the heated gas line plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_create_intensity_plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">plotly.graph_objects.Figure</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._create_intensity_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Create the intensity overview plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_create_replicate_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._create_replicate_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Create aggregated replicate dataframe from cycle-level data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_execute_baseline_correction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._execute_baseline_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Execute the baseline correction process.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_get_aggregation_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._get_aggregation_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get the aggregation dictionary for creating replicate-level data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_initialize_session_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._initialize_session_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Initialize session state with default parameters if not present.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_normalize_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.Series</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._normalize_series"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Normalize a numeric pandas Series to [0, 1].</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_process_dataset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._process_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Process all sessions and return concatenated results.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_process_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pysotope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Pysotope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Pysotope</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._process_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Process a single session with the selected baseline correction method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_correlation_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._render_correlation_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render the correlation matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_data_tables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._render_data_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render the data tables for replicate and cycle data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_delta_plots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._render_delta_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render the delta/Delta overview plots.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_eth_standard_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._render_eth_standard_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render ETH standard selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_gas_standard_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._render_gas_standard_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render gas standard (25C/1000C) selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_heated_gas_lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._render_heated_gas_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render the heated gas line plots.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_intensity_plots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._render_intensity_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render the intensity overview plots.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_method_selection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._render_method_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render the baseline correction method selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_results_tabs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._render_results_tabs"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render the results tabs after successful baseline correction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_sidebar_controls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._render_sidebar_controls"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render the sidebar controls for baseline correction settings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_render_standard_selection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._render_standard_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Render the standard sample selection based on the chosen method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_setup_page</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._setup_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Set up page configuration, logo, and authentication.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_update_database</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._update_database"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Update the database with processed data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_update_eth_standard_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._update_eth_standard_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Update ETH standard names in session state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_update_gas_standard_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._update_gas_standard_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Update gas standard names in session state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_validate_input_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage._validate_input_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Validate that required input data is available.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/03_Baseline_correction.html#BaselineCorrectionPage.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Run the main application page.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
