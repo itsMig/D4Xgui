@@ -1,0 +1,690 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pages.01_Data_IO &mdash; D4Xgui v1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=76e2d817"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            D4Xgui
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../01_Data_IO.html">01_Data_IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../03_Baseline_correction.html">03_Baseline_correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../04_Processing.html">04_Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../05_Standardization_Results.html">05_Standardization_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../06_Dual_Clumped_Space.html">06_Dual_Clumped_Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../07_Discover_Results.html">07_Discover_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../08_D47crunch_plots.html">08_D47crunch_plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../100_Save_and_Reload.html">100_Save_and_Reload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../97_Database_Management.html">97_Database_Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_Pysotope_fork.html">Pysotope_fork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_authenticator.html">authenticator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_calc_temperature.html">calc_temperature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_commons.html">commons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_database.html">database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_init_params.html">init_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_page_config.html">page_config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_sidebar_logo.html">sidebar_logo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">D4Xgui</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pages.01_Data_IO</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pages.01_Data_IO</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.authenticator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Authenticator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.page_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageConfigManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.sidebar_logo</span><span class="w"> </span><span class="kn">import</span> <span class="n">SidebarLogoManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.database</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatabaseManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.init_params</span><span class="w"> </span><span class="kn">import</span> <span class="n">IsotopeStandards</span>
+
+
+<div class="viewcode-block" id="DataIOPage">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataIOPage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages the Data I/O page of the D4Xgui application.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the DataIOPage.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span> <span class="o">=</span> <span class="n">DatabaseManager</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_page</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_session_state</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DataIOPage._setup_page">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._setup_page">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up page configuration, logo, and authentication.&quot;&quot;&quot;</span>
+        <span class="n">page_config_manager</span> <span class="o">=</span> <span class="n">PageConfigManager</span><span class="p">()</span>
+        <span class="n">page_config_manager</span><span class="o">.</span><span class="n">configure_page</span><span class="p">(</span><span class="n">page_number</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="n">logo_manager</span> <span class="o">=</span> <span class="n">SidebarLogoManager</span><span class="p">()</span>
+        <span class="n">logo_manager</span><span class="o">.</span><span class="n">add_logo</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;PYTEST_CURRENT_TEST&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">authenticator</span> <span class="o">=</span> <span class="n">Authenticator</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">authenticator</span><span class="o">.</span><span class="n">require_authentication</span><span class="p">():</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._initialize_session_state">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._initialize_session_state">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize_session_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize session state with default parameters if not present.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;standards_nominal&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s1">&#39;standards_nominal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">IsotopeStandards</span><span class="o">.</span><span class="n">get_standards</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s1">&#39;working_gas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">IsotopeStandards</span><span class="o">.</span><span class="n">get_working_gas</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;show_overwrite_button&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">show_overwrite_button</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage.run">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the main application page.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Data I/O&quot;</span><span class="p">)</span>
+        <span class="n">tab1</span><span class="p">,</span> <span class="n">tab2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">tabs</span><span class="p">([</span><span class="s1">&#39;Upload data&#39;</span><span class="p">,</span> <span class="s1">&#39;Access database&#39;</span><span class="p">])</span>
+        <span class="k">with</span> <span class="n">tab1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_upload_tab</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">tab2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_database_tab</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._upload_tab">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._upload_tab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_upload_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the data upload tab.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;Upload Data&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_replicates_uploader</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_intensities_uploader</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._render_replicates_uploader">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._render_replicates_uploader">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_replicates_uploader</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the UI for uploading pre-processed replicates.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Pre-processed replicates&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Drag &amp; Drop pre-processed $\delta^{45-49}$ data!&quot;</span><span class="p">)</span>
+        
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">uploaded_files</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">file_uploader</span><span class="p">(</span>
+                <span class="s2">&quot;Drag and Drop .csv or .xls(x) file(s)&quot;</span><span class="p">,</span>
+                <span class="n">accept_multiple_files</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="nb">type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;xlsx&quot;</span><span class="p">,</span> <span class="s2">&quot;xls&quot;</span><span class="p">,</span> <span class="s2">&quot;csv&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;uploaded_reps&quot;</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Load test data (replicates)&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;loadTest&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_load_test_files</span><span class="p">(</span><span class="s2">&quot;reps&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Reset data&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;reset_preprocessed&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_delete_data</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">uploaded_files</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_preprocessed</span><span class="p">(</span><span class="n">uploaded_files</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;input_rep&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_database_upload</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modify_uploaded_df</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_display_metrics</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._render_intensities_uploader">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._render_intensities_uploader">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_intensities_uploader</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the UI for uploading raw intensity data.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Raw intensity data&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;Drag &amp; Drop sample and reference gas m/z$_{44-49}$ data!&quot;</span><span class="p">)</span>
+
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">uploaded_files</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">file_uploader</span><span class="p">(</span>
+                <span class="s2">&quot;Drag and Drop .csv, .xlsx or .did file(s)&quot;</span><span class="p">,</span>
+                <span class="n">accept_multiple_files</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="nb">type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;xlsx&quot;</span><span class="p">,</span> <span class="s2">&quot;xls&quot;</span><span class="p">,</span> <span class="s2">&quot;csv&quot;</span><span class="p">,</span> <span class="s2">&quot;did&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;uploaded_cycles&quot;</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Load test data (intensities)&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;loadTestRaw&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_load_test_files</span><span class="p">(</span><span class="s2">&quot;raw&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Reset raw data&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;reset_raw&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_delete_data</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">uploaded_files</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_intensities</span><span class="p">(</span><span class="n">uploaded_files</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;input_intensities&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_display_metrics</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span><span class="p">,</span> <span class="n">is_intensity_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._handle_database_upload">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._handle_database_upload">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_database_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the logic for uploading data to the database.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Upload Data to Database&quot;</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+                <span class="n">existing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_existing_timestamps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">show_overwrite_button</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">existing_timestamps</span> <span class="o">=</span> <span class="n">existing</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">existing</span><span class="p">:</span>
+                    <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">[</span><span class="s1">&#39;Session&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">upsert_dataframe_with_conflict_resolution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data uploaded successfully. </span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2"> rows affected.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">existing</span><span class="p">)</span><span class="si">}</span><span class="s2"> existing timestamps in the database.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;show_overwrite_button&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Confirm Overwrite&quot;</span><span class="p">):</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+                    <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">[</span><span class="s1">&#39;Session&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+                    <span class="n">cursor</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span>
+                        <span class="s2">&quot;DELETE FROM replicates WHERE Timetag = ?&quot;</span><span class="p">,</span>
+                        <span class="p">[(</span><span class="nb">str</span><span class="p">(</span><span class="n">ts</span><span class="p">),)</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">existing_timestamps</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">upsert_dataframe_with_conflict_resolution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+                    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data overwritten successfully. </span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2"> rows affected.&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">show_overwrite_button</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">existing_timestamps</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._database_tab">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._database_tab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_database_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the database access tab.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;Access Database&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Use the filters below to query the database.&quot;</span><span class="p">)</span>
+
+        <span class="n">sample_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_sample_database</span><span class="p">()</span>
+        
+        <span class="n">all_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">get_dataframe</span><span class="p">()</span>
+        <span class="n">all_sessions</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_df</span><span class="p">[</span><span class="s1">&#39;Session&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">all_df</span><span class="o">.</span><span class="n">empty</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="n">all_samples</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_df</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">all_df</span><span class="o">.</span><span class="n">empty</span> <span class="k">else</span> <span class="p">[]</span>
+
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">selected_sessions</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span><span class="s2">&quot;Select Session(s)&quot;</span><span class="p">,</span> <span class="n">all_sessions</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">all_sessions</span><span class="p">)</span>
+            <span class="n">selected_samples</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span><span class="s2">&quot;Select Sample(s)&quot;</span><span class="p">,</span> <span class="n">all_samples</span><span class="p">)</span>
+        
+        <span class="n">selected_project</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">selected_type</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">selected_mineralogy</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">selected_publication</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">if</span> <span class="n">sample_db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">selected_project</span><span class="p">,</span> <span class="n">selected_type</span><span class="p">,</span> <span class="n">selected_mineralogy</span><span class="p">,</span> <span class="n">selected_publication</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_sample_db_filters</span><span class="p">(</span><span class="n">sample_db</span><span class="p">,</span> <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">)</span>
+
+        <span class="n">load_entire_sessions</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span><span class="s2">&quot;Load entire sessions when filtering&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Apply Filters&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_database_filters</span><span class="p">(</span>
+                <span class="n">selected_sessions</span><span class="p">,</span> <span class="n">selected_samples</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">,</span> <span class="n">load_entire_sessions</span><span class="p">,</span>
+                <span class="n">selected_project</span><span class="p">,</span> <span class="n">selected_type</span><span class="p">,</span> <span class="n">selected_mineralogy</span><span class="p">,</span> <span class="n">selected_publication</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._load_sample_database">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._load_sample_database">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_sample_database</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the sample database from Excel.&quot;&quot;&quot;</span>
+        <span class="n">sample_db_path</span> <span class="o">=</span> <span class="s2">&quot;static/SampleDatabase.xlsx&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">sample_db_path</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;openpyxl&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SampleDatabase not found at </span><span class="si">{</span><span class="n">sample_db_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span><span class="s2">&quot;pages/97_Database_Management.py&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;→ Database Management&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;🔗&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._render_sample_db_filters">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._render_sample_db_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_sample_db_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render filters based on the sample database.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">replicates_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM replicates&quot;</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+        
+        <span class="n">sub_sample_db</span> <span class="o">=</span> <span class="n">sample_db</span><span class="p">[</span><span class="n">sample_db</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">replicates_df</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">])]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_split_values</span><span class="p">(</span><span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">sub_sample_db</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="n">split_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">split_values</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">selected_project</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span><span class="s2">&quot;Select Project(s)&quot;</span><span class="p">,</span> <span class="n">get_split_values</span><span class="p">(</span><span class="s2">&quot;Project&quot;</span><span class="p">))</span>
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="n">selected_type</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span><span class="s2">&quot;Select Type(s)&quot;</span><span class="p">,</span> <span class="n">get_split_values</span><span class="p">(</span><span class="s2">&quot;Type&quot;</span><span class="p">))</span>
+            <span class="n">selected_mineralogy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span><span class="s2">&quot;Select Mineralogy&quot;</span><span class="p">,</span> <span class="n">get_split_values</span><span class="p">(</span><span class="s2">&quot;Mineralogy&quot;</span><span class="p">))</span>
+            <span class="n">selected_publication</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span><span class="s2">&quot;Select Publication&quot;</span><span class="p">,</span> <span class="n">get_split_values</span><span class="p">(</span><span class="s2">&quot;Publication&quot;</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">selected_project</span><span class="p">,</span> <span class="n">selected_type</span><span class="p">,</span> <span class="n">selected_mineralogy</span><span class="p">,</span> <span class="n">selected_publication</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._apply_database_filters">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._apply_database_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_database_filters</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">selected_sessions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">selected_samples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> 
+        <span class="n">sample_db</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">load_entire_sessions</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">selected_project</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">selected_type</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">selected_mineralogy</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">selected_publication</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply filters and display data from the database.&quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM replicates WHERE 1=1&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">selected_sessions</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; AND Session IN (</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;?&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">selected_sessions</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">selected_sessions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">selected_samples</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; AND Sample IN (</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;?&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">selected_samples</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">selected_samples</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sample_db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_by_sample_db</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">,</span> <span class="n">selected_project</span><span class="p">,</span> <span class="n">selected_type</span><span class="p">,</span> <span class="n">selected_mineralogy</span><span class="p">,</span> <span class="n">selected_publication</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">load_entire_sessions</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">sessions_to_load</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Session&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SELECT * FROM replicates WHERE Session IN (</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;?&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">sessions_to_load</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">sessions_to_load</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modify_uploaded_df</span><span class="p">([</span><span class="n">df</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_display_filtered_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No entries found with your current filter settings.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._filter_by_sample_db">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._filter_by_sample_db">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_by_sample_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> 
+                           <span class="n">selected_project</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">selected_type</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                           <span class="n">selected_mineralogy</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">selected_publication</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter DataFrame based on selections from the sample database.&quot;&quot;&quot;</span>
+        <span class="n">filtered_sample_db</span> <span class="o">=</span> <span class="n">sample_db</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">filter_by_keywords</span><span class="p">(</span><span class="n">df_to_filter</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">keywords</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">df_to_filter</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">df_to_filter</span><span class="p">[</span><span class="n">df_to_filter</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+        
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">selected</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;Project&#39;</span><span class="p">,</span> <span class="n">selected_project</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Type&#39;</span><span class="p">,</span> <span class="n">selected_type</span><span class="p">),</span>
+                                <span class="p">(</span><span class="s1">&#39;Mineralogy&#39;</span><span class="p">,</span> <span class="n">selected_mineralogy</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Publication&#39;</span><span class="p">,</span> <span class="n">selected_publication</span><span class="p">)]:</span>
+            <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
+                <span class="n">filtered_sample_db</span> <span class="o">=</span> <span class="n">filter_by_keywords</span><span class="p">(</span><span class="n">filtered_sample_db</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">selected</span><span class="p">)</span>
+        
+        <span class="n">filtered_samples</span> <span class="o">=</span> <span class="n">filtered_sample_db</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">filtered_samples</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._read_file">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._read_file">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_file</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a file and return a DataFrame.&quot;&quot;&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.xlsx&quot;</span><span class="p">,</span> <span class="s2">&quot;.xls&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;openpyxl&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;.txt&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported file type: </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._delete_data">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._delete_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_delete_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear uploaded data from session state.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;input_intensities&#39;</span><span class="p">,</span> <span class="s1">&#39;raw_files&#39;</span><span class="p">,</span> <span class="s1">&#39;input_rep&#39;</span><span class="p">,</span><span class="s1">&#39;raw_data&#39;</span><span class="p">,</span> <span class="s1">&#39;scaling_factors&#39;</span><span class="p">,</span> <span class="s1">&#39;standards&#39;</span><span class="p">,</span> <span class="s1">&#39;correction_output_full_dataset&#39;</span><span class="p">,</span><span class="s1">&#39;_06_filtered_reps&#39;</span><span class="p">,</span><span class="s1">&#39;_06_filtered_summary&#39;</span><span class="p">,</span><span class="s1">&#39;bg_success&#39;</span><span class="p">,</span><span class="s1">&#39;correction_output_summary&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._modify_uploaded_df">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._modify_uploaded_df">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_modify_uploaded_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dfs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean and modify uploaded DataFrames.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;Sample&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+            <span class="c1"># Sanitize sample names</span>
+            <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample names must not contain `</span><span class="si">{</span><span class="n">char</span><span class="si">}</span><span class="s2">` --&gt; removed!&quot;</span><span class="p">)</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            
+            <span class="c1"># Standardize sample names</span>
+            <span class="n">rename_dict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="o">**</span><span class="p">{</span><span class="sa">f</span><span class="s2">&quot;ETH </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;ETH-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)},</span>
+                <span class="o">**</span><span class="p">{</span><span class="sa">f</span><span class="s2">&quot;ETH</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;ETH-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)},</span>
+                <span class="s2">&quot;25G&quot;</span><span class="p">:</span> <span class="s2">&quot;25C&quot;</span><span class="p">,</span> <span class="s2">&quot;EG&quot;</span><span class="p">:</span> <span class="s2">&quot;25C&quot;</span><span class="p">,</span> <span class="s2">&quot;HG&quot;</span><span class="p">:</span> <span class="s2">&quot;1000C&quot;</span><span class="p">,</span> 
+                <span class="s2">&quot;Heated&quot;</span><span class="p">:</span> <span class="s2">&quot;1000C&quot;</span><span class="p">,</span> <span class="s2">&quot;GU-1&quot;</span><span class="p">:</span> <span class="s2">&quot;GU1&quot;</span>
+            <span class="p">}</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">rename_dict</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Session&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s2">&quot;Timetag&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">datetime_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;datetime&quot;</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">datetime_columns</span><span class="p">:</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">datetime_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="s2">&quot;Timetag&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No Timetag column provided! An artificial Timetag is created.&quot;</span><span class="p">)</span>
+                    <span class="n">d0</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;1900-01-01 00:00:00&#39;</span><span class="p">)</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Timetag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">d0</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))]</span>
+
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Outlier&quot;</span><span class="p">,</span> <span class="s2">&quot;Project&quot;</span><span class="p">,</span> <span class="s2">&quot;Type&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">dfs</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._load_test_files">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._load_test_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_test_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load example data files.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">raw_files</span> <span class="o">=</span> <span class="n">mode</span> <span class="o">!=</span> <span class="s2">&quot;reps&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;static/exampleReplicates_anonymized.xlsx&quot;</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;reps&quot;</span> 
+            <span class="k">else</span> <span class="s2">&quot;static/exampleIntensities_anonymized.xlsx&quot;</span>
+        <span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;openpyxl&quot;</span><span class="p">)</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modify_uploaded_df</span><span class="p">([</span><span class="n">df</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;reps&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span> <span class="o">=</span> <span class="n">input_data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span> <span class="o">=</span> <span class="n">input_data</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._read_intensities">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._read_intensities">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_intensities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uploaded_files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read and process raw intensity data files.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">raw_files</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">df_list</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Uploading...&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uploaded_files</span><span class="p">):</span>
+                <span class="n">new_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">,</span> <span class="s2">&quot;Type&quot;</span><span class="p">,</span> <span class="s2">&quot;Project&quot;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                        <span class="n">new_df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+                <span class="n">df_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_df</span><span class="p">)</span>
+        
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;UID&quot;</span> <span class="ow">in</span> <span class="n">df</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;UID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_unique</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Non-unique UIDs found! Please provide unique identifiers.&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="n">columns_to_keep</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;UID&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample&quot;</span><span class="p">,</span> <span class="s2">&quot;Replicate&quot;</span><span class="p">,</span> <span class="s2">&quot;Session&quot;</span><span class="p">,</span> <span class="s2">&quot;Timetag&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_s44&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_s45&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_s46&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_s47&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_s48&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_s49&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_r44&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_r45&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_r46&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_r47&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_r48&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_r49&quot;</span>
+        <span class="p">]</span>
+        
+        <span class="k">for</span> <span class="n">mz</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">):</span>
+            <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;raw_s</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">.5&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">columns_to_keep</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;raw_s</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">.5&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;raw_r</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">.5&quot;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;half-mass-cup</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modify_uploaded_df</span><span class="p">([</span><span class="n">df</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">existing_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">columns_to_keep</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">existing_cols</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Uploaded intensity file(s) are missing required columns. Please provide raw_s44-49 and raw_r44-49 with Session, Sample, Replicate, Timetag.&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">existing_cols</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._read_preprocessed">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._read_preprocessed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_preprocessed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uploaded_files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read and process pre-processed replicate files.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">raw_files</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">df_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_read_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">uploaded_files</span><span class="p">]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modify_uploaded_df</span><span class="p">([</span><span class="n">df</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;UID&quot;</span> <span class="ow">in</span> <span class="n">df</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;UID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_unique</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Non-unique UIDs found! Please provide unique identifiers.&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="n">required</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;UID&quot;</span><span class="p">,</span> <span class="s2">&quot;d45&quot;</span><span class="p">,</span> <span class="s2">&quot;d46&quot;</span><span class="p">,</span> <span class="s2">&quot;d47&quot;</span><span class="p">,</span> <span class="s2">&quot;d48&quot;</span><span class="p">,</span> <span class="s2">&quot;d49&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample&quot;</span><span class="p">,</span> <span class="s2">&quot;Session&quot;</span><span class="p">]</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">required</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Please provide all required columns: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Data loaded. Click &#39;Upload Data to Database&#39; to save it.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._display_metrics">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._display_metrics">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_display_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">is_intensity_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display metrics and charts for the loaded data.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_calculate_metrics</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">is_intensity_data</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span>
+        
+        <span class="n">time_col</span> <span class="o">=</span> <span class="s1">&#39;Timetag&#39;</span> <span class="k">if</span> <span class="s2">&quot;Timetag&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">else</span> <span class="s1">&#39;datetime&#39;</span>
+        <span class="k">if</span> <span class="n">is_intensity_data</span> <span class="ow">and</span> <span class="s2">&quot;Replicate&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">dist_samples</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;Sample&quot;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Replicate&quot;</span><span class="p">)[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">first</span><span class="p">(),</span>
+                <span class="s2">&quot;Datetime&quot;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Replicate&quot;</span><span class="p">)[</span><span class="n">time_col</span><span class="p">]</span><span class="o">.</span><span class="n">first</span><span class="p">(),</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dist_samples</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;Sample&quot;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;Datetime&quot;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="n">time_col</span><span class="p">],</span>
+            <span class="p">}</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">scatter_chart</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dist_samples</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Datetime&quot;</span><span class="p">,</span> <span class="c1">#width=&quot;stretch&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._calculate_metrics">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._calculate_metrics">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">is_intensity_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate metrics from the DataFrame.&quot;&quot;&quot;</span>
+        <span class="n">metrics</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">time_col</span> <span class="o">=</span> <span class="s1">&#39;Timetag&#39;</span> <span class="k">if</span> <span class="s2">&quot;Timetag&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">else</span> <span class="s1">&#39;datetime&#39;</span>
+        <span class="k">for</span> <span class="n">session</span><span class="p">,</span> <span class="n">sdf</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Session&quot;</span><span class="p">):</span>
+            <span class="n">sdf</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sdf</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="n">session_metrics</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;Session&quot;</span><span class="p">:</span> <span class="n">session</span><span class="p">,</span>
+                <span class="s2">&quot;Duration&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sdf</span><span class="p">[</span><span class="n">time_col</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">sdf</span><span class="p">[</span><span class="n">time_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Unique Samples&quot;</span><span class="p">:</span> <span class="n">sdf</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">(),</span>
+                <span class="s2">&quot;Replicates&quot;</span><span class="p">:</span> <span class="n">sdf</span><span class="p">[</span><span class="s2">&quot;Replicate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_intensity_data</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">sdf</span><span class="p">),</span>
+                <span class="s2">&quot;Samples&quot;</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">sdf</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="n">is_intensity_data</span><span class="p">:</span>
+                <span class="n">session_metrics</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sdf</span><span class="p">)</span>
+            <span class="n">metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session_metrics</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._check_existing_timestamps">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._check_existing_timestamps">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_existing_timestamps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">conn</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check for existing timestamps in the database.&quot;&quot;&quot;</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">existing</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">timestamp</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Timetag&#39;</span><span class="p">]:</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) FROM replicates WHERE Timetag = ?&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">timestamp</span><span class="p">),))</span>
+            <span class="k">if</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">existing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">existing</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._display_filtered_data">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._display_filtered_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_display_filtered_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display metrics and data for filtered database results.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Data Metrics&quot;</span><span class="p">)</span>
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s2">&quot;Total Replicates&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s2">&quot;Unique Samples&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39; | &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())))</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s2">&quot;Unique Sessions&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Session&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39; | &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Session&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())))</span>
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="n">tt_series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Timetag&#39;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span>
+            <span class="n">min_dt</span> <span class="o">=</span> <span class="n">tt_series</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">max_dt</span> <span class="o">=</span> <span class="n">tt_series</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">min_dt</span><span class="p">)</span> <span class="ow">or</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">max_dt</span><span class="p">):</span>
+                <span class="n">date_range</span> <span class="o">=</span> <span class="s2">&quot;—&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">date_range</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">min_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">max_dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s2">&quot;Date Range&quot;</span><span class="p">,</span> <span class="n">date_range</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sample_db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_display_sample_db_metrics</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">)</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_excel_download_link</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;filtered_data.xlsx&quot;</span><span class="p">),</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Sample Distribution&quot;</span><span class="p">)</span>
+        <span class="n">sample_counts</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">sample_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">sample_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="s1">&#39;Count&#39;</span><span class="p">})</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Selected Data&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._display_sample_db_metrics">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._display_sample_db_metrics">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_display_sample_db_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display metrics derived from the sample database.&quot;&quot;&quot;</span>
+        <span class="n">filtered_samples</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="n">sub_sample_db</span> <span class="o">=</span> <span class="n">sample_db</span><span class="p">[</span><span class="n">sample_db</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">filtered_samples</span><span class="p">)]</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">count_unique_split</span><span class="p">(</span><span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">sub_sample_db</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">explode</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+            
+        <span class="n">st</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s2">&quot;Total Projects&quot;</span><span class="p">,</span> <span class="n">count_unique_split</span><span class="p">(</span><span class="s1">&#39;Project&#39;</span><span class="p">))</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s2">&quot;Total Types&quot;</span><span class="p">,</span> <span class="n">count_unique_split</span><span class="p">(</span><span class="s1">&#39;Type&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="DataIOPage._create_excel_download_link">
+<a class="viewcode-back" href="../../01_Data_IO.html#pages.01_Data_IO.DataIOPage._create_excel_download_link">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_excel_download_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a download link for an Excel file.&quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelWriter</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;openpyxl&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;Sheet1&#39;</span><span class="p">)</span>
+        <span class="n">b64</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,</span><span class="si">{</span><span class="n">b64</span><span class="si">}</span><span class="s1">&quot; download=&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">&quot;&gt;Download Excel File&lt;/a&gt;&#39;</span></div>
+</div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">DataIOPage</span><span class="p">()</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Miguel Bernecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,709 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tools.Pysotope_fork &mdash; D4Xgui v1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=76e2d817"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            D4Xgui
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../01_Data_IO.html">01_Data_IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../03_Baseline_correction.html">03_Baseline_correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../04_Processing.html">04_Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../05_Standardization_Results.html">05_Standardization_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../06_Dual_Clumped_Space.html">06_Dual_Clumped_Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../07_Discover_Results.html">07_Discover_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../08_D47crunch_plots.html">08_D47crunch_plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../100_Save_and_Reload.html">100_Save_and_Reload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../97_Database_Management.html">97_Database_Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_Pysotope_fork.html">Pysotope_fork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_authenticator.html">authenticator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_calc_temperature.html">calc_temperature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_commons.html">commons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_database.html">database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_init_params.html">init_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_page_config.html">page_config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_sidebar_logo.html">sidebar_logo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">D4Xgui</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tools.Pysotope_fork</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tools.Pysotope_fork</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Pysotope_fork.py - Minimal fork containing only required functions from Pysotope</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">linregress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">fsolve</span><span class="p">,</span> <span class="n">broyden1</span><span class="p">,</span> <span class="n">minimize_scalar</span><span class="p">,</span> <span class="n">least_squares</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+
+<span class="n">sss</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.commons</span><span class="w"> </span><span class="kn">import</span> <span class="n">color</span>
+
+<span class="c1"># Block formatting for messages</span>
+<span class="n">WITHIN_BLOCK</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;#&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">80</span><span class="si">}</span><span class="se">\n{{</span><span class="s2">msg</span><span class="se">}}\n</span><span class="si">{</span><span class="s1">&#39;#&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">80</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">WARNING_BLOCK</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">color</span><span class="o">.</span><span class="n">WARNING</span><span class="si">}{</span><span class="n">WITHIN_BLOCK</span><span class="si">}{</span><span class="n">color</span><span class="o">.</span><span class="n">ENDC</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">ERROR_BLOCK</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">color</span><span class="o">.</span><span class="n">ERROR</span><span class="si">}{</span><span class="n">WITHIN_BLOCK</span><span class="si">}{</span><span class="n">color</span><span class="o">.</span><span class="n">ENDC</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">INFO_BLOCK</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">color</span><span class="o">.</span><span class="n">OKGREEN</span><span class="si">}{</span><span class="n">WITHIN_BLOCK</span><span class="si">}{</span><span class="n">color</span><span class="o">.</span><span class="n">ENDC</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<div class="viewcode-block" id="f_poly4">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.f_poly4">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">f_poly4</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate 4th order polynomial.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="n">poly</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">poly</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">poly</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span><span class="o">**</span><span class="mi">4</span></div>
+
+
+
+<div class="viewcode-block" id="K47_t">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.K47_t">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">K47_t</span><span class="p">(</span><span class="n">x_arr</span><span class="p">,</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Temperature calibration function for D47.&quot;&quot;&quot;</span>
+    <span class="n">poly_63</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">5.896755e00</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.520888e03</span><span class="p">,</span> <span class="mf">2.391274e07</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.540693e09</span><span class="p">)</span>
+    <span class="n">poly_63_vals</span> <span class="o">=</span> <span class="n">f_poly4</span><span class="p">(</span><span class="n">poly_63</span><span class="p">,</span> <span class="n">x_arr</span><span class="p">)</span>
+    <span class="n">poly_47_vals</span> <span class="o">=</span> <span class="p">(</span><span class="n">poly_63_vals</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span>
+    <span class="k">return</span> <span class="n">poly_47_vals</span></div>
+
+
+
+<div class="viewcode-block" id="K48_t">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.K48_t">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">K48_t</span><span class="p">(</span><span class="n">x_arr</span><span class="p">,</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Temperature calibration function for D48.&quot;&quot;&quot;</span>
+    <span class="n">poly_64</span> <span class="o">=</span> <span class="p">(</span><span class="mf">6.001624e00</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.298978e04</span><span class="p">,</span> <span class="mf">8.995634e06</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.422972e08</span><span class="p">)</span>
+    <span class="n">poly_64_vals</span> <span class="o">=</span> <span class="n">f_poly4</span><span class="p">(</span><span class="n">poly_64</span><span class="p">,</span> <span class="n">x_arr</span><span class="p">)</span>
+    <span class="n">poly_48_vals</span> <span class="o">=</span> <span class="p">(</span><span class="n">poly_64_vals</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span>
+    <span class="k">return</span> <span class="n">poly_48_vals</span></div>
+
+
+
+<div class="viewcode-block" id="K49_t">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.K49_t">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">K49_t</span><span class="p">(</span><span class="n">x_arr</span><span class="p">,</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Temperature calibration function for D49.&quot;&quot;&quot;</span>
+    <span class="n">poly_65</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">6.741e00</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.950e04</span><span class="p">,</span> <span class="mf">5.845e07</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.093e09</span><span class="p">)</span>
+    <span class="n">poly_65_vals</span> <span class="o">=</span> <span class="n">f_poly4</span><span class="p">(</span><span class="n">poly_65</span><span class="p">,</span> <span class="n">x_arr</span><span class="p">)</span>
+    <span class="n">poly_49_vals</span> <span class="o">=</span> <span class="p">(</span><span class="n">poly_65_vals</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span>
+    <span class="k">return</span> <span class="n">poly_49_vals</span></div>
+
+
+
+<div class="viewcode-block" id="Pysotope">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.Pysotope">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Pysotope</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimal Pysotope class with only required functionality for D4Xgui.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;replicate&quot;</span><span class="p">,</span> <span class="n">level_etf</span><span class="o">=</span><span class="s2">&quot;replicate&quot;</span><span class="p">,</span> <span class="n">optimize</span><span class="o">=</span><span class="s2">&quot;leastSquare&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Pysotope with minimal required attributes.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level_etf</span> <span class="o">=</span> <span class="n">level_etf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimize</span> <span class="o">=</span> <span class="n">optimize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;R13_VPDB&quot;</span><span class="p">:</span> <span class="mf">0.01118</span><span class="p">,</span>
+            <span class="s2">&quot;R17_VSMOW&quot;</span><span class="p">:</span> <span class="mf">0.00038475</span><span class="p">,</span>
+            <span class="s2">&quot;R18_VSMOW&quot;</span><span class="p">:</span> <span class="mf">0.0020052</span><span class="p">,</span>
+            <span class="s2">&quot;lambda_&quot;</span><span class="p">:</span> <span class="mf">0.528</span><span class="p">,</span>
+            <span class="s2">&quot;R18_initial_guess&quot;</span><span class="p">:</span> <span class="mf">0.002</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">wg_ratios</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;d18O&quot;</span><span class="p">:</span> <span class="mf">25.260</span><span class="p">,</span> <span class="s2">&quot;d13C&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">4.200</span><span class="p">}</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">standards</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;d18O&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">6.7</span> <span class="o">*</span> <span class="mf">1.03092</span> <span class="o">+</span> <span class="mf">30.92</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span> <span class="o">*</span> <span class="mf">1.03092</span> <span class="o">+</span> <span class="mf">30.92</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-3&quot;</span><span class="p">:</span> <span class="mf">7.18</span> <span class="o">*</span> <span class="mf">1.03092</span> <span class="o">+</span> <span class="mf">30.92</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;d13C&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">2.07</span><span class="p">,</span> <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">10.17</span><span class="p">,</span> <span class="s2">&quot;ETH-3&quot;</span><span class="p">:</span> <span class="mf">1.71</span><span class="p">},</span>
+            <span class="s2">&quot;D47&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.9196</span><span class="p">,</span>  
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.0266</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;D48&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.345</span><span class="p">,</span>
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;D49&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">2.228</span><span class="p">,</span>
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">half_mass_cup</span> <span class="o">=</span> <span class="s1">&#39;47.5&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factors</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">etf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        
+        <span class="c1"># Calculate working gas ratios</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_wg_ratios</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Pysotope.set_wg_ratios">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.Pysotope.set_wg_ratios">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_wg_ratios</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wg_ratios</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set working gas ratios.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wg_ratios</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">wg_ratios</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wg_ratios</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">float</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wg_ratios</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">ERROR_BLOCK</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Error in </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span><span class="si">}</span><span class="s2">():&quot;</span><span class="p">),</span>
+                    <span class="n">WARNING_BLOCK</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Please provide `wg_ratios` argument in the following format:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wg_ratios</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+                    <span class="p">),</span>
+                <span class="p">])</span>
+            <span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">wg_ratios</span> <span class="o">=</span> <span class="n">wg_ratios</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;print(</span>
+<span class="sd">            INFO_BLOCK.format(</span>
+<span class="sd">                msg=f&quot;Working gas ratios (`wg_ratios`) set to:\n&quot;</span>
+<span class="sd">                + json.dumps(self.wg_ratios, indent=4)</span>
+<span class="sd">            )</span>
+<span class="sd">        )&#39;&#39;&#39;</span></div>
+
+
+<div class="viewcode-block" id="Pysotope.add_session">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.Pysotope.add_session">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a session to the object.&quot;&quot;&quot;</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">items</span><span class="p">()))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">etf</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="n">S</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;D47&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">},</span>
+                <span class="s2">&quot;D48&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">},</span>
+                <span class="s2">&quot;D49&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">},</span>
+            <span class="p">}</span>
+        <span class="p">})</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factors</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span><span class="n">S</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;47b_47.5&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;48b_47.5&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;49b_47.5&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}}</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pysotope.set_standards">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.Pysotope.set_standards">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_standards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">standards</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set standards for a given system.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">standards</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">system</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">standards</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="n">ERROR_BLOCK</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Please provide a `system`=</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;`</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">`&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">standards</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span><span class="si">}</span><span class="s2"> and `standards`, e.g. </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">standards</span><span class="p">[</span><span class="s1">&#39;D47&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">!&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">standards</span><span class="p">[</span><span class="n">system</span><span class="p">]</span> <span class="o">=</span> <span class="n">standards</span></div>
+
+
+<div class="viewcode-block" id="Pysotope.add_data">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.Pysotope.add_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">df_session</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add data to the object.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">session</span><span class="p">,</span> <span class="n">df_session</span> <span class="ow">in</span> <span class="n">df_session</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Session&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">session</span><span class="p">:</span> <span class="n">df_session</span><span class="p">})</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_session</span><span class="p">({</span><span class="n">session</span><span class="p">:</span> <span class="n">df_session</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">session</span><span class="p">:</span> <span class="n">df_session</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_session</span><span class="p">({</span><span class="n">session</span><span class="p">:</span> <span class="n">df_session</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()})</span></div>
+
+
+<div class="viewcode-block" id="Pysotope.calc_wg_ratios">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.Pysotope.calc_wg_ratios">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_wg_ratios</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate isotopic ratios of the working gas.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R17_VSMOW&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R18_VSMOW&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;lambda_&quot;</span><span class="p">])</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Reference Gas / Working Gas Variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R13_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R13_VPDB&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">wg_ratios</span><span class="p">[</span><span class="s2">&quot;d13C&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">1000</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R18_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R18_VSMOW&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">wg_ratios</span><span class="p">[</span><span class="s2">&quot;d18O&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">1000</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R17_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R17_VSMOW&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R18_Ref</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R18_VSMOW&quot;</span><span class="p">])</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;lambda_&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Isotope abundances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C12_Ref</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R13_Ref</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C13_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R13_Ref</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R13_Ref</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C16_Ref</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R17_Ref</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R18_Ref</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C17_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R17_Ref</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R17_Ref</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R18_Ref</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C18_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R18_Ref</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R17_Ref</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R18_Ref</span><span class="p">)</span>
+        
+        <span class="c1"># 44 isotopologue</span>
+        <span class="n">C12_16_16_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C12_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C16_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C16_Ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C44_Ref</span> <span class="o">=</span> <span class="n">C12_16_16_Ref</span>
+        
+        <span class="c1"># 45 isotopologues</span>
+        <span class="n">C12_17_16_Ref</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C12_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C17_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C16_Ref</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">C13_16_16_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C13_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C16_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C16_Ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C45_Ref</span> <span class="o">=</span> <span class="n">C12_17_16_Ref</span> <span class="o">+</span> <span class="n">C13_16_16_Ref</span>
+        
+        <span class="c1"># 46 isotopologues</span>
+        <span class="n">C12_18_16_Ref</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C12_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C18_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C16_Ref</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">C13_17_16_Ref</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C13_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C17_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C16_Ref</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">C12_17_17_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C12_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C17_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C17_Ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C46_Ref</span> <span class="o">=</span> <span class="n">C12_18_16_Ref</span> <span class="o">+</span> <span class="n">C13_17_16_Ref</span> <span class="o">+</span> <span class="n">C12_17_17_Ref</span>
+        
+        <span class="c1"># 47 isotopologues</span>
+        <span class="n">C16_18_16_Ref</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C13_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C18_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C16_Ref</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">C13_17_17_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C13_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C17_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C17_Ref</span>
+        <span class="n">C12_18_17_Ref</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C12_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C17_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C18_Ref</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C47_Ref</span> <span class="o">=</span> <span class="n">C16_18_16_Ref</span> <span class="o">+</span> <span class="n">C13_17_17_Ref</span> <span class="o">+</span> <span class="n">C12_18_17_Ref</span>
+        
+        <span class="c1"># 48 isotopologues</span>
+        <span class="n">C13_18_17_Ref</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C13_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C18_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C17_Ref</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">C12_18_18_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C12_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C18_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C18_Ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C48_Ref</span> <span class="o">=</span> <span class="n">C13_18_17_Ref</span> <span class="o">+</span> <span class="n">C12_18_18_Ref</span>
+        
+        <span class="c1"># 49 isotopologue</span>
+        <span class="n">C13_18_18_Ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C13_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C18_Ref</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C18_Ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C49_Ref</span> <span class="o">=</span> <span class="n">C13_18_18_Ref</span>
+        
+        <span class="c1"># Reference ratios</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_45_44</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C45_Ref</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">C44_Ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_46_44</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C46_Ref</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">C44_Ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_47_44</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C47_Ref</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">C44_Ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_48_44</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C48_Ref</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">C44_Ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_49_44</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C49_Ref</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">C44_Ref</span></div>
+
+
+<div class="viewcode-block" id="Pysotope.calc_sample_ratios_1">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.Pysotope.calc_sample_ratios_1">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_sample_ratios_1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate sample ratios (first part - baseline independent).&quot;&quot;&quot;</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">_calc</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            
+            <span class="c1"># Calculate sample ratios</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_45_44&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_45_44</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_s45&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_s44&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_r44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_r45&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_46_44&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_46_44</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_s46&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_s44&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_r44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;raw_r46&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            
+            <span class="c1"># Calculate delta values</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d45&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_45_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_45_44</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d46&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_46_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_46_44</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            
+            <span class="c1"># Equation solving for R18</span>
+            <span class="n">lambda_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;lambda_&quot;</span><span class="p">]</span>
+            <span class="n">K_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span>
+            <span class="n">eq_Part1</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span> <span class="o">*</span> <span class="n">K_</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">eq_Part2</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">lambda_</span>
+            <span class="n">eq_Part3</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">K_</span>
+            
+            <span class="k">def</span><span class="w"> </span><span class="nf">eq_R18_Sample_fsolve</span><span class="p">(</span><span class="n">init_guess</span><span class="p">,</span> <span class="n">R45_44</span><span class="p">,</span> <span class="n">R46_44</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Equation solver for R18_Sample.&quot;&quot;&quot;</span>
+                <span class="n">RES</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">R18_Sample</span><span class="p">:</span> <span class="n">eq_Part1</span> <span class="o">*</span> <span class="n">R18_Sample</span><span class="o">**</span><span class="n">eq_Part2</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="n">eq_Part3</span> <span class="o">*</span> <span class="n">R45_44</span> <span class="o">*</span> <span class="p">(</span><span class="n">R18_Sample</span><span class="o">**</span><span class="n">lambda_</span><span class="p">))</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">R18_Sample</span> <span class="o">-</span> <span class="n">R46_44</span><span class="p">),</span>
+                    <span class="n">x0</span><span class="o">=</span><span class="n">init_guess</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">RES</span>
+            
+            <span class="c1"># Initialize R18</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">init_R18</span> <span class="o">=</span> <span class="n">eq_R18_Sample_fsolve</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R18_initial_guess&quot;</span><span class="p">],</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_45_44&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_46_44&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Couldn</span><span class="se">\&#39;</span><span class="s1">t solve R18! Using </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R18_initial_guess&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">init_R18</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R18_initial_guess&quot;</span><span class="p">]</span>
+            
+            <span class="c1"># Solve R18 equations</span>
+            <span class="n">n_cycles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+            <span class="n">check</span> <span class="o">=</span> <span class="mi">33</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">gcd</span><span class="p">(</span><span class="n">n_cycles</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span> <span class="o">==</span> <span class="n">check</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">check</span> <span class="o">-=</span> <span class="mi">1</span>
+            
+            <span class="n">step_fsolve</span> <span class="o">=</span> <span class="n">check</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;lambda_&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;lambda_&quot;</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_18_16&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_cycles</span>
+            
+            <span class="k">for</span> <span class="n">_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">step_fsolve</span><span class="p">,</span> <span class="n">n_cycles</span> <span class="o">+</span> <span class="n">step_fsolve</span><span class="p">,</span> <span class="n">step_fsolve</span><span class="p">):</span>
+                <span class="n">_series</span> <span class="o">=</span> <span class="n">eq_R18_Sample_fsolve</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">init_R18</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">_idx</span> <span class="o">-</span> <span class="n">step_fsolve</span> <span class="p">:</span> <span class="n">_idx</span><span class="p">]),</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_45_44&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">_idx</span> <span class="o">-</span> <span class="n">step_fsolve</span> <span class="p">:</span> <span class="n">_idx</span><span class="p">],</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_46_44&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">_idx</span> <span class="o">-</span> <span class="n">step_fsolve</span> <span class="p">:</span> <span class="n">_idx</span><span class="p">],</span>
+                <span class="p">)</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">_idx</span> <span class="o">-</span> <span class="n">step_fsolve</span> <span class="p">:</span> <span class="n">_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Sample_Ratio_18_16&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_series</span>
+            
+            <span class="c1"># Calculate other ratios</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_17_16&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_18_16&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;lambda_&quot;</span><span class="p">])</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_13_12&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_45_44&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_17_16&quot;</span><span class="p">])</span>
+            
+            <span class="c1"># Calculate delta values</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d18O&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_18_16&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R18_VSMOW&quot;</span><span class="p">])</span>
+                <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R18_VSMOW&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000</span>
+            <span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d13C&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_13_12&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R13_VPDB&quot;</span><span class="p">])</span>
+                <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotopic_constants</span><span class="p">[</span><span class="s2">&quot;R13_VPDB&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1000</span>
+            <span class="p">)</span>
+            
+            <span class="c1"># Calculate isotope abundances</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_12&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_13_12&quot;</span><span class="p">])</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_13&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_13_12&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_13_12&quot;</span><span class="p">])</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_16&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_17_16&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_18_16&quot;</span><span class="p">])</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_17&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_17_16&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_17_16&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_18_16&quot;</span><span class="p">])</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_18&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_18_16&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_17_16&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_18_16&quot;</span><span class="p">])</span>
+            
+            <span class="c1"># Calculate isotopologue abundances</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_266&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_12&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_16&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_267&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_12&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_16&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_17&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_268&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_12&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_16&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_18&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_277&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_12&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_17&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_278&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_12&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_17&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_18&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_288&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_12&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_18&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_366&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_13&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_16&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_367&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_13&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_16&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_17&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_368&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_13&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_16&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_18&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_377&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_13&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_17&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_378&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_13&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_17&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_18&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_388&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_13&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_18&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            
+            <span class="c1"># Calculate expected isotopologue ratios</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xC_44&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_266&quot;</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xC_45&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_366&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_267&quot;</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xC_46&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_367&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_268&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_277&quot;</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xC_47&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_368&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_278&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_377&quot;</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xC_48&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_378&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_288&quot;</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xC_49&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_388&quot;</span><span class="p">]</span>
+            
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_45_44&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xC_45&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_266&quot;</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_46_44&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xC_46&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_266&quot;</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_47_44&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xC_47&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_266&quot;</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_48_44&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xC_48&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_266&quot;</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_49_44&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xC_49&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_C_266&quot;</span><span class="p">]</span>
+            
+            <span class="k">return</span> <span class="n">df</span>
+        
+        <span class="c1"># Process sessions</span>
+        <span class="k">if</span> <span class="n">session</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">S</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">:</span>
+                <span class="n">df_session</span> <span class="o">=</span> <span class="n">_calc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">S</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">S</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_session</span>
+        <span class="k">elif</span> <span class="n">session</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">:</span>
+            <span class="n">df_session</span> <span class="o">=</span> <span class="n">_calc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">session</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">session</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_session</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Please set `session` argument either to `all` to process every available session, or specify a session name accessible via `self.analyses`.&quot;</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ERROR_BLOCK</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pysotope.correctBaseline">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.Pysotope.correctBaseline">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">correctBaseline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scaling_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">scaling_factors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                       <span class="n">D47std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">D48std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">D49std</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Correct for negative pressure baseline.&quot;&quot;&quot;</span>
+        
+        <span class="c1"># Update standards if provided</span>
+        <span class="k">if</span> <span class="n">D47std</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">D47std</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">standards</span><span class="p">[</span><span class="s1">&#39;D47&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">D47std</span>
+        <span class="k">if</span> <span class="n">D48std</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">D48std</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">standards</span><span class="p">[</span><span class="s1">&#39;D48&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">D48std</span>
+        <span class="k">if</span> <span class="n">D49std</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">D49std</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">standards</span><span class="p">[</span><span class="s1">&#39;D49&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">D49std</span>
+        
+        <span class="k">if</span> <span class="n">scaling_mode</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">scaling_mode</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Please provide a legit `scaling_mode` argument like `&#39;drift&#39;, &#39;scale&#39;, &#39;l_44p_t&#39;`&quot;</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ERROR_BLOCK</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">find_static_scalingfactor</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Find optimal scaling factors for baseline correction.&quot;&quot;&quot;</span>
+            <span class="n">all_slopes</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">standards</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">mz</span> <span class="ow">in</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">49</span><span class="p">:</span>
+                <span class="n">standards</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">standards</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]])</span>
+            
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">session</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">session</span><span class="p">][</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">standards</span><span class="p">)]</span>
+            
+            <span class="k">def</span><span class="w"> </span><span class="nf">optimize_HGL_leastSquare</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">mz</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Optimize heated gas line using least squares.&quot;&quot;&quot;</span>
+                <span class="n">standards</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">standards</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">standards</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+                            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">ERROR_BLOCK</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Please provide at least 2 standards for D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">, which are also present in your dataset!&quot;</span>
+                            <span class="p">),</span>
+                            <span class="n">WARNING_BLOCK</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Your actual D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2"> standards are:</span><span class="se">\n</span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">standards</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span><span class="w"> </span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="p">),</span>
+                        <span class="p">])</span>
+                    <span class="p">)</span>
+                
+                <span class="n">std_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">standards</span><span class="p">)]</span>
+                <span class="n">stdP</span> <span class="o">=</span> <span class="n">Pysotope</span><span class="p">()</span>
+                <span class="n">stdP</span><span class="o">.</span><span class="n">scaling_factors</span><span class="p">[</span><span class="s2">&quot;std&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;47b_47.5&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="s2">&quot;48b_47.5&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="s2">&quot;49b_47.5&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                <span class="p">}</span>
+                
+                <span class="n">stdP</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="s2">&quot;std&quot;</span><span class="p">,</span> <span class="n">std_df</span><span class="p">)</span>
+                <span class="n">stdP</span><span class="o">.</span><span class="n">scaling_factors</span><span class="p">[</span><span class="s2">&quot;std&quot;</span><span class="p">][</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">b_47.5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span>
+                <span class="n">stdP</span><span class="o">.</span><span class="n">calc_sample_ratios_1</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="s2">&quot;std&quot;</span><span class="p">)</span>
+                <span class="n">stdP</span><span class="o">.</span><span class="n">correctBaseline</span><span class="p">(</span><span class="n">scaling_mode</span><span class="o">=</span><span class="s2">&quot;std&quot;</span><span class="p">)</span>
+                <span class="n">stdP</span><span class="o">.</span><span class="n">calc_sample_ratios_2</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;bg&quot;</span><span class="p">)</span>
+                
+                <span class="k">for</span> <span class="n">standard</span> <span class="ow">in</span> <span class="n">standards</span><span class="p">:</span>
+                    <span class="n">std_analyses</span> <span class="o">=</span> <span class="n">stdP</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="s2">&quot;std&quot;</span><span class="p">]</span>
+                    <span class="n">this_std_df</span> <span class="o">=</span> <span class="n">std_analyses</span><span class="p">[</span><span class="n">std_analyses</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">standard</span><span class="p">]</span>
+                    
+                    <span class="n">results</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span>
+                        <span class="n">this_std_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;d</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">this_std_df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+                    <span class="p">)</span>
+                    <span class="n">all_slopes</span><span class="p">[</span><span class="n">standard</span><span class="p">]</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">slope</span>
+                
+                <span class="k">return</span> <span class="p">[</span><span class="n">_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">all_slopes</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+            
+            <span class="c1"># Optimize scaling factors for each mass</span>
+            <span class="k">for</span> <span class="n">mz</span> <span class="ow">in</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">49</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimize</span> <span class="o">==</span> <span class="s2">&quot;leastSquares&quot;</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span>
+                        <span class="n">optimize_HGL_leastSquare</span><span class="p">,</span>
+                        <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                        <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1e-7</span><span class="p">),</span>
+                        <span class="n">args</span><span class="o">=</span><span class="p">([</span><span class="n">mz</span><span class="p">]),</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimize</span> <span class="o">==</span> <span class="s2">&quot;ETH&quot;</span><span class="p">:</span>
+                    <span class="c1"># Simplified ETH optimization</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span>
+                        <span class="n">optimize_HGL_leastSquare</span><span class="p">,</span>
+                        <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">mz</span><span class="p">,),</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Default to least squares</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span>
+                        <span class="n">optimize_HGL_leastSquare</span><span class="p">,</span>
+                        <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                        <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1e-7</span><span class="p">),</span>
+                        <span class="n">args</span><span class="o">=</span><span class="p">([</span><span class="n">mz</span><span class="p">]),</span>
+                    <span class="p">)</span>
+                
+                <span class="n">sss</span><span class="p">[</span><span class="s1">&#39;03_pbl_log&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sss</span><span class="p">[</span><span class="s1">&#39;03_pbl_log&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> ## Mass </span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2"> optimization results</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factors</span><span class="p">[</span><span class="n">session</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">b_47.5&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">})</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">_calc3</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">scaling_mode</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Apply baseline correction using scaling factors.&quot;&quot;&quot;</span>
+            <span class="n">scaling_functions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factors</span><span class="p">[</span><span class="n">session</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="s2">&quot;scale&quot;</span> <span class="ow">in</span> <span class="n">scaling_mode</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">s_r</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">_c</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;7&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">,</span> <span class="s2">&quot;9&quot;</span><span class="p">):</span>
+                        <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;bg_</span><span class="si">{</span><span class="n">s_r</span><span class="si">}</span><span class="s2">4</span><span class="si">{</span><span class="n">_c</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;raw_</span><span class="si">{</span><span class="n">s_r</span><span class="si">}</span><span class="s2">4</span><span class="si">{</span><span class="n">_c</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;raw_</span><span class="si">{</span><span class="n">s_r</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">half_mass_cup</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">scaling_functions</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;4</span><span class="si">{</span><span class="n">_c</span><span class="si">}</span><span class="s2">b_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">half_mass_cup</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+                        <span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">df</span>
+        
+        <span class="c1"># Apply baseline correction</span>
+        <span class="k">if</span> <span class="n">scaling_mode</span> <span class="o">==</span> <span class="s2">&quot;std&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="s2">&quot;std&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_calc3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="s2">&quot;std&quot;</span><span class="p">],</span> <span class="s2">&quot;std&quot;</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scaling_factors</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factors</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">scaling_factors</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">S</span> <span class="ow">in</span> <span class="n">scaling_factors</span><span class="p">:</span>
+                <span class="n">df_session</span> <span class="o">=</span> <span class="n">_calc3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">S</span><span class="p">],</span> <span class="n">S</span><span class="p">,</span> <span class="n">scaling_mode</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">S</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_session</span>
+        <span class="k">elif</span> <span class="n">session</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">S</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">:</span>
+                <span class="n">find_static_scalingfactor</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+                <span class="n">df_session</span> <span class="o">=</span> <span class="n">_calc3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">S</span><span class="p">],</span> <span class="n">S</span><span class="p">,</span> <span class="n">scaling_mode</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">S</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_session</span>
+        <span class="k">elif</span> <span class="n">session</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">:</span>
+            <span class="n">find_static_scalingfactor</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+            <span class="n">df_session</span> <span class="o">=</span> <span class="n">_calc3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">session</span><span class="p">],</span> <span class="n">session</span><span class="p">,</span> <span class="n">scaling_mode</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">session</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_session</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Please set `session` argument either to `all` to process every available session, or specify a session name accessible via `self.analyses`.&quot;</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ERROR_BLOCK</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pysotope.calc_sample_ratios_2">
+<a class="viewcode-back" href="../../tools_Pysotope_fork.html#tools.Pysotope_fork.Pysotope.calc_sample_ratios_2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_sample_ratios_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;bg&quot;</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate sample ratios (second part - baseline dependent).&quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="s2">&quot;bg&quot;</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Please set `mode` argument either to `&#39;bg&#39;` (background corrected) or `&#39;raw&#39;` (uncorrected raw intensities).&quot;</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ERROR_BLOCK</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">_calc2</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">S</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;bg&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s2">&quot;bg_s47&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">S</span><span class="p">]:</span>
+                <span class="n">_mode</span> <span class="o">=</span> <span class="s2">&quot;raw&quot;</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+                    <span class="s2">&quot;Background has not been corrected, using `raw_(sr)mz` values!&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Processing results are based on non-baseline corrected raw intensities&quot;</span><span class="p">,</span>
+                <span class="p">])</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">WARNING_BLOCK</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_mode</span> <span class="o">=</span> <span class="n">mode</span>
+            
+            <span class="c1"># Calculate sample ratios for masses 47, 48, 49</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_47_44&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_47_44</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_mode</span><span class="si">}</span><span class="s2">_s47&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;raw_s44&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;raw_r44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_mode</span><span class="si">}</span><span class="s2">_r47&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_48_44&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_48_44</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_mode</span><span class="si">}</span><span class="s2">_s48&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;raw_s44&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;raw_r44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_mode</span><span class="si">}</span><span class="s2">_r48&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_49_44&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_49_44</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_mode</span><span class="si">}</span><span class="s2">_s49&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;raw_s44&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;raw_r44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_mode</span><span class="si">}</span><span class="s2">_r49&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            
+            <span class="c1"># Calculate delta values</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d47&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_47_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_47_44</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d48&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_48_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_48_44</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;d49&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_49_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ref_Ratio_49_44</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            
+            <span class="c1"># Calculate Delta values (clumped isotope signatures)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;D47&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_47_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_47_44&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="o">-</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_46_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_46_44&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="o">-</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_45_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_45_44&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">)</span>
+            
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;D48&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_48_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_48_44&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_46_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_46_44&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="p">)</span>
+            
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;D49&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_49_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_49_44&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_46_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_46_44&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="o">-</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_Ratio_45_44&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample_xRatio_45_44&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">df</span>
+        
+        <span class="c1"># Process sessions</span>
+        <span class="k">if</span> <span class="n">session</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">S</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">:</span>
+                <span class="n">df_session</span> <span class="o">=</span> <span class="n">_calc2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">S</span><span class="p">],</span> <span class="n">S</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">S</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_session</span>
+        <span class="k">elif</span> <span class="n">session</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">:</span>
+            <span class="n">df_session</span> <span class="o">=</span> <span class="n">_calc2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">session</span><span class="p">],</span> <span class="n">session</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">session</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_session</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Please set `session` argument either to `all` to process every available session, or specify a session name accessible via `self.analyses`.&quot;</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ERROR_BLOCK</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Miguel Bernecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

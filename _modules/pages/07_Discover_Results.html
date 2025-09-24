@@ -1,0 +1,978 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pages.07_Discover_Results &mdash; D4Xgui v1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=76e2d817"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            D4Xgui
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../01_Data_IO.html">01_Data_IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../03_Baseline_correction.html">03_Baseline_correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../04_Processing.html">04_Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../05_Standardization_Results.html">05_Standardization_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../06_Dual_Clumped_Space.html">06_Dual_Clumped_Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../07_Discover_Results.html">07_Discover_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../08_D47crunch_plots.html">08_D47crunch_plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../100_Save_and_Reload.html">100_Save_and_Reload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../97_Database_Management.html">97_Database_Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_Pysotope_fork.html">Pysotope_fork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_authenticator.html">authenticator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_calc_temperature.html">calc_temperature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_commons.html">commons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_database.html">database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_init_params.html">init_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_page_config.html">page_config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_sidebar_logo.html">sidebar_logo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">D4Xgui</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pages.07_Discover_Results</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pages.07_Discover_Results</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ogls</span><span class="w"> </span><span class="kn">import</span> <span class="n">Polynomial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.page_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageConfigManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.sidebar_logo</span><span class="w"> </span><span class="kn">import</span> <span class="n">SidebarLogoManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.authenticator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Authenticator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.commons</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLOT_PARAMS</span><span class="p">,</span> <span class="n">modify_text_label_sizes</span>
+
+
+<div class="viewcode-block" id="DataType">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DataType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enumeration for different data types available for plotting.&quot;&quot;&quot;</span>
+    <span class="n">SAMPLE_MEAN</span> <span class="o">=</span> <span class="s2">&quot;Sample mean&quot;</span>
+    <span class="n">ALL_REPLICATES</span> <span class="o">=</span> <span class="s2">&quot;All replicates&quot;</span>
+    <span class="n">RAW_DATA</span> <span class="o">=</span> <span class="s2">&quot;Raw data&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="FitErrorType">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.FitErrorType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FitErrorType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enumeration for different error handling methods in fitting.&quot;&quot;&quot;</span>
+    <span class="n">HARMONIC</span> <span class="o">=</span> <span class="s2">&quot;harmonic&quot;</span>
+    <span class="n">COLUMN</span> <span class="o">=</span> <span class="s2">&quot;column&quot;</span>
+    <span class="n">NONE</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="PlotConfig">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.PlotConfig">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PlotConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for plot settings.&quot;&quot;&quot;</span>
+    <span class="n">x_column</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">y_column</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">text_label</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">fit_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">fit_order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">fit_error_type</span><span class="p">:</span> <span class="n">FitErrorType</span> <span class="o">=</span> <span class="n">FitErrorType</span><span class="o">.</span><span class="n">NONE</span>
+    <span class="n">error_x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span>
+    <span class="n">error_y</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span>
+    <span class="n">error_column_x</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">error_column_y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="FilterConfig">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.FilterConfig">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FilterConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for data filtering.&quot;&quot;&quot;</span>
+    <span class="n">sample_contains</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">sample_not_contains</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="DataFilter">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DataFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataFilter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles data filtering operations.&quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="DataFilter.apply_filters">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DataFilter.apply_filters">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_filters</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filter_config</span><span class="p">:</span> <span class="n">FilterConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply include and exclude filters to a DataFrame.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df: DataFrame to filter</span>
+<span class="sd">            column: Column name to apply filters on</span>
+<span class="sd">            filter_config: Filter configuration</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Filtered DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="c1"># Apply include filters</span>
+        <span class="k">if</span> <span class="n">filter_config</span><span class="o">.</span><span class="n">sample_contains</span><span class="p">:</span>
+            <span class="n">include_terms</span> <span class="o">=</span> <span class="p">[</span><span class="n">term</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">filter_config</span><span class="o">.</span><span class="n">sample_contains</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)]</span>
+            <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span>
+                <span class="n">filtered_df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">any</span><span class="p">(</span><span class="n">term</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">include_terms</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+        
+        <span class="c1"># Apply exclude filters</span>
+        <span class="k">if</span> <span class="n">filter_config</span><span class="o">.</span><span class="n">sample_not_contains</span><span class="p">:</span>
+            <span class="n">exclude_terms</span> <span class="o">=</span> <span class="p">[</span><span class="n">term</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">filter_config</span><span class="o">.</span><span class="n">sample_not_contains</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)]</span>
+            <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span>
+                <span class="o">~</span><span class="n">filtered_df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">any</span><span class="p">(</span><span class="n">term</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">exclude_terms</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">filtered_df</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DataFitter">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DataFitter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataFitter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles data fitting operations.&quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="DataFitter.fit_polynomial_simple">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DataFitter.fit_polynomial_simple">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_polynomial_simple</span><span class="p">(</span><span class="n">x_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform simple polynomial fitting without error consideration.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            x_data: X values</span>
+<span class="sd">            y_data: Y values</span>
+<span class="sd">            order: Polynomial order</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (x_fit, y_fit, equation_string)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
+        <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="n">x_data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">x_data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">x_fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">y_fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">x_fit</span><span class="p">)</span>
+        
+        <span class="n">equation</span> <span class="o">=</span> <span class="s2">&quot;f(x) = &quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coeffs</span><span class="p">):</span>
+            <span class="n">power</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">power</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">equation</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">coeff</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">x&lt;sup&gt;</span><span class="si">{</span><span class="n">power</span><span class="si">}</span><span class="s2">&lt;/sup&gt; + &quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">equation</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">coeff</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="k">return</span> <span class="n">x_fit</span><span class="p">,</span> <span class="n">y_fit</span><span class="p">,</span> <span class="n">equation</span></div>
+
+    
+<div class="viewcode-block" id="DataFitter.fit_polynomial_with_errors">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DataFitter.fit_polynomial_with_errors">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_polynomial_with_errors</span><span class="p">(</span>
+        <span class="n">x_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> 
+        <span class="n">sx</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sy</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform polynomial fitting with error consideration using OGLS.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            x_data: X values</span>
+<span class="sd">            y_data: Y values</span>
+<span class="sd">            sx: X errors</span>
+<span class="sd">            sy: Y errors</span>
+<span class="sd">            order: Polynomial order</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (x_fit, y_fit, confidence_interval, equation_string, ogls_object)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ogls</span> <span class="o">=</span> <span class="n">Polynomial</span><span class="p">(</span>
+            <span class="n">X</span><span class="o">=</span><span class="n">x_data</span><span class="p">,</span>
+            <span class="n">Y</span><span class="o">=</span><span class="n">y_data</span><span class="p">,</span>
+            <span class="n">sY</span><span class="o">=</span><span class="n">sy</span><span class="p">,</span>
+            <span class="n">sX</span><span class="o">=</span><span class="n">sx</span><span class="p">,</span>
+            <span class="n">degrees</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="n">ogls</span><span class="o">.</span><span class="n">regress</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="n">x_data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">x_data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">x_range</span> <span class="o">=</span> <span class="n">x_max</span> <span class="o">-</span> <span class="n">x_min</span>
+        <span class="n">x_fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x_min</span> <span class="o">-</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">x_range</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">x_range</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">y_fit</span> <span class="o">=</span> <span class="n">ogls</span><span class="o">.</span><span class="n">bff</span><span class="p">(</span><span class="n">x_fit</span><span class="p">)</span>
+        
+        <span class="c1"># Calculate confidence interval</span>
+        <span class="n">pcov</span> <span class="o">=</span> <span class="n">ogls</span><span class="o">.</span><span class="n">bfp_CM</span>
+        <span class="n">y_fit_se</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x_fit</span> <span class="o">**</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ogls</span><span class="o">.</span><span class="n">bfp</span><span class="p">))])</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">pcov</span><span class="p">)</span> <span class="o">*</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x_fit</span> <span class="o">**</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ogls</span><span class="o">.</span><span class="n">bfp</span><span class="p">))])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="n">confidence</span> <span class="o">=</span> <span class="mf">0.95</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_data</span><span class="p">)</span>
+        <span class="n">dof</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">ogls</span><span class="o">.</span><span class="n">bfp</span><span class="p">)</span>
+        <span class="n">t_value</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">ppf</span><span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">confidence</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dof</span><span class="p">)</span>
+        <span class="n">ci</span> <span class="o">=</span> <span class="n">t_value</span> <span class="o">*</span> <span class="n">y_fit_se</span>
+        
+        <span class="c1"># Format equation</span>
+        <span class="n">equation</span> <span class="o">=</span> <span class="s2">&quot;f(x) = &quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ogls</span><span class="o">.</span><span class="n">bfp</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">coeff</span> <span class="o">=</span> <span class="n">ogls</span><span class="o">.</span><span class="n">bfp</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;a</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">ogls</span><span class="o">.</span><span class="n">bfp_se</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;a</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+            
+            <span class="n">coeff_mag</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">coeff</span><span class="p">))))</span>
+            <span class="n">err_mag</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">err</span><span class="p">))))</span>
+            
+            <span class="n">coeff_formatted</span> <span class="o">=</span> <span class="n">coeff</span> <span class="o">/</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">coeff_mag</span>
+            <span class="n">err_formatted</span> <span class="o">=</span> <span class="n">err</span> <span class="o">/</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">coeff_mag</span>
+            
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">equation</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">coeff_formatted</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">(±</span><span class="si">{</span><span class="n">err_formatted</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)×10&lt;sup&gt;</span><span class="si">{</span><span class="n">coeff_mag</span><span class="si">}</span><span class="s2">&lt;/sup&gt;x&lt;sup&gt;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&lt;/sup&gt; + &quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">equation</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">coeff_formatted</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">(±</span><span class="si">{</span><span class="n">err_formatted</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)×10&lt;sup&gt;</span><span class="si">{</span><span class="n">coeff_mag</span><span class="si">}</span><span class="s2">&lt;/sup&gt;&quot;</span>
+        
+        <span class="k">return</span> <span class="n">x_fit</span><span class="p">,</span> <span class="n">y_fit</span><span class="p">,</span> <span class="n">ci</span><span class="p">,</span> <span class="n">equation</span><span class="p">,</span> <span class="n">ogls</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PlotGenerator">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.PlotGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PlotGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles plot generation and customization.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">symbols</span> <span class="o">=</span> <span class="n">PLOT_PARAMS</span><span class="o">.</span><span class="n">SYMBOLS</span>
+    
+<div class="viewcode-block" id="PlotGenerator.create_scatter_plot">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.PlotGenerator.create_scatter_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_scatter_plot</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">:</span> <span class="n">PlotConfig</span><span class="p">,</span>
+        <span class="n">error_x</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">error_y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a scatter plot with the given configuration.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df: DataFrame to plot</span>
+<span class="sd">            plot_config: Plot configuration</span>
+<span class="sd">            error_x: X-axis error bars</span>
+<span class="sd">            error_y: Y-axis error bars</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Plotly figure object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">plot_config</span><span class="o">.</span><span class="n">x_column</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">plot_config</span><span class="o">.</span><span class="n">y_column</span><span class="p">,</span>
+            <span class="n">error_x</span><span class="o">=</span><span class="n">error_x</span><span class="p">,</span>
+            <span class="n">error_y</span><span class="o">=</span><span class="n">error_y</span><span class="p">,</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">plot_config</span><span class="o">.</span><span class="n">text_label</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span>
+            <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span>
+            <span class="n">symbol_sequence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">symbols</span><span class="p">,</span>
+        <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_customize_plot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator.add_fit_line">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.PlotGenerator.add_fit_line">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_fit_line</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">:</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">x_fit</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_fit</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">equation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">confidence_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a fit line to the plot.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            fig: Plotly figure</span>
+<span class="sd">            x_fit: X values for fit line</span>
+<span class="sd">            y_fit: Y values for fit line</span>
+<span class="sd">            equation: Equation string for legend</span>
+<span class="sd">            confidence_interval: Optional confidence interval</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Updated figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Add fit line</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+            <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">x_fit</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_fit</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">equation</span><span class="p">,</span>
+                <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Add confidence interval if provided</span>
+        <span class="k">if</span> <span class="n">confidence_interval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+                <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">x_fit</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_fit</span> <span class="o">+</span> <span class="n">confidence_interval</span><span class="p">,</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+                <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">x_fit</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_fit</span> <span class="o">-</span> <span class="n">confidence_interval</span><span class="p">,</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                    <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;tonexty&#39;</span><span class="p">,</span> <span class="n">fillcolor</span><span class="o">=</span><span class="s1">&#39;rgba(255,0,0,0.2)&#39;</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;95% CI&#39;</span><span class="p">,</span> <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+    
+<div class="viewcode-block" id="PlotGenerator._customize_plot">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.PlotGenerator._customize_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_customize_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">:</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply custom styling to the plot.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            fig: Plotly figure</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Customized figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+            <span class="n">hoverlabel</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span>
+            <span class="n">legend</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">15</span><span class="p">),</span>
+            <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">35</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">))</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">modify_text_label_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fig</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DiscoverResultsPage">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DiscoverResultsPage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main class for the Discover Results page.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the DiscoverResultsPage.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_filter</span> <span class="o">=</span> <span class="n">DataFilter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_fitter</span> <span class="o">=</span> <span class="n">DataFitter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span> <span class="o">=</span> <span class="n">PlotGenerator</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_page</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="DiscoverResultsPage._setup_page">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._setup_page">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up page configuration, logo, and authentication.&quot;&quot;&quot;</span>
+        <span class="n">page_config_manager</span> <span class="o">=</span> <span class="n">PageConfigManager</span><span class="p">()</span>
+        <span class="n">page_config_manager</span><span class="o">.</span><span class="n">configure_page</span><span class="p">(</span><span class="n">page_number</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+        
+        <span class="n">logo_manager</span> <span class="o">=</span> <span class="n">SidebarLogoManager</span><span class="p">()</span>
+        <span class="n">logo_manager</span><span class="o">.</span><span class="n">add_logo</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;PYTEST_CURRENT_TEST&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">authenticator</span> <span class="o">=</span> <span class="n">Authenticator</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">authenticator</span><span class="o">.</span><span class="n">require_authentication</span><span class="p">():</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage.run">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the main application page.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_data_availability</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_show_data_requirement_message</span><span class="p">()</span>
+            <span class="k">return</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_main_interface</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._check_data_availability">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._check_data_availability">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_data_availability</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if required data is available in session state.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            True if data is available, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;correction_output_summary&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="ow">or</span> 
+                <span class="s2">&quot;input_intensities&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._show_data_requirement_message">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._show_data_requirement_message">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_show_data_requirement_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display message when no data is available.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;Please upload (and process) a dataset in order to screen results.&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span><span class="s2">&quot;pages/01_Data_IO.py&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\rightarrow  \textit{Data-IO}$  page&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span><span class="s2">&quot;pages/04_Processing.py&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\rightarrow  \textit</span><span class="si">{Processing}</span><span class="s2">$  page&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._get_available_data_types">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._get_available_data_types">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_available_data_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of available data types for plotting.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            List of available data type strings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="s2">&quot;correction_output_summary&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">DataType</span><span class="o">.</span><span class="n">SAMPLE_MEAN</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">ALL_REPLICATES</span><span class="o">.</span><span class="n">value</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;input_intensities&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">RAW_DATA</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">options</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._render_main_interface">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._render_main_interface">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_main_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the main user interface.&quot;&quot;&quot;</span>
+        <span class="n">options_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_available_data_types</span><span class="p">()</span>
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_data_selection</span><span class="p">(</span><span class="n">options_plot</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_annotation_selection</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_filter_controls</span><span class="p">()</span>
+        
+        <span class="c1"># Get filtered data and column options</span>
+        <span class="n">df</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filtered_data_and_columns</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_axis_selection</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_can_create_plot</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_plot_section</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._render_data_selection">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._render_data_selection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_data_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render data type selection widget.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            options: List of available data type options</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;07_df_to_show_&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Please choose if you want to plot every replicate, or sample mean ±2SE!&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._render_annotation_selection">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._render_annotation_selection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_annotation_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render annotation selection widget.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;replicates&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;07_df_to_show_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="n">annotation_options</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Sample&quot;</span><span class="p">,</span> <span class="s2">&quot;Timetag&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">annotation_options</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Sample&quot;</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;07_text_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Please select in-plot annotations!&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">annotation_options</span>
+        <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._render_filter_controls">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._render_filter_controls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_filter_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render filter control widgets in the sidebar.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span>
+            <span class="s2">&quot;Sample name contains (KEEP):&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set multiple keywords by separating them through semicolons ;&quot;</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="s2">&quot;07_sample_contains&quot;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span>
+            <span class="s2">&quot;Sample name contains (DROP):&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set multiple keywords by separating them through semicolons ;&quot;</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="s2">&quot;07_sample_not_contains&quot;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._get_filtered_data_and_columns">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._get_filtered_data_and_columns">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_filtered_data_and_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get filtered data and available columns.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (filtered_dataframe, column_list) or (None, None) if no data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;07_df_to_show_&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        
+        <span class="c1"># Get the appropriate dataset</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_dataset</span><span class="p">()</span>
+        
+        <span class="c1"># Apply filters</span>
+        <span class="n">filter_config</span> <span class="o">=</span> <span class="n">FilterConfig</span><span class="p">(</span>
+            <span class="n">sample_contains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;07_sample_contains&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="n">sample_not_contains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;07_sample_not_contains&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_filter</span><span class="o">.</span><span class="n">apply_filters</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;Sample&quot;</span><span class="p">,</span> <span class="n">filter_config</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Please apply filters to see data. No data to display.&#39;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._select_dataset">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._select_dataset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_select_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select the appropriate dataset based on user choice.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Selected DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;07_df_to_show_&quot;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;replicate&quot;</span> <span class="ow">in</span> <span class="n">data_type</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">correction_output_full_dataset</span>
+        <span class="k">elif</span> <span class="s2">&quot;Sample&quot;</span> <span class="ow">in</span> <span class="n">data_type</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">correction_output_summary</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Raw data</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._get_default_axis_columns">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._get_default_axis_columns">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_default_axis_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get default x and y axis columns based on data type.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (x_column, y_column)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;07_df_to_show_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;replicate&quot;</span> <span class="ow">in</span> <span class="n">data_type</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Timetag&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample&quot;</span>
+        <span class="k">elif</span> <span class="s2">&quot;Sample&quot;</span> <span class="ow">in</span> <span class="n">data_type</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Sample&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Raw data</span>
+            <span class="k">return</span> <span class="s2">&quot;Timetag&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample&quot;</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._render_axis_selection">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._render_axis_selection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_axis_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render axis selection widgets.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            columns: List of available column names</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_default</span><span class="p">,</span> <span class="n">y_default</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_axis_columns</span><span class="p">()</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">x_pre_idx</span> <span class="o">=</span> <span class="n">columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x_default</span><span class="p">)</span>
+            <span class="n">y_pre_idx</span> <span class="o">=</span> <span class="n">columns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">y_default</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">x_pre_idx</span> <span class="o">=</span> <span class="n">y_pre_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;07_col_X&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Please choose x-axis for plot!&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">x_pre_idx</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;07_col_Y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Please choose y-axis for plot!&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">y_pre_idx</span>
+        <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._can_create_plot">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._can_create_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_can_create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if plot can be created.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            True if both X and Y columns are selected</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;07_col_X&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="ow">and</span> <span class="s2">&quot;07_col_Y&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._render_plot_section">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._render_plot_section">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_plot_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the plotting section with fit options and the actual plot.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df: DataFrame to plot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plot_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_config</span><span class="p">()</span>
+        
+        <span class="c1"># Render fit controls</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span><span class="s1">&#39;Fit data&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;07_fit&#39;</span><span class="p">)</span>
+        
+        <span class="n">error_x</span> <span class="o">=</span> <span class="n">error_y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">ogls_object</span> <span class="o">=</span> <span class="kc">None</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;07_fit&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">plot_config</span><span class="p">,</span> <span class="n">error_x</span><span class="p">,</span> <span class="n">error_y</span><span class="p">,</span> <span class="n">ogls_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_fit_controls</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">)</span>
+        
+        <span class="c1"># Create and display plot</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">,</span> <span class="n">error_x</span><span class="p">,</span> <span class="n">error_y</span><span class="p">,</span> <span class="n">ogls_object</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._get_plot_config">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._get_plot_config">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_plot_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PlotConfig</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current plot configuration.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            PlotConfig object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PlotConfig</span><span class="p">(</span>
+            <span class="n">x_column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;07_col_X&quot;</span><span class="p">],</span>
+            <span class="n">y_column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;07_col_Y&quot;</span><span class="p">],</span>
+            <span class="n">text_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;07_text_label&quot;</span><span class="p">),</span>
+            <span class="n">fit_enabled</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;07_fit&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._render_fit_controls">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._render_fit_controls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_fit_controls</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">:</span> <span class="n">PlotConfig</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PlotConfig</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">object</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render fit control widgets and calculate fit parameters.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df: DataFrame being plotted</span>
+<span class="sd">            plot_config: Current plot configuration</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (updated_plot_config, error_x, error_y, ogls_object)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fitcol1</span><span class="p">,</span> <span class="n">fitcol2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">fitcol1</span><span class="p">:</span>
+            <span class="n">plot_config</span><span class="o">.</span><span class="n">fit_order</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span><span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;07_fit_order&#39;</span><span class="p">)</span>
+            <span class="n">error_type_str</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+                <span class="s1">&#39;Include error&#39;</span><span class="p">,</span> 
+                <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">FitErrorType</span><span class="p">],</span> 
+                <span class="n">key</span><span class="o">=</span><span class="s1">&#39;07_fit_error&#39;</span>
+            <span class="p">)</span>
+            <span class="n">plot_config</span><span class="o">.</span><span class="n">fit_error_type</span> <span class="o">=</span> <span class="n">FitErrorType</span><span class="p">(</span><span class="n">error_type_str</span><span class="p">)</span>
+        
+        <span class="n">error_x</span><span class="p">,</span> <span class="n">error_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error_configuration</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">,</span> <span class="n">fitcol2</span><span class="p">)</span>
+        <span class="n">ogls_object</span> <span class="o">=</span> <span class="kc">None</span>
+        
+        <span class="c1"># Perform fitting</span>
+        <span class="k">if</span> <span class="n">plot_config</span><span class="o">.</span><span class="n">fit_error_type</span> <span class="o">==</span> <span class="n">FitErrorType</span><span class="o">.</span><span class="n">NONE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_perform_simple_fit</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ogls_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perform_error_weighted_fit</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">,</span> <span class="n">error_x</span><span class="p">,</span> <span class="n">error_y</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">plot_config</span><span class="p">,</span> <span class="n">error_x</span><span class="p">,</span> <span class="n">error_y</span><span class="p">,</span> <span class="n">ogls_object</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._handle_error_configuration">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._handle_error_configuration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_error_configuration</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">:</span> <span class="n">PlotConfig</span><span class="p">,</span> <span class="n">column_widget</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle error configuration based on the selected error type.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df: DataFrame being plotted</span>
+<span class="sd">            plot_config: Plot configuration</span>
+<span class="sd">            column_widget: Streamlit column for widgets</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (error_x, error_y)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">column_widget</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">plot_config</span><span class="o">.</span><span class="n">fit_error_type</span> <span class="o">==</span> <span class="n">FitErrorType</span><span class="o">.</span><span class="n">HARMONIC</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configure_harmonic_errors</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">plot_config</span><span class="o">.</span><span class="n">fit_error_type</span> <span class="o">==</span> <span class="n">FitErrorType</span><span class="o">.</span><span class="n">COLUMN</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configure_column_errors</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># None</span>
+                <span class="n">data_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">plot_config</span><span class="o">.</span><span class="n">x_column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">data_length</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">data_length</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._configure_harmonic_errors">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._configure_harmonic_errors">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_configure_harmonic_errors</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">:</span> <span class="n">PlotConfig</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure harmonic (constant) errors.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df: DataFrame being plotted</span>
+<span class="sd">            plot_config: Plot configuration</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (error_x, error_y)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plot_config</span><span class="o">.</span><span class="n">error_x</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">number_input</span><span class="p">(</span>
+            <span class="s1">&#39;Error on x-axis&#39;</span><span class="p">,</span>
+            <span class="n">min_value</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+            <span class="n">step</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.3f</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="s1">&#39;07_fit_error_x&#39;</span>
+        <span class="p">)</span>
+        <span class="n">plot_config</span><span class="o">.</span><span class="n">error_y</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">number_input</span><span class="p">(</span>
+            <span class="s1">&#39;Error on y-axis&#39;</span><span class="p">,</span>
+            <span class="n">min_value</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.3f</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">step</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="s1">&#39;07_fit_error_y&#39;</span>
+        <span class="p">)</span>
+        
+        <span class="n">data_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">plot_config</span><span class="o">.</span><span class="n">x_column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">data_length</span><span class="p">,</span> <span class="n">plot_config</span><span class="o">.</span><span class="n">error_x</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">data_length</span><span class="p">,</span> <span class="n">plot_config</span><span class="o">.</span><span class="n">error_y</span><span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._configure_column_errors">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._configure_column_errors">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_configure_column_errors</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">:</span> <span class="n">PlotConfig</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure column-based errors.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df: DataFrame being plotted</span>
+<span class="sd">            plot_config: Plot configuration</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (error_x, error_y)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">numeric_columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        
+        <span class="n">plot_config</span><span class="o">.</span><span class="n">error_column_x</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+            <span class="s1">&#39;Error column (x-axis)&#39;</span><span class="p">,</span> 
+            <span class="n">options</span><span class="o">=</span><span class="n">numeric_columns</span><span class="p">,</span> 
+            <span class="n">key</span><span class="o">=</span><span class="s1">&#39;07_fit_error_column_x&#39;</span>
+        <span class="p">)</span>
+        <span class="n">plot_config</span><span class="o">.</span><span class="n">error_column_y</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+            <span class="s1">&#39;Error column (y-axis)&#39;</span><span class="p">,</span> 
+            <span class="n">options</span><span class="o">=</span><span class="n">numeric_columns</span><span class="p">,</span> 
+            <span class="n">key</span><span class="o">=</span><span class="s1">&#39;07_fit_error_column_y&#39;</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Filter out NaN values for the error columns</span>
+        <span class="n">df_clean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">plot_config</span><span class="o">.</span><span class="n">error_column_x</span><span class="p">,</span> <span class="n">plot_config</span><span class="o">.</span><span class="n">error_column_y</span><span class="p">])</span>
+        
+        <span class="k">return</span> <span class="n">df_clean</span><span class="p">[</span><span class="n">plot_config</span><span class="o">.</span><span class="n">error_column_x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_clean</span><span class="p">[</span><span class="n">plot_config</span><span class="o">.</span><span class="n">error_column_y</span><span class="p">]</span><span class="o">.</span><span class="n">values</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._perform_simple_fit">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._perform_simple_fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_perform_simple_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">:</span> <span class="n">PlotConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform simple polynomial fitting without errors.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df: DataFrame being plotted</span>
+<span class="sd">            plot_config: Plot configuration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_data</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">plot_config</span><span class="o">.</span><span class="n">x_column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">y_data</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">plot_config</span><span class="o">.</span><span class="n">y_column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s1">&#39;07_fit_results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_fitter</span><span class="o">.</span><span class="n">fit_polynomial_simple</span><span class="p">(</span>
+            <span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">plot_config</span><span class="o">.</span><span class="n">fit_order</span>
+        <span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._perform_error_weighted_fit">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._perform_error_weighted_fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_perform_error_weighted_fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">:</span> <span class="n">PlotConfig</span><span class="p">,</span>
+        <span class="n">error_x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">error_y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">object</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform error-weighted polynomial fitting.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df: DataFrame being plotted</span>
+<span class="sd">            plot_config: Plot configuration</span>
+<span class="sd">            error_x: X-axis errors</span>
+<span class="sd">            error_y: Y-axis errors</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            OGLS object or None if fitting failed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">x_data</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">plot_config</span><span class="o">.</span><span class="n">x_column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">y_data</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">plot_config</span><span class="o">.</span><span class="n">y_column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            
+            <span class="n">x_fit</span><span class="p">,</span> <span class="n">y_fit</span><span class="p">,</span> <span class="n">ci</span><span class="p">,</span> <span class="n">equation</span><span class="p">,</span> <span class="n">ogls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_fitter</span><span class="o">.</span><span class="n">fit_polynomial_with_errors</span><span class="p">(</span>
+                <span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">error_x</span><span class="p">,</span> <span class="n">error_y</span><span class="p">,</span> <span class="n">plot_config</span><span class="o">.</span><span class="n">fit_order</span>
+            <span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s1">&#39;07_fit_results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_fit</span><span class="p">,</span> <span class="n">y_fit</span><span class="p">,</span> <span class="n">equation</span><span class="p">,</span> <span class="n">ci</span><span class="p">)</span>
+            
+            <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="s1">&#39;Fit parameters&#39;</span><span class="p">):</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ogls</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">ogls</span>
+            
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Error: Please choose numeric columns for x and y if you want to perform a fit.&#39;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="DiscoverResultsPage._create_plot">
+<a class="viewcode-back" href="../../07_Discover_Results.html#pages.07_Discover_Results.DiscoverResultsPage._create_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_plot</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">:</span> <span class="n">PlotConfig</span><span class="p">,</span>
+        <span class="n">error_x</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">error_y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">ogls_object</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">object</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the main plot with optional fit line.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            df: DataFrame to plot</span>
+<span class="sd">            plot_config: Plot configuration</span>
+<span class="sd">            error_x: X-axis error bars</span>
+<span class="sd">            error_y: Y-axis error bars</span>
+<span class="sd">            ogls_object: OGLS object for error-weighted fits</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Plotly figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Determine if error bars should be shown</span>
+        <span class="n">show_errors</span> <span class="o">=</span> <span class="p">(</span><span class="n">plot_config</span><span class="o">.</span><span class="n">fit_enabled</span> <span class="ow">and</span> 
+                      <span class="n">plot_config</span><span class="o">.</span><span class="n">fit_error_type</span> <span class="o">!=</span> <span class="n">FitErrorType</span><span class="o">.</span><span class="n">NONE</span><span class="p">)</span>
+        
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span><span class="o">.</span><span class="n">create_scatter_plot</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">,</span>
+            <span class="n">error_x</span><span class="o">=</span><span class="n">error_x</span> <span class="k">if</span> <span class="n">show_errors</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">error_y</span><span class="o">=</span><span class="n">error_y</span> <span class="k">if</span> <span class="n">show_errors</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Add fit line if fitting is enabled</span>
+        <span class="k">if</span> <span class="n">plot_config</span><span class="o">.</span><span class="n">fit_enabled</span> <span class="ow">and</span> <span class="s1">&#39;07_fit_results&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="n">fit_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s1">&#39;07_fit_results&#39;</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fit_results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># Simple fit</span>
+                <span class="n">x_fit</span><span class="p">,</span> <span class="n">y_fit</span><span class="p">,</span> <span class="n">equation</span> <span class="o">=</span> <span class="n">fit_results</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span><span class="o">.</span><span class="n">add_fit_line</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">x_fit</span><span class="p">,</span> <span class="n">y_fit</span><span class="p">,</span> <span class="n">equation</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">fit_results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># Error-weighted fit</span>
+                <span class="n">x_fit</span><span class="p">,</span> <span class="n">y_fit</span><span class="p">,</span> <span class="n">equation</span><span class="p">,</span> <span class="n">ci</span> <span class="o">=</span> <span class="n">fit_results</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_generator</span><span class="o">.</span><span class="n">add_fit_line</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">x_fit</span><span class="p">,</span> <span class="n">y_fit</span><span class="p">,</span> <span class="n">equation</span><span class="p">,</span> <span class="n">ci</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fig</span></div>
+</div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">DiscoverResultsPage</span><span class="p">()</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Miguel Bernecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

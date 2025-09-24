@@ -1,0 +1,195 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>init_params &mdash; D4Xgui v1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=76e2d817"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="page_config" href="tools_page_config.html" />
+    <link rel="prev" title="database" href="tools_database.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            D4Xgui
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="01_Data_IO.html">01_Data_IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_Baseline_correction.html">03_Baseline_correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_Processing.html">04_Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_Standardization_Results.html">05_Standardization_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_Dual_Clumped_Space.html">06_Dual_Clumped_Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07_Discover_Results.html">07_Discover_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08_D47crunch_plots.html">08_D47crunch_plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="100_Save_and_Reload.html">100_Save_and_Reload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="97_Database_Management.html">97_Database_Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tools_Pysotope_fork.html">Pysotope_fork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_authenticator.html">authenticator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_calc_temperature.html">calc_temperature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_commons.html">commons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_database.html">database</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">init_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_page_config.html">page_config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_sidebar_logo.html">sidebar_logo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">D4Xgui</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">init_params</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tools_init_params.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="init-params">
+<h1>init_params<a class="headerlink" href="#init-params" title="Link to this heading"></a></h1>
+<p>Initial parameters and standards for D4Xgui application.</p>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tools.init_params.</span></span><span class="sig-name descname"><span class="pre">IsotopeStandards</span></span><a class="reference internal" href="_modules/tools/init_params.html#IsotopeStandards"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Container for isotopic standard values and working gas parameters.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">STANDARDS_BULK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{13:</span> <span class="pre">{'ETH-1':</span> <span class="pre">2.02,</span> <span class="pre">'ETH-1-110C':</span> <span class="pre">2.02,</span> <span class="pre">'ETH-1_110C':</span> <span class="pre">2.02,</span> <span class="pre">'ETH-2':</span> <span class="pre">-10.17,</span> <span class="pre">'ETH-2-110C':</span> <span class="pre">-10.17,</span> <span class="pre">'ETH-2_110C':</span> <span class="pre">-10.17,</span> <span class="pre">'ETH-3':</span> <span class="pre">1.71},</span> <span class="pre">18:</span> <span class="pre">{'ETH-1':</span> <span class="pre">-2.19,</span> <span class="pre">'ETH-1-110C':</span> <span class="pre">-2.19,</span> <span class="pre">'ETH-1_110C':</span> <span class="pre">-2.19,</span> <span class="pre">'ETH-2':</span> <span class="pre">-18.69,</span> <span class="pre">'ETH-2-110C':</span> <span class="pre">-18.69,</span> <span class="pre">'ETH-2_110C':</span> <span class="pre">-18.69,</span> <span class="pre">'ETH-3':</span> <span class="pre">-1.78}}</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">STANDARDS_NOMINAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Bernecker2023</span> <span class="pre">carb':</span> <span class="pre">{'#info':</span> <span class="pre">'Longterm</span> <span class="pre">GU,</span> <span class="pre">Bernecker</span> <span class="pre">et</span> <span class="pre">al.</span> <span class="pre">(2023)',</span> <span class="pre">'47':</span> <span class="pre">{'ETH-1':</span> <span class="pre">0.2061,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.6032,</span> <span class="pre">'GU1':</span> <span class="pre">0.2244},</span> <span class="pre">'48':</span> <span class="pre">{'ETH-1':</span> <span class="pre">0.1286,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.1286,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.3039,</span> <span class="pre">'GU1':</span> <span class="pre">-0.4015}},</span> <span class="pre">'CDES':</span> <span class="pre">{'#info':</span> <span class="pre">'Wang_2004,</span> <span class="pre">revised</span> <span class="pre">by</span> <span class="pre">Petersen_2019',</span> <span class="pre">'47':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0266,</span> <span class="pre">'25C':</span> <span class="pre">0.9196,</span> <span class="pre">'4C':</span> <span class="pre">1.0402,</span> <span class="pre">'60C':</span> <span class="pre">0.77062},</span> <span class="pre">'48':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">0.345},</span> <span class="pre">'49':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">2.228}},</span> <span class="pre">'Fiebig2024</span> <span class="pre">carb':</span> <span class="pre">{'#info':</span> <span class="pre">'Longterm</span> <span class="pre">GU,</span> <span class="pre">Fiebig</span> <span class="pre">et</span> <span class="pre">al.</span> <span class="pre">(2024)',</span> <span class="pre">'47':</span> <span class="pre">{'ETH-1':</span> <span class="pre">0.2052,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.6132,</span> <span class="pre">'ETH3OXI':</span> <span class="pre">0.6132,</span> <span class="pre">'GU1':</span> <span class="pre">0.2254},</span> <span class="pre">'48':</span> <span class="pre">{'ETH-1':</span> <span class="pre">0.1277,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.1299,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.2481,</span> <span class="pre">'ETH3OXI':</span> <span class="pre">0.2481,</span> <span class="pre">'GU1':</span> <span class="pre">-0.3998}},</span> <span class="pre">'ICDES':</span> <span class="pre">{'#info':</span> <span class="pre">'InterCarb,</span> <span class="pre">Bernasconi</span> <span class="pre">et</span> <span class="pre">al.</span> <span class="pre">(2021)',</span> <span class="pre">'47':</span> <span class="pre">{'ETH-1':</span> <span class="pre">0.2052,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.6132}},</span> <span class="pre">'mixed</span> <span class="pre">Fiebig24+CDES':</span> <span class="pre">{'#info':</span> <span class="pre">'Longterm</span> <span class="pre">GU,</span> <span class="pre">Fiebig</span> <span class="pre">et</span> <span class="pre">al.</span> <span class="pre">(2024)',</span> <span class="pre">'47':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0266,</span> <span class="pre">'25C':</span> <span class="pre">0.9196,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.2052,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.6132,</span> <span class="pre">'ETH3OXI':</span> <span class="pre">0.6132,</span> <span class="pre">'ETH3oxi':</span> <span class="pre">0.6132,</span> <span class="pre">'GU1':</span> <span class="pre">0.2254},</span> <span class="pre">'48':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">0.345,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.1277,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.1299,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.2481,</span> <span class="pre">'ETH3OXI':</span> <span class="pre">0.2481,</span> <span class="pre">'ETH3oxi':</span> <span class="pre">0.2481,</span> <span class="pre">'GU1':</span> <span class="pre">-0.3998}},</span> <span class="pre">'mixed47':</span> <span class="pre">{'#info':</span> <span class="pre">'ETH1+2</span> <span class="pre">(47),</span> <span class="pre">25+1000C</span> <span class="pre">(47+48)',</span> <span class="pre">'47':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0266,</span> <span class="pre">'25C':</span> <span class="pre">0.9196,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.2052,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085},</span> <span class="pre">'48':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">0.345}},</span> <span class="pre">'mixed4748':</span> <span class="pre">{'#info':</span> <span class="pre">'ETH1+2,</span> <span class="pre">25+1000C</span> <span class="pre">(47+48)',</span> <span class="pre">'47':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0266,</span> <span class="pre">'25C':</span> <span class="pre">0.9196,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.2052,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085},</span> <span class="pre">'48':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">0.345,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.1277,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.1299}}}</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WORKING_GAS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'d13C':</span> <span class="pre">-4.221,</span> <span class="pre">'d18O':</span> <span class="pre">25.26}</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_bulk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tools/init_params.html#IsotopeStandards.get_bulk"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get all isotopic standards.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Dictionary containing all standard reference frames.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_standard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">standard_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tools/init_params.html#IsotopeStandards.get_standard"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get a specific isotopic standard.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>standard_name: Name of the standard to retrieve.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Dictionary containing the standard’s isotopic values.</p>
+</dd>
+<dt>Raises:</dt><dd><p>KeyError: If the standard name is not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_standards</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tools/init_params.html#IsotopeStandards.get_standards"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get all isotopic standards.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Dictionary containing all standard reference frames.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_working_gas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tools/init_params.html#IsotopeStandards.get_working_gas"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get working gas isotopic composition.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Dictionary containing working gas d13C and d18O values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tools_database.html" class="btn btn-neutral float-left" title="database" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools_page_config.html" class="btn btn-neutral float-right" title="page_config" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Miguel Bernecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

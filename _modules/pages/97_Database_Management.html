@@ -1,0 +1,712 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pages.97_Database_Management &mdash; D4Xgui v1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=76e2d817"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            D4Xgui
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../01_Data_IO.html">01_Data_IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../03_Baseline_correction.html">03_Baseline_correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../04_Processing.html">04_Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../05_Standardization_Results.html">05_Standardization_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../06_Dual_Clumped_Space.html">06_Dual_Clumped_Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../07_Discover_Results.html">07_Discover_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../08_D47crunch_plots.html">08_D47crunch_plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../100_Save_and_Reload.html">100_Save_and_Reload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../97_Database_Management.html">97_Database_Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_Pysotope_fork.html">Pysotope_fork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_authenticator.html">authenticator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_calc_temperature.html">calc_temperature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_commons.html">commons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_database.html">database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_init_params.html">init_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_page_config.html">page_config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_sidebar_logo.html">sidebar_logo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">D4Xgui</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pages.97_Database_Management</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pages.97_Database_Management</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.authenticator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Authenticator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.page_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageConfigManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.database</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatabaseManager</span>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DatabaseManagementPage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages the Database Management page of the D4Xgui application.&quot;&quot;&quot;</span>
+
+    <span class="n">SAMPLE_DB_PATH</span> <span class="o">=</span> <span class="s2">&quot;static/SampleDatabase.xlsx&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the DatabaseManagementPage.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span> <span class="o">=</span> <span class="n">DatabaseManager</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_page</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DatabaseManagementPage._setup_page">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._setup_page">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up page configuration and authentication.&quot;&quot;&quot;</span>
+        <span class="n">page_config_manager</span> <span class="o">=</span> <span class="n">PageConfigManager</span><span class="p">()</span>
+        <span class="n">page_config_manager</span><span class="o">.</span><span class="n">configure_page</span><span class="p">(</span><span class="n">page_number</span><span class="o">=</span><span class="mi">97</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;PYTEST_CURRENT_TEST&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">authenticator</span> <span class="o">=</span> <span class="n">Authenticator</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">authenticator</span><span class="o">.</span><span class="n">require_authentication</span><span class="p">():</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage.run">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the main database management page.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Database Management Dashboard&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_database</span><span class="p">()</span>
+        
+        <span class="n">tab1</span><span class="p">,</span> <span class="n">tab2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">tabs</span><span class="p">([</span><span class="s2">&quot;Replicates Database&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample Metadata&quot;</span><span class="p">])</span>
+        
+        <span class="k">with</span> <span class="n">tab1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_replicates_tab</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">tab2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_sample_metadata_tab</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._initialize_database">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._initialize_database">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize_database</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the database if not already initialized.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">():</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Database not initialized. Initializing now...&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&quot;Database initialized.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_replicates_tab">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_replicates_tab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_replicates_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the replicates database management tab.&quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">get_dataframe</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_empty_database_info</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_database_content</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_empty_database_info">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_empty_database_info">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_empty_database_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display information when the database is empty.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No data in the database.&quot;</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT name FROM sqlite_master WHERE type=&#39;table&#39;;&quot;</span><span class="p">)</span>
+            <span class="n">tables</span> <span class="o">=</span> <span class="p">[</span><span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()]</span>
+            
+            <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tables in the database: </span><span class="si">{</span><span class="n">tables</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="s1">&#39;replicates&#39;</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">:</span>
+                <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) FROM replicates;&quot;</span><span class="p">)</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of rows in replicates table: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;replicates table does not exist in the database.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_database_content">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_database_content">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_database_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the main database content interface.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of rows in database: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columns: </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">sample_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_sample_database</span><span class="p">()</span>
+        <span class="n">filtered_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_filters</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_data_display</span><span class="p">(</span><span class="n">filtered_df</span><span class="p">)</span>
+        <span class="c1">#self._render_data_manipulation(filtered_df)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_database_deletion</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._load_sample_database">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._load_sample_database">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_sample_database</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load and preprocess the sample database.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SAMPLE_DB_PATH</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+            
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sample_db</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SAMPLE_DB_PATH</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;openpyxl&quot;</span><span class="p">)</span>
+            <span class="c1"># Normalize string columns to lowercase for consistent filtering</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">,</span> <span class="s2">&quot;Project&quot;</span><span class="p">,</span> <span class="s2">&quot;Mineralogy&quot;</span><span class="p">,</span> <span class="s2">&quot;Publication&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">sample_db</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="n">sample_db</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample_db</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">sample_db</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading sample database: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._apply_filters">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._apply_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply user-selected filters to the dataframe.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;Data Filtering&quot;</span><span class="p">)</span>
+        
+        <span class="n">filter_mode</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">toggle</span><span class="p">(</span><span class="s2">&quot;Select filter functionality&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">filter_mode</span> <span class="ow">and</span> <span class="n">sample_db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_advanced_filters</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_simple_filters</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._apply_advanced_filters">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._apply_advanced_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_advanced_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply advanced filters based on sample database metadata.&quot;&quot;&quot;</span>
+        <span class="c1"># Filter sample_db to only include samples present in the replicates table</span>
+        <span class="n">sample_db</span> <span class="o">=</span> <span class="n">sample_db</span><span class="p">[</span><span class="n">sample_db</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())]</span>
+        
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="p">:</span>
+            <span class="n">selected_projects</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+                <span class="s2">&quot;Project:&quot;</span><span class="p">,</span> 
+                <span class="nb">sorted</span><span class="p">(</span><span class="n">sample_db</span><span class="p">[</span><span class="s2">&quot;Project&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+            <span class="p">)</span>
+            <span class="n">selected_types</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+                <span class="s2">&quot;Sample type:&quot;</span><span class="p">,</span> 
+                <span class="nb">sorted</span><span class="p">(</span><span class="n">sample_db</span><span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+            <span class="p">)</span>
+            <span class="n">selected_publications</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+                <span class="s2">&quot;Publication:&quot;</span><span class="p">,</span> 
+                <span class="nb">sorted</span><span class="p">(</span><span class="n">sample_db</span><span class="p">[</span><span class="s2">&quot;Publication&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+            <span class="p">)</span>
+            <span class="n">selected_mineralogy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+                <span class="s2">&quot;Mineralogy:&quot;</span><span class="p">,</span> 
+                <span class="nb">sorted</span><span class="p">(</span><span class="n">sample_db</span><span class="p">[</span><span class="s2">&quot;Mineralogy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+            <span class="p">)</span>
+            <span class="n">selected_sessions</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+                <span class="s2">&quot;Session:&quot;</span><span class="p">,</span> 
+                <span class="nb">sorted</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+            <span class="p">)</span>
+            
+            <span class="c1"># Date filtering</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Timetag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Timetag&#39;</span><span class="p">])</span>
+            <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_date_filters</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+            
+            <span class="n">load_entire_sessions</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span>
+                <span class="s2">&quot;Load entire sessions when filtering&quot;</span><span class="p">,</span> 
+                <span class="n">value</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+        
+        <span class="c1"># Apply filters sequentially</span>
+        <span class="n">filtered_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_by_sample_metadata</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">,</span> <span class="n">selected_projects</span><span class="p">,</span> <span class="n">selected_types</span><span class="p">,</span> 
+            <span class="n">selected_publications</span><span class="p">,</span> <span class="n">selected_mineralogy</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">selected_sessions</span><span class="p">:</span>
+            <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span><span class="n">filtered_df</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">selected_sessions</span><span class="p">)]</span>
+        
+        <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">filtered_df</span><span class="p">[</span><span class="s2">&quot;Timetag&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span> <span class="o">&gt;=</span> <span class="n">start_date</span><span class="p">)</span> <span class="o">&amp;</span> 
+            <span class="p">(</span><span class="n">filtered_df</span><span class="p">[</span><span class="s2">&quot;Timetag&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span> <span class="o">&lt;=</span> <span class="n">end_date</span><span class="p">)</span>
+        <span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">load_entire_sessions</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">filtered_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">sessions_to_include</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+            <span class="n">filtered_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">get_dataframe</span><span class="p">()</span>
+            <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span><span class="n">filtered_df</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">sessions_to_include</span><span class="p">)]</span>
+        
+        <span class="k">return</span> <span class="n">filtered_df</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._apply_simple_filters">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._apply_simple_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_simple_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply simple text-based filters.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="p">:</span>
+            <span class="n">sample_contains</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span>
+                <span class="s2">&quot;Sample name contains (KEEP):&quot;</span><span class="p">,</span>
+                <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set multiple keywords by separating them through semicolons ;&quot;</span>
+            <span class="p">)</span>
+            <span class="n">sample_not_contains</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span>
+                <span class="s2">&quot;Sample name contains (DROP):&quot;</span><span class="p">,</span>
+                <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set multiple keywords by separating them through semicolons ;&quot;</span>
+            <span class="p">)</span>
+        
+        <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">sample_contains</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sample_contains</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">))</span>
+            <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span>
+                <span class="n">filtered_df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">sample_not_contains</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sample_not_contains</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">))</span>
+            <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span>
+                <span class="o">~</span><span class="n">filtered_df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">filtered_df</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._filter_by_sample_metadata">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._filter_by_sample_metadata">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_by_sample_metadata</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">selected_projects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">selected_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">selected_publications</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">selected_mineralogy</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter dataframe based on sample metadata selections.&quot;&quot;&quot;</span>
+        <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="n">filter_mappings</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">selected_projects</span><span class="p">,</span> <span class="s2">&quot;Project&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">selected_types</span><span class="p">,</span> <span class="s2">&quot;Type&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">selected_publications</span><span class="p">,</span> <span class="s2">&quot;Publication&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">selected_mineralogy</span><span class="p">,</span> <span class="s2">&quot;Mineralogy&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
+        
+        <span class="k">for</span> <span class="n">selected_values</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">filter_mappings</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">selected_values</span><span class="p">:</span>
+                <span class="n">matching_samples</span> <span class="o">=</span> <span class="n">sample_db</span><span class="p">[</span>
+                    <span class="n">sample_db</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">selected_values</span><span class="p">)</span>
+                <span class="p">][</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span>
+                <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span>
+                    <span class="n">filtered_df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">matching_samples</span><span class="p">)</span>
+                <span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">filtered_df</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_date_filters">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_date_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_date_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render date filter controls.&quot;&quot;&quot;</span>
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">start_date</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">date_input</span><span class="p">(</span><span class="s2">&quot;Start Date&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Timetag&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="n">end_date</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">date_input</span><span class="p">(</span><span class="s2">&quot;End Date&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Timetag&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        
+        <span class="k">return</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_data_display">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_data_display">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_data_display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the main data display section.&quot;&quot;&quot;</span>
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Filtered Data&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Table Statistics&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s2">&quot;Total Replicates&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s2">&quot;Unique Sample Names&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">())</span>
+            
+            <span class="n">excel_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_excel_download</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;replicates_filtered.xlsx&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">download_button</span><span class="p">(</span>
+                <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Download Filtered Excel&quot;</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">excel_data</span><span class="p">,</span>
+                <span class="n">file_name</span><span class="o">=</span><span class="s2">&quot;replicates_filtered.xlsx&quot;</span><span class="p">,</span>
+                <span class="n">mime</span><span class="o">=</span><span class="s2">&quot;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&quot;</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._create_excel_download">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._create_excel_download">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_excel_download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create Excel file data for download.&quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelWriter</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">&#39;openpyxl&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;Sheet1&#39;</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_data_manipulation">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_data_manipulation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_data_manipulation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the data manipulation section.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span>
+            
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="s2">&quot;Data Manipulation&quot;</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Data Manipulation&quot;</span><span class="p">)</span>
+            
+            <span class="n">row_to_manipulate</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">number_input</span><span class="p">(</span>
+                <span class="s2">&quot;Enter row index to manipulate:&quot;</span><span class="p">,</span> 
+                <span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+                <span class="n">max_value</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="p">)</span>
+            
+            <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="n">col3</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            
+            <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Delete Row&quot;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_delete_row</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">row_to_manipulate</span><span class="p">)</span>
+            
+            <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Mark as Outlier&quot;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_mark_outlier</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">row_to_manipulate</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            
+            <span class="k">with</span> <span class="n">col3</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Unmark Outlier&quot;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_mark_outlier</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">row_to_manipulate</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            
+            <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Selected Row&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_to_manipulate</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="n">row_to_manipulate</span><span class="p">]])</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._delete_row">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._delete_row">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_delete_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">row_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a specific row from the database.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index_to_delete</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">row_index</span><span class="p">]</span>
+            
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+                <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+                <span class="c1"># Get primary key column name</span>
+                <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;PRAGMA table_info(replicates)&quot;</span><span class="p">)</span>
+                <span class="n">primary_key</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                
+                <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;DELETE FROM replicates WHERE </span><span class="si">{</span><span class="n">primary_key</span><span class="si">}</span><span class="s2"> = ?&quot;</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index_to_delete</span><span class="p">,</span> <span class="n">primary_key</span><span class="p">],)</span>
+                <span class="p">)</span>
+                <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                
+            <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Row </span><span class="si">{</span><span class="n">row_index</span><span class="si">}</span><span class="s2"> deleted successfully!&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error deleting row: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._mark_outlier">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._mark_outlier">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mark_outlier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">row_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">is_outlier</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mark or unmark a row as an outlier.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index_to_modify</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">row_index</span><span class="p">]</span>
+            <span class="n">outlier_value</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">is_outlier</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;marked&quot;</span> <span class="k">if</span> <span class="n">is_outlier</span> <span class="k">else</span> <span class="s2">&quot;unmarked&quot;</span>
+            
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+                <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+                <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                    <span class="s2">&quot;UPDATE replicates SET Outlier = ? WHERE UID = ?&quot;</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">outlier_value</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index_to_modify</span><span class="p">,</span> <span class="s1">&#39;UID&#39;</span><span class="p">])</span>
+                <span class="p">)</span>
+                <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                
+            <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Row </span><span class="si">{</span><span class="n">row_index</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2"> as outlier successfully!&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error </span><span class="si">{</span><span class="s1">&#39;marking&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_outlier</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;unmarking&#39;</span><span class="si">}</span><span class="s2"> outlier: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_database_deletion">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_database_deletion">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_database_deletion</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the database deletion section.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="s1">&#39;Delete Database&#39;</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;⚠️ Warning: This action will permanently delete the entire database. &quot;</span>
+                <span class="s2">&quot;This cannot be undone.&quot;</span>
+            <span class="p">)</span>
+            
+            <span class="n">confirm_checkbox</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span>
+                <span class="s2">&quot;I understand the consequences and want to proceed with deletion&quot;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">confirm_checkbox</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span>
+                    <span class="s2">&quot;Permanently Delete Database&quot;</span><span class="p">,</span> 
+                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span> 
+                    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;This will delete all data&quot;</span>
+                <span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_delete_database</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._delete_database">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._delete_database">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_delete_database</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete the entire database and reinitialize.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Close any existing connections</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="p">,</span> <span class="s1">&#39;_connection&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            
+            <span class="n">db_path</span> <span class="o">=</span> <span class="s1">&#39;pre_replicates.db&#39;</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">db_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&quot;Database successfully deleted.&quot;</span><span class="p">)</span>
+                
+                <span class="c1"># Reinitialize the database</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;A new empty database has been initialized.&quot;</span><span class="p">)</span>
+                
+                <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Database file not found.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;An error occurred while deleting the database: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_sample_metadata_tab">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_sample_metadata_tab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_sample_metadata_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the sample metadata management tab.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;Sample Metadata Management&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SAMPLE_DB_PATH</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_existing_sample_database</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_create_sample_database</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_manual_sample_addition</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_existing_sample_database">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_existing_sample_database">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_existing_sample_database</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render interface for existing sample database.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sample_db</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SAMPLE_DB_PATH</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;openpyxl&quot;</span><span class="p">)</span>
+            
+            <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Current Sample Database&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">sample_db</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_sample_database_upload</span><span class="p">(</span><span class="s2">&quot;Update Sample Database&quot;</span><span class="p">,</span> <span class="s2">&quot;Replace Current Sample Database&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading existing sample database: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_create_sample_database">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_create_sample_database">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_create_sample_database</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render interface for creating a new sample database.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No Sample Database found. Please upload a new one.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_sample_database_upload</span><span class="p">(</span><span class="s2">&quot;Upload Sample Database&quot;</span><span class="p">,</span> <span class="s2">&quot;Create Sample Database&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_sample_database_upload">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_sample_database_upload">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_sample_database_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upload_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">button_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the sample database upload interface.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="n">upload_label</span><span class="p">)</span>
+        <span class="n">uploaded_file</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">file_uploader</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">upload_label</span><span class="si">}</span><span class="s2"> (Excel format)&quot;</span><span class="p">,</span> 
+            <span class="nb">type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;xlsx&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">uploaded_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">new_sample_db</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">uploaded_file</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;openpyxl&quot;</span><span class="p">)</span>
+                
+                <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;New Sample Database Preview&quot;</span><span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">new_sample_db</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="n">button_label</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_save_sample_database</span><span class="p">(</span><span class="n">new_sample_db</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error processing the uploaded file: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._save_sample_database">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._save_sample_database">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_sample_database</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_db</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the sample database to file.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;static&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">sample_db</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SAMPLE_DB_PATH</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;openpyxl&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&quot;Sample database updated successfully!&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error saving sample database: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._render_manual_sample_addition">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._render_manual_sample_addition">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_manual_sample_addition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the manual sample addition interface.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="s2">&quot;Add New Sample Metadata Manually&quot;</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Add New Sample&quot;</span><span class="p">)</span>
+            
+            <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            
+            <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+                <span class="n">new_sample_name</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;Sample Name&quot;</span><span class="p">)</span>
+                <span class="n">new_sample_type</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;Sample Type&quot;</span><span class="p">)</span>
+                <span class="n">new_sample_project</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;Project&quot;</span><span class="p">)</span>
+            
+            <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+                <span class="n">new_sample_mineralogy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;Mineralogy&quot;</span><span class="p">)</span>
+                <span class="n">new_sample_publication</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;Publication&quot;</span><span class="p">)</span>
+                <span class="n">new_sample_notes</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_area</span><span class="p">(</span><span class="s2">&quot;Notes&quot;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Add Sample to Database&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_sample_manually</span><span class="p">(</span>
+                    <span class="n">new_sample_name</span><span class="p">,</span> <span class="n">new_sample_type</span><span class="p">,</span> <span class="n">new_sample_project</span><span class="p">,</span>
+                    <span class="n">new_sample_mineralogy</span><span class="p">,</span> <span class="n">new_sample_publication</span><span class="p">,</span> <span class="n">new_sample_notes</span>
+                <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DatabaseManagementPage._add_sample_manually">
+<a class="viewcode-back" href="../../97_Database_Management.html#pages.97_Database_Management.DatabaseManagementPage._add_sample_manually">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_sample_manually</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sample_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mineralogy</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">publication</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">notes</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new sample to the database manually.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Sample Name is required.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sample_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;Sample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">name</span><span class="p">],</span>
+                <span class="s2">&quot;Type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">sample_type</span><span class="p">],</span>
+                <span class="s2">&quot;Project&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">project</span><span class="p">],</span>
+                <span class="s2">&quot;Mineralogy&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">mineralogy</span><span class="p">],</span>
+                <span class="s2">&quot;Publication&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">publication</span><span class="p">],</span>
+                <span class="s2">&quot;Notes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">notes</span><span class="p">]</span>
+            <span class="p">}</span>
+            
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SAMPLE_DB_PATH</span><span class="p">):</span>
+                <span class="n">existing_db</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SAMPLE_DB_PATH</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;openpyxl&quot;</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">existing_db</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; already exists in the database.&quot;</span><span class="p">)</span>
+                    <span class="k">return</span>
+                
+                <span class="n">new_row</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sample_data</span><span class="p">)</span>
+                <span class="n">updated_db</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">existing_db</span><span class="p">,</span> <span class="n">new_row</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">updated_db</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sample_data</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_sample_database</span><span class="p">(</span><span class="n">updated_db</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; added successfully!&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error adding sample to database: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">DatabaseManagementPage</span><span class="p">()</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Miguel Bernecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

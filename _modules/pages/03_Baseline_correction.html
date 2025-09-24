@@ -1,0 +1,975 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pages.03_Baseline_correction &mdash; D4Xgui v1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=76e2d817"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            D4Xgui
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../01_Data_IO.html">01_Data_IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../03_Baseline_correction.html">03_Baseline_correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../04_Processing.html">04_Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../05_Standardization_Results.html">05_Standardization_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../06_Dual_Clumped_Space.html">06_Dual_Clumped_Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../07_Discover_Results.html">07_Discover_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../08_D47crunch_plots.html">08_D47crunch_plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../100_Save_and_Reload.html">100_Save_and_Reload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../97_Database_Management.html">97_Database_Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_Pysotope_fork.html">Pysotope_fork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_authenticator.html">authenticator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_calc_temperature.html">calc_temperature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_commons.html">commons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_database.html">database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_init_params.html">init_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_page_config.html">page_config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_sidebar_logo.html">sidebar_logo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">D4Xgui</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pages.03_Baseline_correction</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pages.03_Baseline_correction</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">difflib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">linregress</span><span class="p">,</span> <span class="n">t</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.Pysotope_fork</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pysotope</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.page_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageConfigManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.sidebar_logo</span><span class="w"> </span><span class="kn">import</span> <span class="n">SidebarLogoManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.authenticator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Authenticator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.database</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatabaseManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.commons</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotParameters</span><span class="p">,</span> <span class="n">modify_plot_text_sizes</span>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaselineCorrectionPage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages the Baseline Correction page of the D4Xgui application.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Constants for baseline correction methods</span>
+    <span class="n">METHOD_MINIMIZE</span> <span class="o">=</span> <span class="s2">&quot;Minimize equilibrated gase slope&quot;</span>
+    <span class="n">METHOD_ETH</span> <span class="o">=</span> <span class="s2">&quot;Correct baseline using ETH-1 &amp; ETH-2&quot;</span>
+    <span class="n">METHOD_NONE</span> <span class="o">=</span> <span class="s2">&quot;Without baseline correction&quot;</span>
+
+    <span class="c1"># Processing constants</span>
+    <span class="n">LEVEL</span> <span class="o">=</span> <span class="s2">&quot;replicate&quot;</span>
+    <span class="n">LEVEL_ETF</span> <span class="o">=</span> <span class="s2">&quot;replicate&quot;</span>
+    <span class="n">OPTIMIZE</span> <span class="o">=</span> <span class="s2">&quot;leastSquares&quot;</span>
+    <span class="n">WG_RATIOS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;d18O&quot;</span><span class="p">:</span> <span class="mf">25.260</span><span class="p">,</span> <span class="s2">&quot;d13C&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">4.20</span><span class="p">}</span>
+
+    <span class="c1"># Standard values for different isotope systems</span>
+    <span class="n">STANDARD_D47</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.0266</span><span class="p">,</span>
+        <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.9196</span><span class="p">,</span>
+        <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">0.2052</span><span class="p">,</span>
+        <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="mf">0.2085</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">STANDARD_D48</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.345</span><span class="p">,</span>
+        <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">0.1286</span><span class="p">,</span>
+        <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="mf">0.1286</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">STANDARD_D49</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">2.228</span><span class="p">,</span>
+        <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">0.562</span><span class="p">,</span>
+        <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="mf">0.707</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the BaselineCorrectionPage.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span> <span class="o">=</span> <span class="n">DatabaseManager</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">symbols</span> <span class="o">=</span> <span class="n">PlotParameters</span><span class="o">.</span><span class="n">SYMBOLS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_page</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_session_state</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BaselineCorrectionPage._setup_page">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._setup_page">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up page configuration, logo, and authentication.&quot;&quot;&quot;</span>
+        <span class="n">page_config_manager</span> <span class="o">=</span> <span class="n">PageConfigManager</span><span class="p">()</span>
+        <span class="n">page_config_manager</span><span class="o">.</span><span class="n">configure_page</span><span class="p">(</span><span class="n">page_number</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        
+        <span class="n">logo_manager</span> <span class="o">=</span> <span class="n">SidebarLogoManager</span><span class="p">()</span>
+        <span class="n">logo_manager</span><span class="o">.</span><span class="n">add_logo</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;PYTEST_CURRENT_TEST&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">authenticator</span> <span class="o">=</span> <span class="n">Authenticator</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">authenticator</span><span class="o">.</span><span class="n">require_authentication</span><span class="p">():</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._initialize_session_state">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._initialize_session_state">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize_session_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize session state with default parameters if not present.&quot;&quot;&quot;</span>
+        <span class="c1"># Initialize standard values in session state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STANDARD_D47</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D48</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STANDARD_D48</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D49</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STANDARD_D49</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;to_remove&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">to_remove</span> <span class="o">=</span> <span class="s2">&quot;not set&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;bg_success&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">bg_success</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage.run">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the main application page.&quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Baseline Correction&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_input_data</span><span class="p">():</span>
+            <span class="k">return</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_sidebar_controls</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bg_success&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_results_tabs</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;Please perform a baseline correction after choosing standards and method.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s1">&#39;03_pbl_log&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._validate_input_data">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._validate_input_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_input_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that required input data is available.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;input_intensities&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span>
+                <span class="s2">&quot;Please upload raw intensity data to perform a baseline correction &quot;</span>
+                <span class="s2">&quot;(:violet[Upload m/z44-m/z49 intensities] tab).&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span><span class="s2">&quot;pages/01_Data_IO.py&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\rightarrow  \textit{Data-IO}$  page&quot;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="s2">&quot;input_rep&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span>
+                    <span class="sa">r</span><span class="s2">&quot;You have uploaded replicate data and can standardize pre-processed &quot;</span>
+                    <span class="sa">r</span><span class="s2">&quot;$\delta^</span><span class="si">{45}</span><span class="s2">$-$\delta^</span><span class="si">{49}</span><span class="s2">$ values directly. (Baseline correction is recommended!)&quot;</span>
+                <span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span><span class="s2">&quot;pages/04_Processing.py&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\rightarrow  \textit</span><span class="si">{Processing}</span><span class="s2">$  page&quot;</span><span class="p">)</span>
+            
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._render_sidebar_controls">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._render_sidebar_controls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_sidebar_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the sidebar controls for baseline correction settings.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span><span class="s1">&#39;Overwrite database with new d45-d49&#39;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;03_overwrite_data&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_method_selection</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_standard_selection</span><span class="p">()</span>
+            
+            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Run...&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;BUTTON1&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_execute_baseline_correction</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._render_method_selection">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._render_method_selection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_method_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the baseline correction method selection.&quot;&quot;&quot;</span>
+        <span class="n">has_half_mass</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;raw_r47.5&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span>
+        
+        <span class="k">if</span> <span class="n">has_half_mass</span><span class="p">:</span>
+            <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">METHOD_MINIMIZE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_ETH</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_NONE</span><span class="p">]</span>
+            <span class="n">help_text</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">METHOD_NONE</span><span class="p">]</span>
+            <span class="n">help_text</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;No half-mass cup data provided (`raw_s47.5` and `raw_r47.5`) within the intensity input. &quot;</span>
+                <span class="s2">&quot;Therefore, the baseline correction method via optimized scaling factors is not available.&quot;</span>
+            <span class="p">)</span>
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">radio</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Baseline correction method&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">methods</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="s2">&quot;bg_method&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="n">help_text</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._render_standard_selection">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._render_standard_selection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_standard_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the standard sample selection based on the chosen method.&quot;&quot;&quot;</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bg_method&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_MINIMIZE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_gas_standard_selection</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bg_method&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_ETH</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_eth_standard_selection</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._render_gas_standard_selection">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._render_gas_standard_selection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_gas_standard_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render gas standard (25C/1000C) selection.&quot;&quot;&quot;</span>
+        <span class="c1"># 25C standard selection</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">idx_25</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">difflib</span><span class="o">.</span><span class="n">get_close_matches</span><span class="p">(</span><span class="s2">&quot;25C&quot;</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">idx_25</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">bg_25_name</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;25C sample name&quot;</span><span class="p">,</span> 
+            <span class="n">options</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> 
+            <span class="n">index</span><span class="o">=</span><span class="n">idx_25</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 1000C standard selection</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">idx_1000</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">difflib</span><span class="o">.</span><span class="n">get_close_matches</span><span class="p">(</span><span class="s2">&quot;1000C&quot;</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">idx_1000</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">bg_1000_name</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;1000C sample name&quot;</span><span class="p">,</span> 
+            <span class="n">options</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> 
+            <span class="n">index</span><span class="o">=</span><span class="n">idx_1000</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._render_eth_standard_selection">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._render_eth_standard_selection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_eth_standard_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render ETH standard selection.&quot;&quot;&quot;</span>
+        <span class="c1"># ETH-1 standard selection</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">idx_eth1</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">difflib</span><span class="o">.</span><span class="n">get_close_matches</span><span class="p">(</span><span class="s2">&quot;ETH-1&quot;</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">idx_eth1</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">bg_ETH1_name</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ETH-1 sample name&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">idx_eth1</span>
+        <span class="p">)</span>
+
+        <span class="c1"># ETH-2 standard selection</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">idx_eth2</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">difflib</span><span class="o">.</span><span class="n">get_close_matches</span><span class="p">(</span><span class="s2">&quot;ETH-2&quot;</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">idx_eth2</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">bg_ETH2_name</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ETH-2 sample name&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">idx_eth2</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._execute_baseline_correction">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._execute_baseline_correction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_execute_baseline_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the baseline correction process.&quot;&quot;&quot;</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bg_method&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_NONE</span><span class="p">)</span>
+        
+        <span class="c1"># Update standard names based on method</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_MINIMIZE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_gas_standard_names</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_ETH</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_eth_standard_names</span><span class="p">()</span>
+
+        <span class="c1"># Process the dataset</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_dataset</span><span class="p">()</span>
+        
+        <span class="c1"># Add missing columns</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Type&quot;</span><span class="p">,</span> <span class="s2">&quot;Project&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+        <span class="c1"># Create aggregated replicate data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_replicate_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        
+        <span class="c1"># Update database if requested</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;03_overwrite_data&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_database</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">bg_success</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._update_gas_standard_names">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._update_gas_standard_names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_gas_standard_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update gas standard names in session state.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">temp</span><span class="p">,</span> <span class="n">name_key</span> <span class="ow">in</span> <span class="p">[(</span><span class="mi">25</span><span class="p">,</span> <span class="s2">&quot;bg_25_name&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;bg_1000_name&quot;</span><span class="p">)]:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name_key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">old_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">temp</span><span class="si">}</span><span class="s2">C&quot;</span>
+                <span class="k">if</span> <span class="n">old_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">standard_dict</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D48</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D49</span><span class="p">]:</span>
+                        <span class="n">standard_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">standard_dict</span><span class="p">[</span><span class="n">old_key</span><span class="p">]</span>
+                        <span class="k">del</span> <span class="n">standard_dict</span><span class="p">[</span><span class="n">old_key</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._update_eth_standard_names">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._update_eth_standard_names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_eth_standard_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update ETH standard names in session state.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">nr</span><span class="p">,</span> <span class="n">name_key</span> <span class="ow">in</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;bg_ETH1_name&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;bg_ETH2_name&quot;</span><span class="p">)]:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name_key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">old_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ETH-</span><span class="si">{</span><span class="n">nr</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">old_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">standard_dict</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D48</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D49</span><span class="p">]:</span>
+                        <span class="n">standard_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">standard_dict</span><span class="p">[</span><span class="n">old_key</span><span class="p">]</span>
+                        <span class="k">del</span> <span class="n">standard_dict</span><span class="p">[</span><span class="n">old_key</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._process_dataset">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._process_dataset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process all sessions and return concatenated results.&quot;&quot;&quot;</span>
+        <span class="n">pysotope</span> <span class="o">=</span> <span class="n">Pysotope</span><span class="p">()</span>
+
+        <span class="c1"># Add data for all sessions</span>
+        <span class="k">for</span> <span class="n">session</span><span class="p">,</span> <span class="n">df_session</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Session&quot;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="n">pysotope</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">df_session</span><span class="p">)</span>
+
+        <span class="c1"># Configure pysotope</span>
+        <span class="n">pysotope</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LEVEL</span>
+        <span class="n">pysotope</span><span class="o">.</span><span class="n">level_etf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LEVEL_ETF</span>
+        <span class="n">pysotope</span><span class="o">.</span><span class="n">optimize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OPTIMIZE</span>
+        <span class="n">pysotope</span><span class="o">.</span><span class="n">set_wg_ratios</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">WG_RATIOS</span><span class="p">)</span>
+
+        <span class="c1"># Set standards based on method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_configure_pysotope_standards</span><span class="p">(</span><span class="n">pysotope</span><span class="p">)</span>
+
+        <span class="c1"># Process all sessions</span>
+        <span class="n">all_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">sessions</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+        
+        <span class="n">method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bg_method&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_NONE</span><span class="p">)</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">r</span><span class="s2">&quot;Correcting baseline and calculating $\delta^</span><span class="si">{45}</span><span class="s2">$-$\delta^</span><span class="si">{49}</span><span class="s2">$...&quot;</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_NONE</span>
+            <span class="k">else</span> <span class="sa">r</span><span class="s2">&quot;Calculating $\delta^</span><span class="si">{45}</span><span class="s2">$-$\delta^</span><span class="si">{49}</span><span class="s2">$ without baseline correction...&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s1">&#39;03_pbl_log&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">expanded</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">status</span><span class="p">:</span>
+            <span class="c1">#cols = st.columns(len(sessions))</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">session</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sessions</span><span class="p">):</span>
+                <span class="c1">#with cols[idx]:</span>
+                    <span class="c1">#st.write(f&quot;## {session}...&quot;)</span>
+                    <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_NONE</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s1">&#39;03_pbl_log&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s1">&#39;03_pbl_log&#39;</span><span class="p">])</span><span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">## Session </span><span class="si">{</span><span class="n">session</span><span class="si">}</span><span class="s2">...&quot;</span>
+                    <span class="n">pysotope</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_session</span><span class="p">(</span><span class="n">pysotope</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+                    <span class="n">pysotope</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">session</span><span class="p">][</span><span class="s2">&quot;Session&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">session</span>
+                    <span class="n">all_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">all_data</span><span class="p">,</span> <span class="n">pysotope</span><span class="o">.</span><span class="n">analyses</span><span class="p">[</span><span class="n">session</span><span class="p">]],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s1">&#39;03_pbl_log&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_NONE</span><span class="p">:</span>
+                <span class="n">status</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Baseline correction completed!&quot;</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;complete&quot;</span><span class="p">,</span> <span class="n">expanded</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">status</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Calculated $\delta^</span><span class="si">{45}</span><span class="s2">$-$\delta^</span><span class="si">{49}</span><span class="s2">$ without baseline correction!&quot;</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s2">&quot;complete&quot;</span><span class="p">,</span> <span class="n">expanded</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">all_data</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._configure_pysotope_standards">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._configure_pysotope_standards">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_configure_pysotope_standards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pysotope</span><span class="p">:</span> <span class="n">Pysotope</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure standards for pysotope based on the selected method.&quot;&quot;&quot;</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bg_method&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_NONE</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;ETH&quot;</span> <span class="ow">in</span> <span class="n">method</span><span class="p">:</span>
+            <span class="n">std_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ETH-1&quot;</span><span class="p">,</span> <span class="s2">&quot;ETH-2&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">std_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;25C&quot;</span><span class="p">,</span> <span class="s2">&quot;1000C&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Get standards for each system</span>
+        <span class="k">for</span> <span class="n">system</span><span class="p">,</span> <span class="n">standard_dict</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">&quot;D47&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span><span class="p">),</span> 
+                                     <span class="p">(</span><span class="s2">&quot;D48&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D48</span><span class="p">),</span> 
+                                     <span class="p">(</span><span class="s2">&quot;D49&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D49</span><span class="p">)]:</span>
+            <span class="n">standards</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">standard_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">std_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">standard_dict</span><span class="p">}</span>
+            <span class="n">pysotope</span><span class="o">.</span><span class="n">set_standards</span><span class="p">(</span><span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span> <span class="n">standards</span><span class="o">=</span><span class="n">standards</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._process_session">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._process_session">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pysotope</span><span class="p">:</span> <span class="n">Pysotope</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pysotope</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process a single session with the selected baseline correction method.&quot;&quot;&quot;</span>
+        <span class="n">pysotope</span><span class="o">.</span><span class="n">calc_sample_ratios_1</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+
+        <span class="n">method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bg_method&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_NONE</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_MINIMIZE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_minimize_method</span><span class="p">(</span><span class="n">pysotope</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">METHOD_ETH</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_eth_method</span><span class="p">(</span><span class="n">pysotope</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pysotope</span><span class="o">.</span><span class="n">calc_sample_ratios_2</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">pysotope</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._apply_minimize_method">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._apply_minimize_method">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_minimize_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pysotope</span><span class="p">:</span> <span class="n">Pysotope</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the minimize equilibrated gas slope method.&quot;&quot;&quot;</span>
+        <span class="n">pysotope</span><span class="o">.</span><span class="n">optimize</span> <span class="o">=</span> <span class="s2">&quot;leastSquares&quot;</span>
+        <span class="n">pysotope</span><span class="o">.</span><span class="n">correctBaseline</span><span class="p">(</span>
+            <span class="n">scaling_mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span>
+            <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
+            <span class="n">scaling_factors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">D47std</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span><span class="p">[</span><span class="s2">&quot;25C&quot;</span><span class="p">],</span> <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span><span class="p">[</span><span class="s2">&quot;1000C&quot;</span><span class="p">]},</span>
+            <span class="n">D48std</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D48</span><span class="p">[</span><span class="s2">&quot;25C&quot;</span><span class="p">],</span> <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D48</span><span class="p">[</span><span class="s2">&quot;1000C&quot;</span><span class="p">]},</span>
+            <span class="n">D49std</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D49</span><span class="p">[</span><span class="s2">&quot;25C&quot;</span><span class="p">],</span> <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D49</span><span class="p">[</span><span class="s2">&quot;1000C&quot;</span><span class="p">]},</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;scaling_factors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">pysotope</span><span class="o">.</span><span class="n">scaling_factors</span><span class="p">)</span>
+        <span class="n">pysotope</span><span class="o">.</span><span class="n">calc_sample_ratios_2</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;bg&quot;</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._apply_eth_method">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._apply_eth_method">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_eth_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pysotope</span><span class="p">:</span> <span class="n">Pysotope</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the ETH standards method.&quot;&quot;&quot;</span>
+        <span class="n">pysotope</span><span class="o">.</span><span class="n">optimize</span> <span class="o">=</span> <span class="s2">&quot;ETH&quot;</span>
+        <span class="n">pysotope</span><span class="o">.</span><span class="n">correctBaseline</span><span class="p">(</span>
+            <span class="n">scaling_mode</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span>
+            <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
+            <span class="n">scaling_factors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">D47std</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span><span class="p">[</span><span class="s2">&quot;ETH-1&quot;</span><span class="p">],</span> <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D47</span><span class="p">[</span><span class="s2">&quot;ETH-2&quot;</span><span class="p">]},</span>
+            <span class="n">D48std</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D48</span><span class="p">[</span><span class="s2">&quot;ETH-1&quot;</span><span class="p">],</span> <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D48</span><span class="p">[</span><span class="s2">&quot;ETH-2&quot;</span><span class="p">]},</span>
+            <span class="n">D49std</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D49</span><span class="p">[</span><span class="s2">&quot;ETH-1&quot;</span><span class="p">],</span> <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">STANDARD_D49</span><span class="p">[</span><span class="s2">&quot;ETH-2&quot;</span><span class="p">]},</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;scaling_factors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">pysotope</span><span class="o">.</span><span class="n">scaling_factors</span><span class="p">)</span>
+        <span class="n">pysotope</span><span class="o">.</span><span class="n">calc_sample_ratios_2</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;bg&quot;</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._create_replicate_dataframe">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._create_replicate_dataframe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_replicate_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create aggregated replicate dataframe from cycle-level data.&quot;&quot;&quot;</span>
+        <span class="n">agg_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_aggregation_dict</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        
+        <span class="c1"># Create replicate-level data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Replicate&quot;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">agg_dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;UID&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">[</span><span class="s2">&quot;UID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._get_aggregation_dict">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._get_aggregation_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregation_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the aggregation dictionary for creating replicate-level data.&quot;&quot;&quot;</span>
+        <span class="n">agg_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;UID&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Sample&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Project&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Session&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Replicate&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Timetag&quot;</span><span class="p">:</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_s44&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_s45&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_s46&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_s47&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_s48&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_s49&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_r44&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_r45&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_r46&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_r47&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_r48&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_r49&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;d45&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;d46&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;d47&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;d48&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;d49&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;D47&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;D48&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;D49&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Add half-mass columns if present</span>
+        <span class="k">for</span> <span class="n">mz</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">):</span>
+            <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;raw_r</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">.5&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span><span class="p">:</span>
+                <span class="n">agg_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                    <span class="sa">f</span><span class="s2">&quot;raw_s</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">.5&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;raw_r</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">.5&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                <span class="p">})</span>
+
+        <span class="c1"># Add baseline-corrected columns if present</span>
+        <span class="k">if</span> <span class="s2">&quot;bg_s47&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+            <span class="n">agg_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s2">&quot;bg_s47&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;bg_s48&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;bg_s49&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;bg_r47&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;bg_r48&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;bg_r49&quot;</span><span class="p">:</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">agg_dict</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._update_database">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._update_database">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_database</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the database with processed data.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;input_rep&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="k">return</span>
+            
+        <span class="n">session_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">[</span><span class="s1">&#39;Session&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;Session&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span> <span class="k">else</span> <span class="s1">&#39;unknown&#39;</span>
+        <span class="n">rows_affected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_manager</span><span class="o">.</span><span class="n">upsert_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">,</span> <span class="n">session_name</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">rows_affected</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rows_affected</span><span class="si">}</span><span class="s2"> rows inserted/updated in the database.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No data changes detected for the database.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._render_results_tabs">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._render_results_tabs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_results_tabs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the results tabs after successful baseline correction.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;scaling_factors&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="n">tabs</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">tabs</span><span class="p">([</span>
+                <span class="s2">&quot;Determined optimal scaling factors&quot;</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s2">&quot;Resulting $\delta^</span><span class="si">{45}</span><span class="s2">-\delta^</span><span class="si">{49}</span><span class="s2">$ dataframe&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Overview plot (m/z intensities)&quot;</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s2">&quot;Overview plot ($\delta^</span><span class="si">{i}</span><span class="s2">/\Delta_</span><span class="si">{i}</span><span class="s2">$)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Heated gas lines&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Correlation matrix&quot;</span><span class="p">,</span>
+            <span class="p">])</span>
+            
+
+
+            <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;scaling_factors&quot;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="s1">&#39;03_pbl_log&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s1">&#39;03_pbl_log&#39;</span><span class="p">]</span>
+            
+            <span class="n">tab_offset</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tabs</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">tabs</span><span class="p">([</span>
+                <span class="sa">r</span><span class="s2">&quot;Resulting $\delta^</span><span class="si">{45}</span><span class="s2">-\delta^</span><span class="si">{49}</span><span class="s2">$ dataframe&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Overview plot (m/z intensities)&quot;</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s2">&quot;Overview plot ($\delta^</span><span class="si">{i}</span><span class="s2">/\Delta_</span><span class="si">{i}</span><span class="s2">$)&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Heated gas lines&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Correlation matrix&quot;</span><span class="p">,</span>
+            <span class="p">])</span>
+            <span class="n">tab_offset</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="n">tab_offset</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_data_tables</span><span class="p">()</span>
+        
+        <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="n">tab_offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_intensity_plots</span><span class="p">()</span>
+        
+        <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="n">tab_offset</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_delta_plots</span><span class="p">()</span>
+        
+        <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="n">tab_offset</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_heated_gas_lines</span><span class="p">()</span>
+        
+        <span class="k">with</span> <span class="n">tabs</span><span class="p">[</span><span class="n">tab_offset</span> <span class="o">+</span> <span class="mi">4</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_correlation_matrix</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._render_data_tables">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._render_data_tables">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_data_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the data tables for replicate and cycle data.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="s2">&quot;### Replicate data&quot;</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">data_editor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">,</span> <span class="n">num_rows</span><span class="o">=</span><span class="s2">&quot;dynamic&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="s2">&quot;### Cycle data&quot;</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">data_editor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span><span class="p">,</span> <span class="n">num_rows</span><span class="o">=</span><span class="s2">&quot;dynamic&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._render_intensity_plots">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._render_intensity_plots">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_intensity_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the intensity overview plots.&quot;&quot;&quot;</span>
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">rep_cycle</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">radio</span><span class="p">(</span>
+                <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Choose level&quot;</span><span class="p">,</span>
+                <span class="n">options</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Replicates :grey[(Cycles are deactivated in the cloud version for performance reasons...)]&quot;</span><span class="p">,),</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Normalize data&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;03_normalize_int&quot;</span><span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span> <span class="k">if</span> <span class="s2">&quot;Rep&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">rep_cycle</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">filter_intensities</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Select samples to plot&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span>
+            <span class="n">default</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span>
+        <span class="p">)</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_intensity_plot</span><span class="p">()</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._render_delta_plots">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._render_delta_plots">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_delta_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the delta/Delta overview plots.&quot;&quot;&quot;</span>
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">mz_03</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span><span class="s2">&quot;Select m/z&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">49</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># Reserved for future controls</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_delta_overview_plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">mz_03</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._render_heated_gas_lines">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._render_heated_gas_lines">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_heated_gas_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the heated gas line plots.&quot;&quot;&quot;</span>
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">mz_03</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span><span class="s2">&quot;Select m/z&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">49</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;hgl_mz&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Get available gas standards (only 25C and 1000C, not ETH carbonates)</span>
+        <span class="n">available_gases</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">gas</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;25C&quot;</span><span class="p">,</span> <span class="s2">&quot;1000C&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">gas</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+                <span class="n">available_gases</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gas</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">available_gases</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+                <span class="n">selected_gas</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span><span class="s2">&quot;Select gas standard&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">available_gases</span><span class="p">)</span>
+            
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_heated_gas_line_plot</span><span class="p">(</span><span class="n">selected_gas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">mz_03</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">modify_plot_text_sizes</span><span class="p">(</span><span class="n">fig</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No heated gas standards (25C/1000C) found in the data.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._render_correlation_matrix">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._render_correlation_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render_correlation_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the correlation matrix.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;input_rep&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="n">numeric_cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeric_cols</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">corr_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">[</span><span class="n">numeric_cols</span><span class="p">]</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_correlation_matrix_plot</span><span class="p">(</span><span class="n">corr_matrix</span><span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Not enough numeric columns for correlation matrix.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._create_intensity_plot">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._create_intensity_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_intensity_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the intensity overview plot.&quot;&quot;&quot;</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span> <span class="k">if</span> <span class="s2">&quot;Rep&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">rep_cycle</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span>
+        
+        <span class="c1"># Filter by selected samples</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">,</span> <span class="s1">&#39;filter_intensities&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">filter_intensities</span><span class="p">:</span>
+            <span class="n">filtered</span> <span class="o">=</span> <span class="n">filtered</span><span class="p">[</span><span class="n">filtered</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">filter_intensities</span><span class="p">)]</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Datetime&quot;</span><span class="p">),</span>
+            <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Intensity [mV]&quot;</span><span class="p">),</span>
+            <span class="n">hoverlabel</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">16</span><span class="p">),</span>
+            <span class="n">legend</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;m/z signal&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="c1"># Define columns to plot</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;raw_s44&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_s45&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_s46&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_s47&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_s48&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_s49&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_r44&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_r45&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_r46&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_r47&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_r48&quot;</span><span class="p">,</span> <span class="s2">&quot;raw_r49&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        
+        <span class="c1"># Add baseline-corrected columns if available</span>
+        <span class="k">if</span> <span class="s2">&quot;bg_s47&quot;</span> <span class="ow">in</span> <span class="n">filtered</span><span class="p">:</span>
+            <span class="n">cols</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;bg_s47&quot;</span><span class="p">,</span> <span class="s2">&quot;bg_s48&quot;</span><span class="p">,</span> <span class="s2">&quot;bg_s49&quot;</span><span class="p">,</span> <span class="s2">&quot;bg_r47&quot;</span><span class="p">,</span> <span class="s2">&quot;bg_r48&quot;</span><span class="p">,</span> <span class="s2">&quot;bg_r49&quot;</span><span class="p">])</span>
+        
+        <span class="c1"># Add half-mass columns if available</span>
+        <span class="k">for</span> <span class="n">mz</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">):</span>
+            <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;raw_r</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">.5&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_intensities</span><span class="p">:</span>
+                <span class="n">cols</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;raw_s</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">.5&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;raw_r</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">.5&quot;</span><span class="p">])</span>
+
+        <span class="c1"># Create traces for each column</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">filtered</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">y_data</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_series</span><span class="p">(</span><span class="n">filtered</span><span class="p">[</span><span class="n">col</span><span class="p">])</span> <span class="o">+</span> <span class="n">idx</span> <span class="o">*</span> <span class="mf">1.1</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;03_normalize_int&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="n">filtered</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+                <span class="p">)</span>
+                
+                <span class="n">scatter_trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">filtered</span><span class="p">[</span><span class="s2">&quot;Timetag&quot;</span><span class="p">],</span>
+                    <span class="n">y</span><span class="o">=</span><span class="n">y_data</span><span class="p">,</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+                    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">col</span><span class="p">,</span>
+                    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)),</span>
+                    <span class="n">text</span><span class="o">=</span><span class="p">[</span>
+                        <span class="sa">f</span><span class="s2">&quot;Sample=</span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2">&lt;br&gt;Timetag=</span><span class="si">{</span><span class="n">timetag</span><span class="si">}</span><span class="s2">&lt;br&gt;UID=</span><span class="si">{</span><span class="n">uid</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="k">for</span> <span class="n">sample</span><span class="p">,</span> <span class="n">timetag</span><span class="p">,</span> <span class="n">uid</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                            <span class="n">filtered</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">],</span> <span class="n">filtered</span><span class="p">[</span><span class="s2">&quot;Timetag&quot;</span><span class="p">],</span> <span class="n">filtered</span><span class="p">[</span><span class="s2">&quot;UID&quot;</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="p">],</span>
+                <span class="p">)</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">scatter_trace</span><span class="p">)</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">textfont_size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._create_delta_overview_plot">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._create_delta_overview_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_delta_overview_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mz</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the delta/Delta overview plot.&quot;&quot;&quot;</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;δ&lt;sup&gt;</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&lt;/sup&gt; [‰]&quot;</span><span class="p">),</span>
+            <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;∆&lt;sub&gt;</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">, raw&lt;/sub&gt; [‰]&quot;</span><span class="p">),</span>
+            <span class="n">hoverlabel</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">16</span><span class="p">),</span>
+            <span class="n">legend</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">15</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span>
+        
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">sample</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()):</span>
+            <span class="n">df_sample</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">sample</span><span class="p">]</span>
+            <span class="n">scatter_trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">df_sample</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;d</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">df_sample</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+                <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+                <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span>
+                <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">symbol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">symbols</span><span class="p">[</span><span class="n">idx</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbols</span><span class="p">)]),</span>
+                <span class="n">text</span><span class="o">=</span><span class="p">[</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2">&lt;br&gt;Datetime=</span><span class="si">{</span><span class="n">timetag</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="k">for</span> <span class="n">timetag</span> <span class="ow">in</span> <span class="n">df_sample</span><span class="p">[</span><span class="s2">&quot;Timetag&quot;</span><span class="p">]</span>
+                <span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">scatter_trace</span><span class="p">)</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">textfont_size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._create_heated_gas_line_plot">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._create_heated_gas_line_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_heated_gas_line_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gas</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mz</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the heated gas line plot.&quot;&quot;&quot;</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;δ&lt;sup&gt;</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&lt;/sup&gt; [‰]&quot;</span><span class="p">),</span>
+            <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;∆&lt;sub&gt;</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&lt;/sub&gt; [‰]&quot;</span><span class="p">),</span>
+            <span class="n">hoverlabel</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">16</span><span class="p">),</span>
+            <span class="n">legend</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">15</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="n">df_std</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">input_rep</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">gas</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">df_std</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No data found for gas standard: </span><span class="si">{</span><span class="n">gas</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">fig</span>
+
+        <span class="c1"># Scatter plot</span>
+        <span class="n">scatter_trace</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">df_std</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;d</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">df_std</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+            <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">gas</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span> <span class="k">if</span> <span class="n">gas</span> <span class="o">==</span> <span class="s2">&quot;1000C&quot;</span> <span class="k">else</span> <span class="s2">&quot;blue&quot;</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">gas</span><span class="si">}</span><span class="s2">&lt;br&gt;UID=</span><span class="si">{</span><span class="n">uid</span><span class="si">}</span><span class="s2">&lt;br&gt;d&lt;sub&gt;</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&lt;/sub&gt;=</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2"> ‰&lt;br&gt;∆&lt;sub&gt;</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&lt;/sub&gt;=</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2"> ‰&quot;</span>
+                <span class="k">for</span> <span class="n">uid</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">df_std</span><span class="p">[</span><span class="s2">&quot;UID&quot;</span><span class="p">],</span> <span class="n">df_std</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;d</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">df_std</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">scatter_trace</span><span class="p">)</span>
+
+        <span class="c1"># Linear regression</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_std</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span><span class="n">df_std</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;d</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">df_std</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+            
+            <span class="c1"># Regression line</span>
+            <span class="n">reg_line</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">df_std</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;d</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">intercept</span> <span class="o">+</span> <span class="n">res</span><span class="o">.</span><span class="n">slope</span> <span class="o">*</span> <span class="n">df_std</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;d</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+                <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+                <span class="n">line_color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span> <span class="k">if</span> <span class="n">gas</span> <span class="o">==</span> <span class="s2">&quot;1000C&quot;</span> <span class="k">else</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span>
+                <span class="n">opacity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">reg_line</span><span class="p">)</span>
+
+            <span class="c1"># Add regression equation</span>
+            <span class="n">tinv</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">df</span><span class="p">))</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">tinv</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_std</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+            
+            <span class="n">equation</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;f(x)=(</span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">slope</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">stderr</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">)x&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;+&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">res</span><span class="o">.</span><span class="n">intercept</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="n">res</span><span class="o">.</span><span class="n">intercept</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">intercept_stderr</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            
+            <span class="n">fig</span><span class="o">.</span><span class="n">add_annotation</span><span class="p">(</span>
+                <span class="n">xref</span><span class="o">=</span><span class="s2">&quot;paper&quot;</span><span class="p">,</span> <span class="n">yref</span><span class="o">=</span><span class="s2">&quot;paper&quot;</span><span class="p">,</span>
+                <span class="n">x</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.94</span><span class="p">,</span>
+                <span class="n">showarrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&lt;b&gt;</span><span class="si">{</span><span class="n">equation</span><span class="si">}</span><span class="s2">&lt;/b&gt;&quot;</span><span class="p">,</span>
+                <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._create_correlation_matrix_plot">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._create_correlation_matrix_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_correlation_matrix_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">corr_matrix</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a correlation matrix heatmap.&quot;&quot;&quot;</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Heatmap</span><span class="p">(</span>
+            <span class="n">z</span><span class="o">=</span><span class="n">corr_matrix</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">corr_matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">corr_matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+            <span class="n">colorscale</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">,</span>
+            <span class="n">zmid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">corr_matrix</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">texttemplate</span><span class="o">=</span><span class="s2">&quot;%</span><span class="si">{text}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">textfont</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+            <span class="n">hoverongaps</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">))</span>
+        
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Correlation Matrix&quot;</span><span class="p">,</span>
+            <span class="n">xaxis_title</span><span class="o">=</span><span class="s2">&quot;Variables&quot;</span><span class="p">,</span>
+            <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;Variables&quot;</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">600</span>
+        <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="BaselineCorrectionPage._normalize_series">
+<a class="viewcode-back" href="../../03_Baseline_correction.html#pages.03_Baseline_correction.BaselineCorrectionPage._normalize_series">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_series</span><span class="p">(</span><span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize a numeric pandas Series to [0, 1].&quot;&quot;&quot;</span>
+        <span class="n">denom</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">series</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">series</span> <span class="o">-</span> <span class="n">series</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="n">denom</span> <span class="k">if</span> <span class="n">denom</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">series</span> <span class="o">-</span> <span class="n">series</span><span class="o">.</span><span class="n">min</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">BaselineCorrectionPage</span><span class="p">()</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Miguel Bernecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

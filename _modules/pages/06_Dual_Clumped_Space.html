@@ -1,0 +1,1009 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pages.06_Dual_Clumped_Space &mdash; D4Xgui v1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=76e2d817"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            D4Xgui
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../01_Data_IO.html">01_Data_IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../03_Baseline_correction.html">03_Baseline_correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../04_Processing.html">04_Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../05_Standardization_Results.html">05_Standardization_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../06_Dual_Clumped_Space.html">06_Dual_Clumped_Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../07_Discover_Results.html">07_Discover_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../08_D47crunch_plots.html">08_D47crunch_plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../100_Save_and_Reload.html">100_Save_and_Reload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../97_Database_Management.html">97_Database_Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_Pysotope_fork.html">Pysotope_fork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_authenticator.html">authenticator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_calc_temperature.html">calc_temperature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_commons.html">commons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_database.html">database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_init_params.html">init_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_page_config.html">page_config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools_sidebar_logo.html">sidebar_logo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">D4Xgui</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pages.06_Dual_Clumped_Space</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pages.06_Dual_Clumped_Space</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.express</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">px</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">so</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">tools.Pysotope_fork</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">sidebar_logo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.commons</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLOT_PARAMS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.page_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_page_config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools.sidebar_logo</span><span class="w"> </span><span class="kn">import</span> <span class="n">SidebarLogoManager</span>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DualClumpedSpacePage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages the Dual Clumped Space visualization page.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the DualClumpedSpacePage.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">symbols</span> <span class="o">=</span> <span class="n">PLOT_PARAMS</span><span class="o">.</span><span class="n">SYMBOLS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_page</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data_requirements</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DualClumpedSpacePage._setup_page">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._setup_page">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up page configuration, logo, and authentication.&quot;&quot;&quot;</span>
+        <span class="n">set_page_config</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        
+        <span class="n">logo_manager</span> <span class="o">=</span> <span class="n">SidebarLogoManager</span><span class="p">()</span>
+        <span class="n">logo_manager</span><span class="o">.</span><span class="n">add_logo</span><span class="p">()</span>
+        
+        
+        <span class="c1"># Authentication check</span>
+        <span class="k">if</span> <span class="s2">&quot;PYTEST_CURRENT_TEST&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">authenticator</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">authenticator</span><span class="o">.</span><span class="n">check_password</span><span class="p">():</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        
+        <span class="c1"># Add custom CSS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_custom_css</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._add_custom_css">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._add_custom_css">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_custom_css</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add custom CSS styling to the page.&quot;&quot;&quot;</span>
+        <span class="n">custom_css</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        &lt;style&gt;</span>
+<span class="s2">            .button-red {</span>
+<span class="s2">                background-color: red;</span>
+<span class="s2">                color: white;</span>
+<span class="s2">                border: none;</span>
+<span class="s2">                padding: 10px 20px;</span>
+<span class="s2">                text-align: center;</span>
+<span class="s2">                text-decoration: none;</span>
+<span class="s2">                display: inline-block;</span>
+<span class="s2">                font-size: 16px;</span>
+<span class="s2">                margin: 4px 2px;</span>
+<span class="s2">                cursor: pointer;</span>
+<span class="s2">                border-radius: 4px;</span>
+<span class="s2">            }</span>
+<span class="s2">            .button-grey {</span>
+<span class="s2">                background-color: grey;</span>
+<span class="s2">                color: white;</span>
+<span class="s2">                border: none;</span>
+<span class="s2">                padding: 10px 20px;</span>
+<span class="s2">                text-align: center;</span>
+<span class="s2">                text-decoration: none;</span>
+<span class="s2">                display: inline-block;</span>
+<span class="s2">                font-size: 16px;</span>
+<span class="s2">                margin: 4px 2px;</span>
+<span class="s2">                cursor: pointer;</span>
+<span class="s2">                border-radius: 4px;</span>
+<span class="s2">            }</span>
+<span class="s2">            .stPlotlyChart {</span>
+<span class="s2">                align-content: stretch;</span>
+<span class="s2">            }</span>
+<span class="s2">            .main {</span>
+<span class="s2">                align-content: center;</span>
+<span class="s2">                overflow: hidden;</span>
+<span class="s2">                height: auto;</span>
+<span class="s2">                margin: -80px auto 0px auto;</span>
+<span class="s2">            }</span>
+<span class="s2">        &lt;/style&gt;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">custom_css</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._validate_data_requirements">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._validate_data_requirements">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_data_requirements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that required data is available and processed.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;correction_output_summary&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span>
+                <span class="sa">r</span><span class="s2">&quot;Please upload and process a dataset for at least two metrics &quot;</span>
+                <span class="sa">r</span><span class="s2">&quot;(i.e., $\Delta_</span><span class="si">{47}</span><span class="s2">$ &amp; $\Delta_</span><span class="si">{48}</span><span class="s2">$) in order to discover &quot;</span>
+                <span class="sa">r</span><span class="s2">&quot;results in dual clumped space.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span>
+                <span class="s2">&quot;pages/04_Processing.py&quot;</span><span class="p">,</span> 
+                <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\rightarrow  \textit</span><span class="si">{Processing}</span><span class="s2">$  page&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;process_D47&quot;</span><span class="p">]:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Please process $\Delta_{{47}}$ as well to show dual clumped space!&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span>
+                <span class="s2">&quot;pages/04_Processing.py&quot;</span><span class="p">,</span> 
+                <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\rightarrow  \textit</span><span class="si">{Processing}</span><span class="s2">$  page&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;process_D48&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;process_D49&quot;</span><span class="p">]):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span>
+                <span class="sa">r</span><span class="s2">&quot;Just $\Delta_{{47}}$ data processed. Please process $\Delta_{{48}}$ &quot;</span>
+                <span class="sa">r</span><span class="s2">&quot;and/or $\Delta_{{49}}$ as well to display results in dual clumped space!&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">page_link</span><span class="p">(</span>
+                <span class="s2">&quot;pages/04_Processing.py&quot;</span><span class="p">,</span> 
+                <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\rightarrow  \textit</span><span class="si">{Processing}</span><span class="s2">$  page&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage.run">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the main application page.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_filtering_options</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_plot_controls</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_filters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_display_plot</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._setup_filtering_options">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._setup_filtering_options">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_filtering_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up filtering options in the sidebar.&quot;&quot;&quot;</span>
+        <span class="c1"># Check if sample database exists</span>
+        <span class="n">has_sample_db</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;static/SampleDatabase.xlsx&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">has_sample_db</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">toggle</span><span class="p">(</span>
+                <span class="s2">&quot;Select filter functionality&quot;</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;filter_mode&quot;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;filter_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;filter_mode&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">has_sample_db</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setup_database_filters</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setup_text_filters</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._setup_database_filters">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._setup_database_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_database_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up database-based filtering options.&quot;&quot;&quot;</span>
+        <span class="n">col01</span><span class="p">,</span> <span class="n">col02</span><span class="p">,</span> <span class="n">col03</span><span class="p">,</span> <span class="n">col04</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        
+        <span class="n">df_filter</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;static/SampleDatabase.xlsx&quot;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;openpyxl&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Normalize filter data</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">,</span> <span class="s2">&quot;Project&quot;</span><span class="p">,</span> <span class="s2">&quot;Mineralogy&quot;</span><span class="p">,</span> <span class="s2">&quot;Publication&quot;</span><span class="p">]:</span>
+            <span class="n">df_filter</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_filter</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        
+        <span class="c1"># Filter to only include samples in current dataset</span>
+        <span class="n">all_samples</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">correction_output_summary</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+        <span class="n">df_filter</span> <span class="o">=</span> <span class="n">df_filter</span><span class="p">[</span><span class="n">df_filter</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">all_samples</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;df_filter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_filter</span>
+        
+        <span class="c1"># Create filter options</span>
+        <span class="n">filter_options</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">,</span> <span class="s2">&quot;Project&quot;</span><span class="p">,</span> <span class="s2">&quot;Mineralogy&quot;</span><span class="p">,</span> <span class="s2">&quot;Publication&quot;</span><span class="p">]:</span>
+            <span class="n">filter_options</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_unique_split_values</span><span class="p">(</span><span class="n">df_filter</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span>
+        
+        <span class="c1"># Render filter controls</span>
+        <span class="k">with</span> <span class="n">col01</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+                <span class="s2">&quot;Project:&quot;</span><span class="p">,</span> <span class="n">filter_options</span><span class="p">[</span><span class="s2">&quot;Project&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Project&quot;</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="n">col02</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+                <span class="s2">&quot;Sample type:&quot;</span><span class="p">,</span> <span class="n">filter_options</span><span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Type&quot;</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="n">col03</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+                <span class="s2">&quot;Publication:&quot;</span><span class="p">,</span> <span class="n">filter_options</span><span class="p">[</span><span class="s2">&quot;Publication&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Publication&quot;</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="n">col04</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+                <span class="s2">&quot;Mineralogy:&quot;</span><span class="p">,</span> <span class="n">filter_options</span><span class="p">[</span><span class="s2">&quot;Mineralogy&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Mineralogy&quot;</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._setup_text_filters">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._setup_text_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_text_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up text-based filtering options.&quot;&quot;&quot;</span>
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span>
+                <span class="s2">&quot;Sample name contains (KEEP):&quot;</span><span class="p">,</span>
+                <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set multiple keywords by separating them through semicolons ;&quot;</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;06_sample_contains&quot;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span>
+                <span class="s2">&quot;Sample name contains (DROP):&quot;</span><span class="p">,</span>
+                <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set multiple keywords by separating them through semicolons ;&quot;</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;06_sample_not_contains&quot;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._setup_plot_controls">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._setup_plot_controls">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_plot_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up plot control options in the sidebar.&quot;&quot;&quot;</span>
+        <span class="c1"># Plot level selection</span>
+        <span class="n">level_plot</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">radio</span><span class="p">(</span>
+            <span class="s2">&quot;Choose plot level:&quot;</span><span class="p">,</span> 
+            <span class="p">(</span><span class="s2">&quot;Sample mean ±err&quot;</span><span class="p">,</span> <span class="s2">&quot;Overview replicates&quot;</span><span class="p">),</span> 
+            <span class="n">key</span><span class="o">=</span><span class="s2">&quot;level_plot&quot;</span>
+        <span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">_05_level_plot</span> <span class="o">=</span> <span class="s2">&quot;rep&quot;</span> <span class="k">if</span> <span class="s2">&quot;replicates&quot;</span> <span class="ow">in</span> <span class="n">level_plot</span> <span class="k">else</span> <span class="s2">&quot;mean&quot;</span>
+        
+        <span class="c1"># Error determination for mean plots</span>
+        <span class="k">if</span> <span class="s2">&quot;mean&quot;</span> <span class="ow">in</span> <span class="n">level_plot</span><span class="p">:</span>
+            <span class="n">error_dualClumped</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">radio</span><span class="p">(</span>
+                <span class="s2">&quot;Error determination:&quot;</span><span class="p">,</span>
+                <span class="p">(</span><span class="s2">&quot;fully propagated 2SE&quot;</span><span class="p">,</span> <span class="s2">&quot;fully propagated 1SE&quot;</span><span class="p">,</span> <span class="s2">&quot;via long-term repeatability&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">error_mapping</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;fully propagated 2SE&quot;</span><span class="p">:</span> <span class="s2">&quot;2SE_</span><span class="si">{mz}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;fully propagated 1SE&quot;</span><span class="p">:</span> <span class="s2">&quot;SE_</span><span class="si">{mz}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;via long-term repeatability&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{mz}</span><span class="s2"> 2SE (longterm)&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">error_dualClumped</span> <span class="o">=</span> <span class="n">error_mapping</span><span class="p">[</span><span class="n">error_dualClumped</span><span class="p">]</span>
+        
+        <span class="c1"># Additional options</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span><span class="s2">&quot;Lock x/y ratio&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;fix_ratio&quot;</span><span class="p">)</span>
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;re-process calibration&quot;</span><span class="p">,</span> 
+            <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+            <span class="n">key</span><span class="o">=</span><span class="s2">&quot;reprocCalib&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;D4Xgui uses the method of Fiebig(2021) to process ∆47/∆48 calibrations, &quot;</span>
+                 <span class="s2">&quot;which uses the theoretical Hill(2014) polynoms which are scaled and &quot;</span>
+                 <span class="s2">&quot;shifted linearly to match the data.&quot;</span>
+        <span class="p">)</span>
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Display CO2 equilibrium (Cao&amp;Liu 2012)&quot;</span><span class="p">,</span> 
+            <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+            <span class="n">key</span><span class="o">=</span><span class="s2">&quot;CO2_poly&quot;</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Axis selection</span>
+        <span class="n">xy_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_available_axes</span><span class="p">()</span>
+        
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">radio</span><span class="p">(</span><span class="s2">&quot;x-axis&quot;</span><span class="p">,</span> <span class="n">xy_options</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;x_axis&quot;</span><span class="p">)</span>  <span class="c1"># Default to D48</span>
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">radio</span><span class="p">(</span><span class="s2">&quot;y-axis&quot;</span><span class="p">,</span> <span class="n">xy_options</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;y_axis&quot;</span><span class="p">)</span>  <span class="c1"># Default to D47</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._get_available_axes">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._get_available_axes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_available_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of available axes based on processed data.&quot;&quot;&quot;</span>
+        <span class="n">xy_options</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;process_D47&quot;</span><span class="p">]:</span>
+            <span class="n">xy_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;D47&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;process_D48&quot;</span><span class="p">]:</span>
+            <span class="n">xy_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;D48&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;process_D49&quot;</span><span class="p">]:</span>
+            <span class="n">xy_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;D49&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xy_options</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._get_unique_split_values">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._get_unique_split_values">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_unique_split_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get unique values from a column that may contain comma-separated values.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span>
+            <span class="n">strip</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">strip</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">[</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+            <span class="p">])</span>
+        <span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._apply_filters">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._apply_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply filters to the data.&quot;&quot;&quot;</span>
+        <span class="n">corrected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">correction_output_full_dataset</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">correction_output_summary</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">_06_filtered_reps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_dataframe</span><span class="p">(</span><span class="n">corrected</span><span class="p">,</span> <span class="s2">&quot;Sample&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">_06_filtered_summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_dataframe</span><span class="p">(</span><span class="n">summary</span><span class="p">,</span> <span class="s2">&quot;Sample&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._filter_dataframe">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._filter_dataframe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply filtering logic to a DataFrame.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;filter_mode&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_text_filters</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_database_filters</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._apply_text_filters">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._apply_text_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_text_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply text-based filters to DataFrame.&quot;&quot;&quot;</span>
+        <span class="c1"># Include filter</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;06_sample_contains&quot;</span><span class="p">)</span> <span class="ow">and</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;06_sample_contains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
+            <span class="n">include_terms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;06_sample_contains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">any</span><span class="p">(</span><span class="n">term</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">include_terms</span><span class="p">)</span>
+            <span class="p">)]</span>
+        
+        <span class="c1"># Exclude filter</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;06_sample_not_contains&quot;</span><span class="p">)</span> <span class="ow">and</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;06_sample_not_contains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
+            <span class="n">exclude_terms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;06_sample_not_contains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">any</span><span class="p">(</span><span class="n">term</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">exclude_terms</span><span class="p">)</span>
+            <span class="p">)]</span>
+        
+        <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._apply_database_filters">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._apply_database_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_database_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply database-based filters to DataFrame.&quot;&quot;&quot;</span>
+        <span class="n">df_filter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;df_filter&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">df_filter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">df</span>
+        
+        <span class="n">filter_mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+        
+        <span class="k">for</span> <span class="n">filter_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Project&quot;</span><span class="p">,</span> <span class="s2">&quot;Type&quot;</span><span class="p">,</span> <span class="s2">&quot;Mineralogy&quot;</span><span class="p">,</span> <span class="s2">&quot;Publication&quot;</span><span class="p">]:</span>
+            <span class="n">selected_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">filter_type</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">if</span> <span class="n">selected_values</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">selected_values</span><span class="p">:</span>
+                    <span class="c1"># Create regex pattern for safe matching</span>
+                    <span class="n">value_regex</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\(&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\)&#39;</span><span class="p">)</span>
+                    
+                    <span class="c1"># Find matching samples in filter database</span>
+                    <span class="n">matching_samples</span> <span class="o">=</span> <span class="n">df_filter</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                        <span class="n">df_filter</span><span class="p">[</span><span class="n">filter_type</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;(?i)</span><span class="si">{</span><span class="n">value_regex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span>
+                        <span class="p">),</span> <span class="s1">&#39;Sample&#39;</span>
+                    <span class="p">]</span>
+                    
+                    <span class="c1"># Update filter mask</span>
+                    <span class="n">sample_mask</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">matching_samples</span><span class="p">)</span>
+                    <span class="n">filter_mask</span> <span class="o">=</span> <span class="n">filter_mask</span> <span class="o">|</span> <span class="n">sample_mask</span>
+        
+        <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">filter_mask</span><span class="p">]</span> <span class="k">if</span> <span class="n">filter_mask</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="k">else</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._display_plot">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._display_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_display_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the dual clumped space plot.&quot;&quot;&quot;</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_dual_clumped_plot</span><span class="p">()</span>
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span>
+            <span class="n">fig</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="s2">&quot;stretch&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Provide download link</span>
+        <span class="n">download_link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_html_download_link</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">download_link</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._create_dual_clumped_plot">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._create_dual_clumped_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_dual_clumped_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the main dual clumped space plot.&quot;&quot;&quot;</span>
+        <span class="n">level_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">level_plot</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;mean&quot;</span> <span class="ow">in</span> <span class="n">level_plot</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_mean_plot</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_replicate_plot</span><span class="p">()</span>
+        
+        <span class="c1"># Add calibration curves</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_calibration_curves</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">reprocessed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reprocCalib&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s2">&quot;reprocessed_poly&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reprocess_calibration</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_calibration_curves</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">reprocessed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># Add CO2 equilibrium if requested</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CO2_poly&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_co2_equilibrium</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        
+        <span class="c1"># Apply layout settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_plot_layout</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._create_mean_plot">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._create_mean_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_mean_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a plot showing sample means with error bars.&quot;&quot;&quot;</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">_06_filtered_summary</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;### Please set filter to match the available samples!&#39;</span><span class="p">)</span>
+            <span class="n">available_samples</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">correction_output_summary</span><span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;  </span><span class="se">\n</span><span class="s2">  &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">available_samples</span><span class="p">))</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        
+        <span class="c1"># Prepare hover data</span>
+        <span class="n">hover_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_hover_data</span><span class="p">()</span>
+        
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="n">summary</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">x_axis</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">y_axis</span><span class="p">,</span>
+            <span class="n">error_x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">error_dualClumped</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mz</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">x_axis</span><span class="p">),</span>
+            <span class="n">error_y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">error_dualClumped</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mz</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">y_axis</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span>
+            <span class="n">hover_data</span><span class="o">=</span><span class="n">hover_data</span><span class="p">,</span>
+            <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span>
+            <span class="n">symbol_sequence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">symbols</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines+markers&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Update marker properties</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">))</span>
+        
+        <span class="c1"># Reduce error bar thickness</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">fig</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="s1">&#39;error_y&#39;</span><span class="p">):</span>
+                <span class="n">trace</span><span class="o">.</span><span class="n">error_y</span><span class="o">.</span><span class="n">thickness</span> <span class="o">=</span> <span class="mf">0.75</span>
+        
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._create_replicate_plot">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._create_replicate_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_replicate_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a plot showing individual replicates.&quot;&quot;&quot;</span>
+        <span class="n">level_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">level_plot</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">_06_filtered_summary</span> <span class="k">if</span> <span class="s2">&quot;mean&quot;</span> <span class="ow">in</span> <span class="n">level_plot</span> 
+              <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">_06_filtered_reps</span><span class="p">)</span>
+        
+        <span class="c1"># Ensure numeric data types</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">x_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">x_axis</span><span class="p">])</span>
+            <span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">y_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">y_axis</span><span class="p">])</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">x_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">x_axis</span><span class="si">}</span><span class="s2"> CDES&quot;</span><span class="p">])</span>
+            <span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">y_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">y_axis</span><span class="si">}</span><span class="s2"> CDES&quot;</span><span class="p">])</span>
+        
+        <span class="n">hover_data</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">,</span> <span class="s2">&quot;Timetag&quot;</span><span class="p">,</span> <span class="s2">&quot;d13C_VPDB&quot;</span><span class="p">,</span> <span class="s2">&quot;d18O_VSMOW&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;n_acqu&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+            <span class="n">hover_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;n_acqu&#39;</span><span class="p">)</span>
+        
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="n">data_frame</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">x_axis</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">y_axis</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span>
+            <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span>
+            <span class="n">symbol_sequence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">symbols</span><span class="p">,</span>
+            <span class="n">hover_data</span><span class="o">=</span><span class="n">hover_data</span>
+        <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._prepare_hover_data">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._prepare_hover_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_hover_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare hover data for mean plots.&quot;&quot;&quot;</span>
+        <span class="n">hover_data</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;d13C_VPDB&quot;</span><span class="p">,</span> <span class="s2">&quot;d18O_CO2_VSMOW&quot;</span><span class="p">]</span>
+        
+        <span class="k">for</span> <span class="n">calib</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;04_used_calibs&quot;</span><span class="p">]:</span>
+            <span class="n">error_type</span> <span class="o">=</span> <span class="s2">&quot;2SE&quot;</span> <span class="k">if</span> <span class="s2">&quot;2&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">error_dualClumped</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mz</span><span class="o">=</span><span class="s2">&quot;D47&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;1SE&quot;</span>
+            <span class="n">hover_data</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
+                <span class="sa">f</span><span class="s2">&quot;T(min, </span><span class="si">{</span><span class="n">error_type</span><span class="si">}</span><span class="s2">), </span><span class="si">{</span><span class="n">calib</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;T(mean), </span><span class="si">{</span><span class="n">calib</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;T(max, </span><span class="si">{</span><span class="n">error_type</span><span class="si">}</span><span class="s2">), </span><span class="si">{</span><span class="n">calib</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">])</span>
+        
+        <span class="k">return</span> <span class="n">hover_data</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;process_D47&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._add_calibration_curves">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._add_calibration_curves">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_calibration_curves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">:</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">reprocessed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add carbonate equilibrium calibration curves to the plot.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">reprocessed</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reprocess_calibration</span><span class="p">():</span>
+                <span class="k">return</span>
+            <span class="n">scaling_47</span><span class="p">,</span> <span class="n">offset_47</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;reprocessed_poly&quot;</span><span class="p">][</span><span class="mi">47</span><span class="p">][</span><span class="s2">&quot;a&quot;</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;reprocessed_poly&quot;</span><span class="p">][</span><span class="mi">47</span><span class="p">][</span><span class="s2">&quot;b&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">scaling_48</span><span class="p">,</span> <span class="n">offset_48</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;reprocessed_poly&quot;</span><span class="p">][</span><span class="mi">48</span><span class="p">][</span><span class="s2">&quot;a&quot;</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;reprocessed_poly&quot;</span><span class="p">][</span><span class="mi">48</span><span class="p">][</span><span class="s2">&quot;b&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Fiebig2024 calibration parameters</span>
+            <span class="n">scaling_47</span><span class="p">,</span> <span class="n">offset_47</span> <span class="o">=</span> <span class="mf">1.038</span><span class="p">,</span> <span class="mf">0.1848</span>
+            <span class="n">scaling_48</span><span class="p">,</span> <span class="n">offset_48</span> <span class="o">=</span> <span class="mf">1.038</span><span class="p">,</span> <span class="mf">0.1214</span>
+        
+        <span class="c1"># D49 calibration (Bernecker2023)</span>
+        <span class="n">scaling_49</span><span class="p">,</span> <span class="n">offset_49</span> <span class="o">=</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mf">0.56</span>
+        
+        <span class="c1"># Select appropriate scaling and functions based on axes</span>
+        <span class="n">x_axis</span><span class="p">,</span> <span class="n">y_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">x_axis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">y_axis</span>
+        
+        <span class="n">scaling_funcs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;D47&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">scaling_47</span><span class="p">,</span> <span class="n">offset_47</span><span class="p">,</span> <span class="n">tP</span><span class="o">.</span><span class="n">K47_t</span><span class="p">),</span>
+            <span class="s2">&quot;D48&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">scaling_48</span><span class="p">,</span> <span class="n">offset_48</span><span class="p">,</span> <span class="n">tP</span><span class="o">.</span><span class="n">K48_t</span><span class="p">),</span>
+            <span class="s2">&quot;D49&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">scaling_49</span><span class="p">,</span> <span class="n">offset_49</span><span class="p">,</span> <span class="n">tP</span><span class="o">.</span><span class="n">K49_t</span><span class="p">),</span>
+        <span class="p">}</span>
+        
+        <span class="n">scaling_x</span><span class="p">,</span> <span class="n">offset_x</span><span class="p">,</span> <span class="n">x_func</span> <span class="o">=</span> <span class="n">scaling_funcs</span><span class="p">[</span><span class="n">x_axis</span><span class="p">]</span>
+        <span class="n">scaling_y</span><span class="p">,</span> <span class="n">offset_y</span><span class="p">,</span> <span class="n">y_func</span> <span class="o">=</span> <span class="n">scaling_funcs</span><span class="p">[</span><span class="n">y_axis</span><span class="p">]</span>
+        
+        <span class="c1"># Temperature points for calibration</span>
+        <span class="n">temps_c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> 
+                   <span class="mi">250</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">350</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">700</span><span class="p">,</span> <span class="mi">900</span><span class="p">,</span> <span class="mi">1100</span><span class="p">]</span>
+        <span class="n">temps_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="mf">273.15</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">temps_c</span><span class="p">])</span>
+        
+        <span class="n">temps_y</span> <span class="o">=</span> <span class="n">y_func</span><span class="p">(</span><span class="n">temps_k</span><span class="p">,</span> <span class="n">scaling_y</span><span class="p">,</span> <span class="n">offset_y</span><span class="p">)</span>
+        <span class="n">temps_x</span> <span class="o">=</span> <span class="n">x_func</span><span class="p">(</span><span class="n">temps_k</span><span class="p">,</span> <span class="n">scaling_x</span><span class="p">,</span> <span class="n">offset_x</span><span class="p">)</span>
+        
+        <span class="c1"># Add temperature markers</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">temps_x</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">temps_y</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+            <span class="n">legendgroup</span><span class="o">=</span><span class="s2">&quot;legend_calib&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;Red&quot;</span> <span class="k">if</span> <span class="n">reprocessed</span> <span class="k">else</span> <span class="s2">&quot;Black&quot;</span><span class="p">),</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">°C&quot;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">temps_c</span><span class="p">],</span>
+        <span class="p">))</span>
+        
+        <span class="c1"># Add temperature labels</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">temps_x</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">temps_y</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+            <span class="n">legendgroup</span><span class="o">=</span><span class="s2">&quot;legend_calib&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;Red&quot;</span> <span class="k">if</span> <span class="n">reprocessed</span> <span class="k">else</span> <span class="s2">&quot;Black&quot;</span><span class="p">),</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">°C (new)&quot;</span> <span class="k">if</span> <span class="n">reprocessed</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">°C&quot;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">temps_c</span><span class="p">],</span>
+            <span class="n">textposition</span><span class="o">=</span><span class="s2">&quot;bottom right&quot;</span><span class="p">,</span>
+        <span class="p">))</span>
+        
+        <span class="c1"># Add calibration curve</span>
+        <span class="n">calib_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="mf">273.15</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+        <span class="n">calib_y</span> <span class="o">=</span> <span class="n">y_func</span><span class="p">(</span><span class="n">calib_range</span><span class="p">,</span> <span class="n">scaling_y</span><span class="p">,</span> <span class="n">offset_y</span><span class="p">)</span>
+        <span class="n">calib_x</span> <span class="o">=</span> <span class="n">x_func</span><span class="p">(</span><span class="n">calib_range</span><span class="p">,</span> <span class="n">scaling_x</span><span class="p">,</span> <span class="n">offset_x</span><span class="p">)</span>
+        
+        <span class="n">curve_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_calibration_curve_name</span><span class="p">(</span><span class="n">reprocessed</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">y_axis</span><span class="p">)</span>
+        
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">calib_x</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">calib_y</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+            <span class="n">legendgroup</span><span class="o">=</span><span class="s2">&quot;legend_calib&quot;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">curve_name</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">°C&quot;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
+            <span class="n">texttemplate</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.3f</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;Red&quot;</span> <span class="k">if</span> <span class="n">reprocessed</span> <span class="k">else</span> <span class="s2">&quot;Grey&quot;</span><span class="p">),</span>
+        <span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._get_calibration_curve_name">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._get_calibration_curve_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_calibration_curve_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reprocessed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">y_axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the appropriate name for the calibration curve.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">reprocessed</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Carbonate equilibrium (reprocessed)&quot;</span>
+        <span class="k">elif</span> <span class="n">x_axis</span> <span class="o">==</span> <span class="s2">&quot;D49&quot;</span> <span class="ow">or</span> <span class="n">y_axis</span> <span class="o">==</span> <span class="s2">&quot;D49&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Carbonate equilibrium (Bernecker2023/Fiebig2024)&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Carbonate equilibrium (Fiebig2024)&quot;</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._add_co2_equilibrium">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._add_co2_equilibrium">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_co2_equilibrium</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">:</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add CO2 equilibrium curve to the plot.&quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">delta_47_equilibrium</span><span class="p">(</span><span class="n">t_celsius</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Calculate CO2 equilibrium Δ47 (in ‰) using Cao &amp; Liu (2012).</span>
+<span class="sd">            Input: t_celsius (temperature in degrees Celsius)</span>
+<span class="sd">            Output: Δ47 (per mil, ‰)</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">t_kelvin</span> <span class="o">=</span> <span class="n">t_celsius</span> <span class="o">+</span> <span class="mf">273.15</span>
+            <span class="k">return</span> <span class="mi">25932</span> <span class="o">/</span> <span class="p">(</span><span class="n">t_kelvin</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">266.6</span> <span class="o">/</span> <span class="n">t_kelvin</span> <span class="o">-</span> <span class="mf">0.2446</span>
+            <span class="n">_</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            Calculate CO2 equilibrium Δ47 (in ‰) using Wang et al. (2004).</span>
+<span class="s2">            Input: t_celsius (temperature in degrees Celsius)</span>
+<span class="s2">            Output: Δ47 (per mil, ‰)</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+            <span class="c1">#t_kelvin = t_celsius + 273.15</span>
+            <span class="c1">#return 24952 / (t_kelvin ** 2) + 325.6 / t_kelvin - 0.365</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">delta_48_equilibrium</span><span class="p">(</span><span class="n">t_celsius</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Calculate CO2 equilibrium Δ48 (in ‰) using Cao &amp; Liu (2012).</span>
+<span class="sd">            Input: t_celsius (temperature in degrees Celsius)</span>
+<span class="sd">            Output: Δ48 (per mil, ‰)</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">t_kelvin</span> <span class="o">=</span> <span class="n">t_celsius</span> <span class="o">+</span> <span class="mf">273.15</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">/</span> <span class="p">(</span><span class="n">t_kelvin</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="o">-</span><span class="mf">1.0316e-4</span> <span class="o">*</span> <span class="p">(</span><span class="n">factor</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="o">+</span> <span class="mf">4.2175e-3</span> <span class="o">*</span> <span class="p">(</span><span class="n">factor</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="o">-</span> <span class="mf">3.7502e-3</span> <span class="o">*</span> <span class="n">factor</span>
+            <span class="p">)</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Calculate CO2 equilibrium Δ48 (in ‰) using Wang et al. (2004).</span>
+<span class="sd">            Input: t_celsius (temperature in degrees Celsius)</span>
+<span class="sd">            Output: Δ48 (per mil, ‰)</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="c1">#t_kelvin = t_celsius + 273.15</span>
+            <span class="c1">#factor = 1e6 / (t_kelvin ** 2)</span>
+            <span class="c1">#return (</span>
+            <span class="c1">#    -9.154e-5 * (factor ** 3)</span>
+            <span class="c1">#    + 3.707e-3 * (factor ** 2)</span>
+            <span class="c1">#    - 3.522e-3 * factor</span>
+            <span class="c1">#)</span>
+    
+        <span class="n">temp_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">d47_values</span> <span class="o">=</span> <span class="n">delta_47_equilibrium</span><span class="p">(</span><span class="n">temp_range</span><span class="p">)</span>
+        <span class="n">d48_values</span> <span class="o">=</span> <span class="n">delta_48_equilibrium</span><span class="p">(</span><span class="n">temp_range</span><span class="p">)</span>
+        
+        <span class="c1"># Add CO2 equilibrium curve</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">d48_values</span><span class="p">,</span> 
+            <span class="n">y</span><span class="o">=</span><span class="n">d47_values</span><span class="p">,</span> 
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span> 
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;CO2 equilibrium (Cao&amp;Liu 2012)&#39;</span><span class="p">,</span> 
+            <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">°C&quot;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">temp_range</span><span class="p">],</span>
+        <span class="p">))</span>
+        
+        <span class="c1"># Add temperature labels for CO2 equilibrium</span>
+        <span class="n">temp_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> 
+                               <span class="mi">150</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">350</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">700</span><span class="p">,</span> <span class="mi">900</span><span class="p">,</span> <span class="mi">1100</span><span class="p">,</span> <span class="mi">1200</span><span class="p">])</span>
+        
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">delta_48_equilibrium</span><span class="p">(</span><span class="n">temp_labels</span><span class="p">),</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">delta_47_equilibrium</span><span class="p">(</span><span class="n">temp_labels</span><span class="p">),</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+            <span class="n">legendgroup</span><span class="o">=</span><span class="s2">&quot;legend_calib&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;Blue&quot;</span><span class="p">),</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">°C&quot;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">temp_labels</span><span class="p">],</span>
+            <span class="n">textposition</span><span class="o">=</span><span class="s2">&quot;bottom right&quot;</span><span class="p">,</span>
+        <span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._apply_plot_layout">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._apply_plot_layout">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_plot_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">:</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply layout settings to the plot.&quot;&quot;&quot;</span>
+        <span class="c1"># Fix x/y ratio if requested</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fix_ratio&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">scaleanchor</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">scaleratio</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="c1"># Set axis ranges based on filtered data</span>
+        <span class="k">if</span> <span class="s2">&quot;_06_filtered_reps&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">:</span>
+            <span class="n">x_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">_06_filtered_reps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">x_axis</span><span class="p">]</span>
+            <span class="n">y_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">_06_filtered_reps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">y_axis</span><span class="p">]</span>
+            
+            <span class="n">x_pad</span> <span class="o">=</span> <span class="mf">0.07</span>
+            <span class="n">y_pad</span> <span class="o">=</span> <span class="mf">0.02</span>
+            
+            <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+                <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">x_data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="n">x_pad</span><span class="p">,</span> <span class="n">x_data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="n">x_pad</span><span class="p">]),</span>
+                <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">y_data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="n">y_pad</span><span class="p">,</span> <span class="n">y_data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="n">y_pad</span><span class="p">]),</span>
+            <span class="p">)</span>
+        
+        <span class="c1"># Apply general layout settings</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">]</span>
+        <span class="n">x_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;∆&lt;sub&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">x_axis</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">scale</span><span class="si">}</span><span class="s2">&lt;/sub&gt; [‰]&quot;</span>
+        <span class="n">y_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;∆&lt;sub&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">y_axis</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">scale</span><span class="si">}</span><span class="s2">&lt;/sub&gt; [‰]&quot;</span>
+        
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">750</span><span class="p">,</span>
+            <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">x_title</span><span class="p">),</span>
+            <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">y_title</span><span class="p">),</span>
+            <span class="n">hoverlabel</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span>
+            <span class="n">legend</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">15</span><span class="p">),</span>
+            <span class="n">legend_title</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">font_size</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Update trace and axis styling</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">textfont_size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span>
+            <span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linecolor</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">title_font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">25</span><span class="p">),</span> <span class="n">tickfont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span>
+            <span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linecolor</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">title_font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">25</span><span class="p">),</span> <span class="n">tickfont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._reprocess_calibration">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._reprocess_calibration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reprocess_calibration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reprocess calibration data using available calibration samples.&quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">correction_output_summary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;reprocessed_poly&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="c1"># Predefined calibration temperatures</span>
+        <span class="n">preset_temperatures</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;ETH-1-1100&quot;</span><span class="p">:</span> <span class="mi">1100</span><span class="p">,</span> <span class="s2">&quot;ETH-2-1100&quot;</span><span class="p">:</span> <span class="mi">1100</span><span class="p">,</span> <span class="s2">&quot;LGB-2&quot;</span><span class="p">:</span> <span class="mf">7.9</span><span class="p">,</span>
+            <span class="s2">&quot;DHC2-8&quot;</span><span class="p">:</span> <span class="mf">33.7</span><span class="p">,</span> <span class="s2">&quot;DHC2-3&quot;</span><span class="p">:</span> <span class="mf">33.7</span><span class="p">,</span> <span class="s2">&quot;DVH-2&quot;</span><span class="p">:</span> <span class="mf">33.7</span><span class="p">,</span>
+            <span class="s2">&quot;CA120&quot;</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span> <span class="s2">&quot;CA170&quot;</span><span class="p">:</span> <span class="mi">170</span><span class="p">,</span> <span class="s2">&quot;CA200&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+            <span class="s2">&quot;CA250A&quot;</span><span class="p">:</span> <span class="mi">250</span><span class="p">,</span> <span class="s2">&quot;CA250B&quot;</span><span class="p">:</span> <span class="mi">250</span><span class="p">,</span> <span class="s2">&quot;CM351&quot;</span><span class="p">:</span> <span class="mi">727</span><span class="p">,</span>
+            <span class="s2">&quot;DH11&quot;</span><span class="p">:</span> <span class="mf">33.7</span><span class="p">,</span> <span class="s2">&quot;DH11-109_4&quot;</span><span class="p">:</span> <span class="mf">33.7</span><span class="p">,</span> <span class="s2">&quot;DH11-141_6&quot;</span><span class="p">:</span> <span class="mf">33.7</span><span class="p">,</span>
+            <span class="s2">&quot;DH11-187&quot;</span><span class="p">:</span> <span class="mf">33.7</span><span class="p">,</span> <span class="s2">&quot;DH11-19-7&quot;</span><span class="p">:</span> <span class="mf">33.7</span><span class="p">,</span> <span class="s2">&quot;DH11-201_3&quot;</span><span class="p">:</span> <span class="mf">33.7</span><span class="p">,</span>
+            <span class="s2">&quot;DH11-44_5&quot;</span><span class="p">:</span> <span class="mf">33.7</span><span class="p">,</span> <span class="s2">&quot;DH11-73&quot;</span><span class="p">:</span> <span class="mf">33.7</span><span class="p">,</span>
+            <span class="s1">&#39;ETH1-800&#39;</span><span class="p">:</span> <span class="mi">800</span><span class="p">,</span> <span class="s1">&#39;ETH2-800_72h&#39;</span><span class="p">:</span> <span class="mi">800</span><span class="p">,</span> <span class="s1">&#39;MERCK-800_48h&#39;</span><span class="p">:</span> <span class="mi">800</span><span class="p">,</span>
+        <span class="p">}</span>
+        
+        <span class="c1"># Filter to calibration samples only</span>
+        <span class="n">calib_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">preset_temperatures</span><span class="p">)]</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">calib_df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">info_msg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;None of the pre-defined calibration samples included in the results: &#39;</span>
+                       <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">preset_temperatures</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="s2">&quot;:rainbow[Calibration results]&quot;</span><span class="p">):</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">info_msg</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        
+        <span class="c1"># Add temperature data</span>
+        <span class="n">calib_df</span> <span class="o">=</span> <span class="n">calib_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">calib_df</span><span class="p">[</span><span class="s2">&quot;T_C&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calib_df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">preset_temperatures</span><span class="p">)</span>
+        <span class="n">calib_df</span><span class="p">[</span><span class="s2">&quot;T_1K&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">calib_df</span><span class="p">[</span><span class="s2">&quot;T_C&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">273.15</span><span class="p">)</span>
+        
+        <span class="n">info_msg</span> <span class="o">=</span> <span class="s1">&#39;The following calibration samples are included in the results:&lt;br&gt;&#39;</span>
+        <span class="n">used_temps</span> <span class="o">=</span> <span class="p">{</span><span class="n">sample</span><span class="p">:</span> <span class="n">preset_temperatures</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span> 
+                     <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">calib_df</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">preset_temperatures</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">sample</span><span class="p">,</span> <span class="n">temp</span> <span class="ow">in</span> <span class="n">used_temps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">info_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">temp</span><span class="si">}</span><span class="s2">°C = </span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2">&lt;br&gt;&quot;</span>
+        
+        <span class="c1"># Fit polynomials for D47 and D48</span>
+        <span class="k">for</span> <span class="n">mz</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">):</span>
+            <span class="n">popt</span><span class="p">,</span> <span class="n">info_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_calibration_polynomial</span><span class="p">(</span><span class="n">calib_df</span><span class="p">,</span> <span class="n">mz</span><span class="p">,</span> <span class="n">info_msg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;reprocessed_poly&quot;</span><span class="p">][</span><span class="n">mz</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">popt</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
+        
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="s2">&quot;:rainbow[Calibration results]&quot;</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">info_msg</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._fit_calibration_polynomial">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._fit_calibration_polynomial">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fit_calibration_polynomial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">mz</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">info_msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit polynomial calibration for a specific mass.&quot;&quot;&quot;</span>
+        <span class="c1"># Hill et al. 2014 polynomial coefficients</span>
+        <span class="n">poly_coeffs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">47</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">5.896755e00</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.520888e03</span><span class="p">,</span> <span class="mf">2.391274e07</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.540693e09</span><span class="p">),</span>
+            <span class="mi">48</span><span class="p">:</span> <span class="p">(</span><span class="mf">6.001624e00</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.298978e04</span><span class="p">,</span> <span class="mf">8.995634e06</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.422972e08</span><span class="p">),</span>
+            <span class="mi">49</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">6.741e00</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.950e04</span><span class="p">,</span> <span class="mf">5.845e07</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.093e09</span><span class="p">),</span>
+        <span class="p">}</span>
+        
+        <span class="n">poly</span> <span class="o">=</span> <span class="n">poly_coeffs</span><span class="p">[</span><span class="n">mz</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;T_1K&quot;</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;SE_D</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">calibration_function</span><span class="p">(</span><span class="n">x_vals</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Calibration function using Hill polynomial.&quot;&quot;&quot;</span>
+            <span class="n">poly_vals</span> <span class="o">=</span> <span class="p">(</span><span class="n">poly</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_vals</span> <span class="o">+</span> <span class="n">poly</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_vals</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> 
+                        <span class="n">poly</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_vals</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">poly</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_vals</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">poly_vals</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span>
+        
+        <span class="c1"># Perform curve fitting</span>
+        <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">so</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span>
+            <span class="n">calibration_function</span><span class="p">,</span>
+            <span class="n">xdata</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">ydata</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Calculate R²</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">popt</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">calibration_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">r2</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">y_pred</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
+        
+        <span class="n">info_msg</span> <span class="o">+=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;br&gt;∆</span><span class="si">{</span><span class="n">mz</span><span class="si">}</span><span class="s2">&lt;br&gt;Optimal Values: a=</span><span class="si">{</span><span class="n">a</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> b=</span><span class="si">{</span><span class="n">b</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">   &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;R²: </span><span class="si">{</span><span class="n">r2</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">popt</span><span class="p">,</span> <span class="n">info_msg</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage._create_html_download_link">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._create_html_download_link">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_html_download_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">:</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a download link for the plot as HTML.&quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.io</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pio</span>
+        
+        <span class="n">pio</span><span class="o">.</span><span class="n">templates</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="s2">&quot;plotly&quot;</span>
+        <span class="n">html_buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span><span class="n">html_buffer</span><span class="p">)</span>
+        
+        <span class="n">bytes_buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">html_buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="n">b64</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">bytes_buffer</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;data:text/html;charset=utf-8;base64,</span><span class="si">{</span><span class="n">b64</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;download=&quot;dual_clumped_plot.html&quot;&gt;Download plot&lt;/a&gt;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage.k47_temperature_function">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage.k47_temperature_function">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">k47_temperature_function</span><span class="p">(</span><span class="n">d47</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate temperature from D47 values using calibration function.&quot;&quot;&quot;</span>
+        <span class="n">scaling_47</span><span class="p">,</span> <span class="n">offset_47</span> <span class="o">=</span> <span class="mf">1.0383389103254164</span><span class="p">,</span> <span class="mf">0.18482382659656857</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">polynomial_4th_order</span><span class="p">(</span><span class="n">coeffs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Calculate 4th order polynomial.&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">coeffs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> 
+                   <span class="n">coeffs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">coeffs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+        
+        <span class="n">poly_63</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">5.896755e00</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.520888e03</span><span class="p">,</span> <span class="mf">2.391274e07</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.540693e09</span><span class="p">)</span>
+        <span class="n">poly_vals</span> <span class="o">=</span> <span class="n">polynomial_4th_order</span><span class="p">(</span><span class="n">poly_63</span><span class="p">,</span> <span class="n">d47</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="p">(</span><span class="n">poly_vals</span> <span class="o">*</span> <span class="n">scaling_47</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset_47</span></div>
+
+
+<div class="viewcode-block" id="DualClumpedSpacePage.find_d47_temperature">
+<a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage.find_d47_temperature">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_d47_temperature</span><span class="p">(</span><span class="n">temp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find D47 temperature using optimization.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;D47 CDES&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">DualClumpedSpacePage</span><span class="o">.</span><span class="n">k47_temperature_function</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">temp</span> <span class="o">+</span> <span class="mf">273.15</span><span class="p">)))</span></div>
+</div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">DualClumpedSpacePage</span><span class="p">()</span>
+    <span class="n">page</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Miguel Bernecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
