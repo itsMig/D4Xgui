@@ -379,6 +379,35 @@ class Pysotope:
             
             df = self.analyses[session][self.analyses[session]["Sample"].isin(standards)]
             
+
+            def optimize_ETH12_leastSquares(scale, mz):
+                """Optimize scaling factor for ETH-1 and ETH-2 standards using least squares."""
+                stdP = Pysotope()
+                stdP.scaling_factors["std"] = {
+                    "47b_47.5": -1,
+                    "48b_47.5": -1,
+                    "49b_47.5": -1,
+                }
+
+                std_df = self.analyses.get('std', pd.DataFrame())
+                if std_df.empty:
+                    std_df = self.analyses.get(next(iter(self.analyses)), pd.DataFrame())
+
+                std_in = std_df[std_df["Sample"].isin(["ETH-1", "ETH-2"])]
+                stdP.add_data("std", std_in)
+                stdP.scaling_factors["std"][f"{mz}b_47.5"] = scale
+                stdP.calc_sample_ratios_1(session="std")
+
+                stdP.correctBaseline(scaling_mode="std")
+                stdP.calc_sample_ratios_2(mode="bg")
+
+                std_df = stdP.analyses["std"]
+
+                df_ETHs = std_df[std_df["Sample"].isin(["ETH-1", "ETH-2"])]
+                results = linregress(df_ETHs[f"d{mz}"].values, df_ETHs[f"D{mz}"].values)
+                return results.slope
+
+
             def optimize_HGL_leastSquare(scale, mz):
                 """Optimize heated gas line using least squares."""
                 standards = [str(_) for _ in self.standards[f"D{mz}"].keys()]
@@ -426,13 +455,13 @@ class Pysotope:
                     result = least_squares(
                         optimize_HGL_leastSquare,
                         -1.0,
-                        bounds=(-1.5, -1e-7),
+                        bounds=(-5, -1e-7),
                         args=([mz]),
                     )
                 elif self.optimize == "ETH":
                     # Simplified ETH optimization
                     result = least_squares(
-                        optimize_HGL_leastSquare,
+                        optimize_ETH12_leastSquares,
                         -1.0,
                         args=(mz,),
                     )
@@ -441,7 +470,7 @@ class Pysotope:
                     result = least_squares(
                         optimize_HGL_leastSquare,
                         -1.0,
-                        bounds=(-1.5, -1e-7),
+                        bounds=(-5, -1e-7),
                         args=([mz]),
                     )
                 
