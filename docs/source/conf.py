@@ -40,6 +40,7 @@ release = 'v1.0.0'
 
 autodoc_mock_imports = [
     "streamlit",
+    "streamlit_extras",
     "pandas",
     "numpy",
     "plotly",
