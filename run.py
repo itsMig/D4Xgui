@@ -229,11 +229,12 @@ class D4XguiRunner:
         # Setup environment if needed
         if not self.is_venv_setup():
             self.setup_environment()
+            self.test_application()
             
         else:
             print("✅ Environment already set up")
         
-        self.test_application()
+        
 
         # Run the application
         self.run_application()
