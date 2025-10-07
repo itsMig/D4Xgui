@@ -62,9 +62,9 @@ class PlotlyConfig:
     CONFIG= {
         "toImageButtonOptions": {
         "format": "svg",  # one of png, svg, jpeg, webp
-       # "filename": "custom_plot",
-        "height": 600,
-        "width": 800,
+        "filename": "D4Xgui_plot",
+        # "height": 'original',
+       # "width": 800,
         #"scale": 2  # Multiply title/legend/axis/canvas sizes by this factor
     },
     "responsive": True,
@@ -73,6 +73,7 @@ class PlotlyConfig:
     "editable": False,
      "scrollZoom": False,
     'width':"stretch",
+    "height" : "stretch",
     }
 
 
