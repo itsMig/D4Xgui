@@ -10,7 +10,7 @@ import io
 import base64
 import os
 from datetime import datetime
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Union, Tuple
 from dataclasses import dataclass
 
 import D47crunch as D47c
@@ -22,7 +22,7 @@ from tools.sidebar_logo import SidebarLogoManager
 from tools.authenticator import Authenticator
 from tools.init_params import IsotopeStandards
 from tools.commons import clear_session_cache
-
+from scipy import optimize as so
 
 @dataclass
 class ProcessingConfig:
@@ -48,13 +48,8 @@ class ProcessingConfig:
 class IsotopeProcessor:
     """Handles isotope data processing using D47crunch."""
     
-    # Constants for isotope processing
     ACID_TEMPERATURE = 90  # Celsius
-    #WORKING_GAS_D13C = -4.221
-    #WORKING_GAS_D18O = 25.26
     
-    # Standard isotope values for different materials
-
     
     def __init__(self, session_state: st.session_state):
         self.sss = session_state
@@ -194,6 +189,245 @@ class IsotopeProcessor:
 
 class TemperatureCalculator:
     """Handles temperature calculations from D47 values using various calibrations."""
+    POLY_63_COEFFS = (-5.896755e00, -3.520888e03, 2.391274e07, -3.540693e09)
+    POLY_64_COEFFS = (6.001624e00, -1.298978e04, 8.995634e06, -7.422972e08)
+    POLY_65_COEFFS = (-6.741e00, -1.950e04, 5.845e07, -8.093e09)
+    #  Scaling and offset parameters for Fiebig et al. (2021)
+    FIEBIG2021_D47_SCALING = 1.0381881
+    FIEBIG2021_D47_OFFSET = 0.1855537
+    FIEBIG2021_D48_SCALING = 1.0280693
+    FIEBIG2021_D48_OFFSET = 0.1244564
+    # Scaling and offset parameters for Fiebig et al. (2024)
+    FIEBIG2024_D47_SCALING = 1.038
+    FIEBIG2024_D47_OFFSET = 0.1848
+    FIEBIG2024_D48_SCALING = 1.038
+    FIEBIG2024_D48_OFFSET = 0.1214
+    
+    def __init__(self, session_state: st.session_state = st.session_state):
+        self.sss = session_state
+        # Polynomial coefficients for Hill et al. (2014)
+      
+    
+    @staticmethod
+    def _evaluate_polynomial_4th_order(coeffs: Tuple[float, ...], x: Union[float, np.ndarray]) -> Union[
+        float, np.ndarray]:
+        """Evaluate a 4th-degree polynomial.
+
+        Args:
+            coeffs: Polynomial coefficients (a, b, c, d) for ax + bx² + cx³ + dx⁴.
+            x: Input value(s).
+
+        Returns:
+            Polynomial evaluation result.
+        """
+        a, b, c, d = coeffs
+        return a * x + b * x ** 2 + c * x ** 3 + d * x ** 4
+    
+    @classmethod
+    def calculate_d63_hill2014(cls, inverse_temp_k: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+        """Calculate D63 values using Hill et al. (2014) calibration.
+
+        Args:
+            inverse_temp_k: 1/T in Kelvin.
+
+        Returns:
+            D63 values.
+        """
+        return cls._evaluate_polynomial_4th_order(cls.POLY_63_COEFFS, inverse_temp_k)
+    
+    @classmethod
+    def calculate_d64_hill2014(cls, inverse_temp_k: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+        """Calculate D64 values using Hill et al. (2014) calibration.
+
+        Args:
+            inverse_temp_k: 1/T in Kelvin.
+
+        Returns:
+            D64 values.
+        """
+        return cls._evaluate_polynomial_4th_order(cls.POLY_64_COEFFS, inverse_temp_k)
+    
+    @classmethod
+    def calculate_d65_hill2014(cls, inverse_temp_k: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+        """Calculate D65 values using Hill et al. (2014) calibration.
+
+        Args:
+            inverse_temp_k: 1/T in Kelvin.
+
+        Returns:
+            D65 values.
+        """
+        return cls._evaluate_polynomial_4th_order(cls.POLY_65_COEFFS, inverse_temp_k)
+    
+    @classmethod
+    def calculate_d47_fiebig2021(cls, inverse_temp_k: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+        """Calculate D47 values using Fiebig et al. (2021) calibration.
+
+        Args:
+            inverse_temp_k: 1/T in Kelvin.
+
+        Returns:
+            D47 values.
+        """
+        d63 = cls.calculate_d63_hill2014(inverse_temp_k)
+        return (d63 * cls.FIEBIG2021_D47_SCALING) + cls.FIEBIG2021_D47_OFFSET
+    
+    def calculate_d47_fiebig2024(cls, inverse_temp_k: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+        """Calculate D47 values using Fiebig et al. (2024) calibration.
+
+		Args:
+			inverse_temp_k: 1/T in Kelvin.
+
+		Returns:
+			D47 values.
+		"""
+        d63 = cls.calculate_d63_hill2014(inverse_temp_k)
+        return (d63 * cls.FIEBIG2024_D47_SCALING) + cls.FIEBIG2024_D47_OFFSET
+    
+    @classmethod
+    def get_temperature_difference_d47_fiebig2021(cls, temp_celsius: float, target_d47: float) -> float:
+        """Calculate absolute difference between target D47 and calculated D47 (Fiebig 2021).
+
+		Args:
+			temp_celsius: Temperature in Celsius.
+			target_d47: Target D47 value.
+
+		Returns:
+			Absolute difference between target and calculated D47.
+		"""
+        inverse_temp_k = 1 / (temp_celsius + 273.15)
+        calculated_d47 = cls.calculate_d47_fiebig2021(inverse_temp_k)
+        return abs(target_d47 - calculated_d47)
+    
+    def get_temperature_difference_d47_fiebig2024(cls, temp_celsius: float, target_d47: float) -> float:
+        """Calculate absolute difference between target D47 and calculated D47 (Fiebig 2024).
+
+		Args:
+			temp_celsius: Temperature in Celsius.
+			target_d47: Target D47 value.
+
+		Returns:
+			Absolute difference between target and calculated D47.
+		"""
+        inverse_temp_k = 1 / (temp_celsius + 273.15)
+        calculated_d47 = cls.calculate_d47_fiebig2024(inverse_temp_k)
+        return abs(target_d47 - calculated_d47)
+    
+    def get_temperature_difference_d47_anderson2021(cls, temp_celsius: float, target_d47: float) -> float:
+        return abs(target_d47 - ((0.0391 * 1e6 / temp_celsius ** 2) + 0.154))
+    
+    def _direct_temperature_swart2021(cls, D47):
+        """
+        Calculate temperature using the Swart21 equation: Δ47(CDES90) = 0.039 * 10^6/T^2 + 0.158
+
+        :param D47: The D47 value
+        :return: Temperature in °C
+        """
+        # Rearranged equation: T = sqrt(10^6 * 0.039 / (D47 - 0.158))
+        # Convert from Kelvin to Celsius by subtracting 273.15
+        try:
+            temp_K = np.sqrt(1e6 * 0.039 / (D47 - 0.158))
+            return temp_K - 273.15
+        except Exception as e:
+            # Handle cases where D47 <= 0.158 which would result in negative or zero denominator
+            return e
+    
+    def calc_temp(self, summary):
+        calibs = self.sss["04_selected_calibs"]
+        
+        self.sss['04_used_calibs'] = [_ for _ in calibs]
+        
+
+        _ = """
+        if not "04_calibs" in self.sss:
+        import inspect
+        import D47calib
+
+        self.sss["04_calibs"] = {
+            name: obj
+            for name, obj in inspect.getmembers(D47calib)
+            if isinstance(obj, D47calib.D47calib)
+        }
+
+        """
+        
+        if "Fiebig24 (original)" in calibs:
+            for (label, key, sign) in zip (['min, 2SE', 'min, 1SE', 'mean', 'max, 1SE', 'max, 2SE'],
+                                            ['2SE_D47', 'SE_D47', 'D47', 'SE_D47', '2SE_D47'],
+                                            [+1, +1, 0, -1, -1]
+                                     ):
+                summary[f"T({label}), Fiebig24 (original)"] = [
+                    round(so.minimize_scalar(self.get_temperature_difference_d47_fiebig2024,
+                                             args=(t,)).x, 2)
+                    for t in (summary["D47"] + (summary[key]) * sign)
+                ]
+            
+        if "Anderson21 (original)" in calibs:
+            for (label, key, sign) in zip(['min, 2SE', 'min, 1SE', 'mean', 'max, 1SE', 'max, 2SE'],
+                                          ['2SE_D47', 'SE_D47', 'D47', 'SE_D47', '2SE_D47'],
+                                          [+1, +1, 0, -1, -1]
+                                          ):
+                summary[f"T({label}), Anderson21 (original)"] = [
+                            round(
+                                - 273.15 + so.minimize_scalar(
+                                    self.get_temperature_difference_d47_anderson2021, args=(t,), bounds=(0.000000001, 1000)
+                                ).x,
+                                2,
+                            )
+                            for t in (summary["D47"] + (summary[key]) * sign)
+                        ]
+                
+        
+        if "Swart21 (original)" in calibs:
+            for (label, key, sign) in zip(['min, 2SE', 'min, 1SE', 'mean', 'max, 1SE', 'max, 2SE'],
+                                          ['2SE_D47', 'SE_D47', 'D47', 'SE_D47', '2SE_D47'],
+                                          [+1, +1, 0, -1, -1]
+                                          ):
+           
+                summary[f"T({label}), Swart21 (original)"] = [
+                    round(self._direct_temperature_swart2021(t), 2)
+                    for t in (summary["D47"] + (summary[key]) * sign)
+                ]
+
+        for calib in calibs:
+            if calib in [
+                "Fiebig24 (original)",
+                "Swart21 (original)",
+                "Anderson21 (original)"
+            ]:
+                continue
+            # summary[f"T(mean), {calib}"] = [None] * len(summary)
+            for idx in range(len(summary)):
+                # st.write(idx)
+                try:
+                    
+                    summary.loc[summary.index == idx, f"T(min, 2SE), {calib}"] = round(
+                        self.sss["04_calibs"][calib].__dict__["_T_from_D47"](
+                            summary.loc[summary.index == idx, 'D47'] + summary.loc[summary.index == idx, '2SE_D47'])[0],
+                        2)
+                    
+                    summary.loc[summary.index == idx, f"T(min, 1SE), {calib}"] = round(
+                        self.sss["04_calibs"][calib].__dict__["_T_from_D47"](
+                            summary.loc[summary.index == idx, 'D47'] + summary.loc[summary.index == idx, 'SE_D47'])[0],
+                        2)
+                    
+                    summary.loc[summary.index == idx, f"T(mean), {calib}"] = round(
+                        self.sss["04_calibs"][calib].__dict__["_T_from_D47"](summary.loc[summary.index == idx, 'D47'])[0], 2)
+                    
+                    summary.loc[summary.index == idx, f"T(max, 1SE), {calib}"] = round(
+                        self.sss["04_calibs"][calib].__dict__["_T_from_D47"](
+                            summary.loc[summary.index == idx, 'D47'] - summary.loc[summary.index == idx, 'SE_D47'])[0],
+                        2)
+                    
+                    summary.loc[summary.index == idx, f"T(max, 2SE), {calib}"] = round(
+                        self.sss["04_calibs"][calib].__dict__["_T_from_D47"](
+                            summary.loc[summary.index == idx, 'D47'] - summary.loc[summary.index == idx, '2SE_D47'])[0],
+                        2)
+                
+                except Exception as e:
+                    summary.loc[summary.index == idx, f"T(mean), {calib}"] = str(e)
+        
+        return summary
     
     @staticmethod
     def calculate_swart21_temperature(d47_value: float) -> float:
@@ -231,6 +465,234 @@ class TemperatureCalculator:
                 ]
         
         return results
+    
+    def _add_fiebig21_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series,
+                                   _2se_values: pd.Series) -> None:
+        """Add Fiebig21 temperature calculations to summary."""
+        try:
+            from scipy.optimize import minimize_scalar
+            
+            
+            # Define error ranges for temperature calculation
+            error_ranges = {
+                "T(min, 2SE)": d47_values + _2se_values,
+                "T(min, 1SE)": d47_values + se_values,
+                "T(mean)": d47_values,
+                "T(max, 1SE)": d47_values - se_values,
+                "T(max, 2SE)": d47_values - _2se_values,
+            }
+            
+            # Calculate temperatures for each error range
+            for temp_type, d47_range in error_ranges.items():
+                temperatures = []
+                
+                for d47 in d47_range:
+                    if pd.notna(d47):
+                        try:
+                            # Calculate temperature using optimization
+                            result = minimize_scalar(
+                                TemperatureCalculator.get_temperature_difference_d47_fiebig2021,
+                                args=(d47,),
+                                # bounds=(-100, 1000),
+                                # method='bounded'
+                            )
+                            temp = result.x
+                            temperatures.append(round(temp, 2))
+                        except Exception as e:
+                            temperatures.append(e)
+                    else:
+                        temperatures.append(np.nan)
+                
+                summary[f"{temp_type}, Fiebig21 (original)"] = temperatures
+        
+        except Exception as e:
+            summary[f"T (°C), Fiebig21 (original)"] = f"Error: {str(e)}"
+    
+    def _add_fiebig24_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series,
+                                   _2se_values: pd.Series) -> None:
+        """Add Fiebig24 temperature calculations to summary."""
+        try:
+            from scipy.optimize import minimize_scalar
+            #from tools.calc_temperature import TemperatureCalculator
+            st.write(d47_values, se_values, _2se_values)
+            # Define error ranges for temperature calculation
+            error_ranges = {
+                "T(min, 2SE)": d47_values + _2se_values,
+                "T(min, 1SE)": d47_values + se_values,
+                "T(mean)": d47_values,
+                "T(max, 1SE)": d47_values - se_values,
+                "T(max, 2SE)": d47_values - _2se_values,
+            }
+            
+            # Calculate temperatures for each error range
+            for temp_type, d47_range in error_ranges.items():
+                temperatures = []
+                
+                for d47 in d47_range:
+                    if pd.notna(d47):
+                        try:
+                            # Calculate temperature using optimization
+                            result = minimize_scalar(
+                                TemperatureCalculator.get_temperature_difference_d47_fiebig2024,
+                                args=(d47,),
+                                # bounds=(0, 1000),
+                                # method='bounded'
+                            )
+                            temp = result.x
+                            temperatures.append(round(temp, 2))
+                        except Exception as e:
+                            temperatures.append(e)
+                    else:
+                        temperatures.append(np.nan)
+                
+                summary[f"{temp_type}, Fiebig24 (original)"] = temperatures
+        
+        except Exception as e:
+            summary[f"T (°C), Fiebig24 (original)"] = f"Error: {str(e)}"
+    
+    def _add_anderson21_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series,
+                                     _2se_values: pd.Series) -> None:
+        """Add Anderson21 temperature calculations to summary."""
+        try:
+            # Anderson21 calibration: T = 0.0449 * 10^6 / D47^2 - 273.15
+            
+            # Define error ranges for temperature calculation
+            error_ranges = {
+                "T(min, 2SE)": d47_values + _2se_values,
+                "T(min, 1SE)": d47_values + se_values,
+                "T(mean)": d47_values,
+                "T(max, 1SE)": d47_values - se_values,
+                "T(max, 2SE)": d47_values - _2se_values,
+            }
+            
+            # Calculate temperatures for each error range
+            for temp_type, d47_range in error_ranges.items():
+                temperatures = []
+                
+                for d47 in d47_range:
+                    if pd.notna(d47) and d47 > 0:
+                        try:
+                            temp = np.sqrt((0.0391 * 1e6) / (d47 - 0.154)) - 273.15
+                            temperatures.append(round(temp, 2))
+                        except Exception:
+                            temperatures.append(np.nan)
+                    else:
+                        temperatures.append(np.nan)
+                
+                summary[f"{temp_type}, Anderson21 (original)"] = temperatures
+        
+        except Exception as e:
+            summary[f"T (°C), Anderson21 (original)"] = f"Error: {str(e)}"
+    
+    def _add_swart21_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series,
+                                  _2se_values: pd.Series) -> None:
+        """Add Swart21 temperature calculations to summary using the Swart21 (2021) CDES90 calibration."""
+        try:
+            error_ranges = {
+                "T(min, 2SE)": d47_values + _2se_values,
+                "T(min, 1SE)": d47_values + se_values,
+                "T(mean)": d47_values,
+                "T(max, 1SE)": d47_values - se_values,
+                "T(max, 2SE)": d47_values - _2se_values,
+            }
+            
+            coef = 1e6 * 0.039  # from
+            
+            # Calculate temperatures for each error range
+            for temp_type, d47_range in error_ranges.items():
+                temperatures = []
+                
+                for d47 in d47_range:
+                    denom = d47 - 0.158
+                    if denom == 0:
+                        temperatures.append(np.nan)
+                        continue
+                    
+                    try:
+                        temp_K = np.sqrt(coef / denom)
+                        temp_C = temp_K - 273.15
+                        # Only round/append if finite; otherwise append NaN
+                        temperatures.append(round(float(temp_C), 2) if np.isfinite(temp_C) else np.nan)
+                    except (ValueError, ZeroDivisionError, FloatingPointError, TypeError):
+                        temperatures.append(np.nan)
+                
+                summary[f"{temp_type}, Swart21 (original)"] = temperatures
+        
+        except Exception as e:
+            # In case of an unexpected error, record it in the summary
+            summary[f"T (°C), Swart21 (original)"] = f"Error: {str(e)}"
+    
+    def _add_d47calib_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series,
+                                   _2se_values: pd.Series, calib_name: str) -> None:
+        """Add D47calib temperature calculations to summary."""
+        try:
+            # Use the D47calib library for other calibrations
+            import D47calib
+            
+            # Define error ranges for temperature calculation
+            error_ranges = {
+                "T(min, 2SE)": d47_values + _2se_values,
+                "T(min, 1SE)": d47_values + se_values,
+                "T(mean)": d47_values,
+                "T(max, 1SE)": d47_values - se_values,
+                "T(max, 2SE)": d47_values - _2se_values,
+            }
+            
+            # Calculate temperatures for each error range
+            for temp_type, d47_range in error_ranges.items():
+                temperatures = []
+                
+                for d47 in d47_range:
+                    if pd.notna(d47):
+                        try:
+                            # Calculate temperature using D47calib with the calibration object
+                            temp = self.sss["04_calibs"][calib_name].__dict__["_T_from_D47"](d47)
+                            # temp = D47calib.temperature(d47, calib_obj)
+                            temperatures.append(round(temp, 2))
+                        except Exception as e:
+                            # Log the specific error for debugging
+                            temperatures.append(e)
+                    else:
+                        temperatures.append(np.nan)
+                
+                summary[f"{temp_type}, {calib_name}"] = temperatures
+        
+        except Exception as e:
+            summary[f"T (°C), {calib_name}"] = f"Error: {str(e)}"
+    
+    def _calculate_temperatures(self, summary: pd.DataFrame) -> pd.DataFrame:
+        """Calculate temperatures using selected calibrations."""
+        calibrations = self.sss.get("04_selected_calibs", [])
+        self.sss['04_used_calibs'] = list(calibrations)
+        
+        TC = TemperatureCalculator(self.sss)
+        TC._calc_temp(summary)
+        if "D47" not in summary.columns:
+            return summary
+        
+        d47_values = summary["D47"]
+        se_values = summary[
+            "SE_D47"]  # [float(_) for _ in summary["SE_D47"]]# if len(str(_)) != 0]#isinstance(float(_), float)]
+        _2se_values = summary[
+            "2SE_D47"]  # [float(_) for _ in summary["2SE_D47"]]# if len(str(_)) != 0]  # isinstance(float(_), float)]
+        st.write(d47_values.dtypes)
+        # se_values = summary.get("SE_D47", pd.Series([0] * len(summary)))
+        # _2se_values = summary.get("2SE_D47", pd.Series([0] * len(summary)))
+        # se_values[np.isnan(se_values)] = 0
+        # Process each calibration
+        for calib_name in calibrations:
+            if calib_name == "Fiebig24 (original)":
+                self._add_fiebig24_temperatures(summary, d47_values, se_values, _2se_values)
+            elif calib_name == "Fiebig21 (original)":
+                self._add_fiebig21_temperatures(summary, d47_values, se_values, _2se_values)
+            elif calib_name == "Anderson21 (original)":
+                self._add_anderson21_temperatures(summary, d47_values, se_values, _2se_values)
+            elif calib_name == "Swart21 (original)":
+                self._add_swart21_temperatures(summary, d47_values, se_values, _2se_values)
+            else:
+                self._add_d47calib_temperatures(summary, d47_values, se_values, _2se_values, calib_name)
+        
+        return summary
 
 
 class DataProcessor:
@@ -245,23 +707,32 @@ class DataProcessor:
         # Check if the series contains any numeric-like values
         numeric_count = 0
         total_non_null = 0
-        
+        CHECK_ARR = []
         for val in series:
             if pd.notna(val):
                 total_non_null += 1
                 try:
                     # Try to convert to float
                     float(str(val))
+                    CHECK_ARR.append(True)
                     numeric_count += 1
                 except (ValueError, TypeError):
+                    CHECK_ARR.append(False)
                     pass
+            else:
+                CHECK_ARR.append(False)
         
-        # If more than 50% of non-null values are numeric, convert the column
-        if total_non_null > 0 and numeric_count / total_non_null > 0.5:
-            return pd.to_numeric(series, errors='coerce')
-        else:
-            # Keep as is (string or mixed type)
-            return series
+        new_series = []
+        for idx, _ in enumerate(series):
+            new_series.append(float(_) if CHECK_ARR[idx] else (np.nan if len(str(_)) == 0 else _))
+        #print(series.values)
+        #print(new_series)
+        return new_series
+        # if numeric_count == len(series):
+        #     return pd.to_numeric(series)#, errors='coerce')
+        # else:
+        #     # Keep as is (string or mixed type)
+        #     return series
     
     @staticmethod
     def apply_smart_numeric_conversion(df):
@@ -502,9 +973,19 @@ class DataProcessor:
         base_cols = ["Sample"]
         isotope_cols = []
         
+        
+        # for col in [f"d{isotope_num}", f"D{isotope_num}", "SD", "SE", "95% CL"]:
+        #     if col in summary.columns:
+        #         st.write(summary[col])
+        #         summary[col] = summary[col].astype(float, errors='ignore')
+        #         st.write(summary[col])
+                
         # Check which columns exist in temp_summary
         for col in [f"d{isotope_num}", f"D{isotope_num}", "SD", "SE", "95% CL"]:
             if col in temp_summary.columns:
+                # st.write(temp_summary[col])
+                # temp_summary[col] = temp_summary[col].astype(float)
+                # st.write(temp_summary[col])
                 isotope_cols.append(col)
         
         if not isotope_cols:
@@ -603,7 +1084,7 @@ class DataProcessor:
                 save_to_file=False, print_out=False, output="raw"
             )
             sessions_df = pd.DataFrame(sessions_data[1:], columns=sessions_data[0])
-            sessions_df = sessions_df.apply(pd.to_numeric, errors="coerce")
+            #sessions_df = sessions_df.apply(pd.to_numeric, errors="coerce")
             
             # Extract repeatability data
             repeatability = obj.repeatability
@@ -664,7 +1145,7 @@ class ProcessingPage:
     # State parameters to track
     STATE_PARAMS = [
         "process_D47", "process_D48", "process_D49", "scale",
-        "correction_method", "processing_sessions", "drifting_sessions",
+        "correction_method", "processing_sessions", "drifting_sessions", 'selected_calibrations'
     ]
     
     def __init__(self):
@@ -791,7 +1272,8 @@ class ProcessingPage:
         default_calibs = (
             self.sss.get('04_selected_calibs', ["Fiebig24 (original)"])
         )
-        
+        if "params_last_run" in self.sss and "selected_calibrations" in self.sss.params_last_run:
+            default_calibs = self.sss.params_last_run["selected_calibrations"]
         selected_calibs = st.sidebar.multiselect(
             "Choose calibration(s) for temperature estimates",
             list(self.sss["04_calibs"].keys()),
@@ -802,12 +1284,22 @@ class ProcessingPage:
         # Reference frame selection
         all_standards = list(self.sss["standards_nominal"].keys())
         last_std_idx = 0
-        if "last_updated_stds" in self.sss:
-            try:
-                last_std_idx = all_standards.index(self.sss["last_updated_stds"])
-            except ValueError:
-                last_std_idx = 0
         
+        if "params_last_run" in self.sss and "scale" in self.sss.params_last_run and self.sss.params_last_run.get('scale', None):
+            last_std_idx = all_standards.index(self.sss.params_last_run["scale"])
+        else:
+            try:
+                last_std_idx = all_standards.index('CDES')
+            except:
+                last_std_idx =  0
+        # if "last_updated_stds" in self.sss:
+        #     try:
+        #         last_std_idx = all_standards.index(self.sss["last_updated_stds"])
+        #     except ValueError:
+        #         last_std_idx = 0
+        # elif "params_last_run" in self.sss and "scale" in self.sss.params_last_run:
+        #     last_std_idx = all_standards.index(self.sss.params_last_run["scale"])
+        #
         scale = st.sidebar.selectbox(
             "**Reference frame:**",
             all_standards,
@@ -833,9 +1325,10 @@ class ProcessingPage:
                     process_key = f"process_{isotope}"
                     value = st.checkbox(
                         rf"$\Delta_{{{mz}}}$",
-                        value=True if mz == "47" else False,
+                        value=self.sss.params_last_run.get(f"process_D{mz}", False),
                         key=process_key,
                     )
+                    #
                     setattr(config, process_key, value) 
             else:
                 setattr(config, f"process_{isotope.lower()}", False)
@@ -1025,229 +1518,26 @@ class ProcessingPage:
         return summary
 
 
-     
-    def _add_fiebig21_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series, _2se_values: pd.Series) -> None:
-        """Add Fiebig21 temperature calculations to summary."""
-        try:
-            from scipy.optimize import minimize_scalar
-            from tools.calc_temperature import TemperatureCalculator
-            
-            # Define error ranges for temperature calculation
-            error_ranges = {
-                "T(min, 2SE)": d47_values + _2se_values,
-                "T(min, 1SE)": d47_values + se_values,
-                "T(mean)": d47_values,
-                "T(max, 1SE)": d47_values - se_values,
-                "T(max, 2SE)": d47_values - _2se_values,
-            }
-            
-            # Calculate temperatures for each error range
-            for temp_type, d47_range in error_ranges.items():
-                temperatures = []
-                
-                for d47 in d47_range:
-                    if pd.notna(d47):
-                        try:
-                            # Calculate temperature using optimization
-                            result = minimize_scalar(
-                                TemperatureCalculator.get_temperature_difference_d47_fiebig2021,
-                                args=(d47,),
-                                #bounds=(-100, 1000),
-                                #method='bounded'
-                            )
-                            temp = result.x
-                            temperatures.append(round(temp, 2))
-                        except Exception as e:
-                            temperatures.append(e)
-                    else:
-                        temperatures.append(np.nan)
-                
-                summary[f"{temp_type}, Fiebig21 (original)"] = temperatures
-            
-        except Exception as e:
-            summary[f"T (°C), Fiebig21 (original)"] = f"Error: {str(e)}"
-    
-    def _add_fiebig24_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series, _2se_values: pd.Series) -> None:
-        """Add Fiebig24 temperature calculations to summary."""
-        try:
-            from scipy.optimize import minimize_scalar
-            from tools.calc_temperature import TemperatureCalculator
-            
-            # Define error ranges for temperature calculation
-            error_ranges = {
-                "T(min, 2SE)": d47_values + _2se_values,
-                "T(min, 1SE)": d47_values + se_values,
-                "T(mean)": d47_values,
-                "T(max, 1SE)": d47_values - se_values,
-                "T(max, 2SE)": d47_values -_2se_values,
-            }
-            
-            # Calculate temperatures for each error range
-            for temp_type, d47_range in error_ranges.items():
-                temperatures = []
-                
-                for d47 in d47_range:
-                    if pd.notna(d47):
-                        try:
-                            # Calculate temperature using optimization
-                            result = minimize_scalar(
-                                TemperatureCalculator.get_temperature_difference_d47_fiebig2024,
-                                args=(d47,),
-                                #bounds=(0, 1000),
-                                #method='bounded'
-                            )
-                            temp = result.x
-                            temperatures.append(round(temp, 2))
-                        except Exception as e:
-                            temperatures.append(e)
-                    else:
-                        temperatures.append(np.nan)
-                
-                summary[f"{temp_type}, Fiebig24 (original)"] = temperatures
-            
-        except Exception as e:
-            summary[f"T (°C), Fiebig24 (original)"] = f"Error: {str(e)}"
-    
-    def _add_anderson21_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series, _2se_values: pd.Series) -> None:
-        """Add Anderson21 temperature calculations to summary."""
-        try:
-            # Anderson21 calibration: T = 0.0449 * 10^6 / D47^2 - 273.15
-            
-            # Define error ranges for temperature calculation
-            error_ranges = {
-                "T(min, 2SE)": d47_values + _2se_values,
-                "T(min, 1SE)": d47_values + se_values,
-                "T(mean)": d47_values,
-                "T(max, 1SE)": d47_values - se_values,
-                "T(max, 2SE)": d47_values - _2se_values,
-            }
-            
-            # Calculate temperatures for each error range
-            for temp_type, d47_range in error_ranges.items():
-                temperatures = []
-                
-                for d47 in d47_range:
-                    if pd.notna(d47) and d47 > 0:
-                        try:
-                            temp = np.sqrt((0.0391 * 1e6) / (d47 -0.154)) - 273.15
-                            temperatures.append(round(temp, 2))
-                        except Exception:
-                            temperatures.append(np.nan)
-                    else:
-                        temperatures.append(np.nan)
-                
-                summary[f"{temp_type}, Anderson21 (original)"] = temperatures
-            
-        except Exception as e:
-            summary[f"T (°C), Anderson21 (original)"] = f"Error: {str(e)}"
-    
-    
-    def _add_swart21_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series, _2se_values: pd.Series) -> None:
-        """Add Swart21 temperature calculations to summary using the Swart21 (2021) CDES90 calibration."""
-        try:
-            error_ranges = {
-                "T(min, 2SE)": d47_values + _2se_values,
-                "T(min, 1SE)": d47_values + se_values,
-                "T(mean)": d47_values,
-                "T(max, 1SE)": d47_values - se_values,
-                "T(max, 2SE)": d47_values - _2se_values,
-            }
 
-            coef = 1e6 * 0.039  # from 
-
-            # Calculate temperatures for each error range
-            for temp_type, d47_range in error_ranges.items():
-                temperatures = []
-
-                for d47 in d47_range:
-                    denom = d47 - 0.158
-                    if denom == 0:
-                        temperatures.append(np.nan)
-                        continue
-                                 
-                    try:
-                        temp_K = np.sqrt(coef / denom)
-                        temp_C = temp_K - 273.15
-                        # Only round/append if finite; otherwise append NaN
-                        temperatures.append(round(float(temp_C), 2) if np.isfinite(temp_C) else np.nan)
-                    except (ValueError, ZeroDivisionError, FloatingPointError, TypeError):
-                        temperatures.append(np.nan)
-
-
-                summary[f"{temp_type}, Swart21 (original)"] = temperatures
-
-        except Exception as e:
-            # In case of an unexpected error, record it in the summary
-            summary[f"T (°C), Swart21 (original)"] = f"Error: {str(e)}"
-
-    def _add_d47calib_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series, _2se_values: pd.Series, calib_name: str) -> None:
-        """Add D47calib temperature calculations to summary."""
-        try:
-            # Use the D47calib library for other calibrations
-            import D47calib
-            
-            # Define error ranges for temperature calculation
-            error_ranges = {
-                "T(min, 2SE)": d47_values + _2se_values,
-                "T(min, 1SE)": d47_values + se_values,
-                "T(mean)": d47_values,
-                "T(max, 1SE)": d47_values - se_values,
-                "T(max, 2SE)": d47_values - _2se_values,
-            }
-            
-            # Calculate temperatures for each error range
-            for temp_type, d47_range in error_ranges.items():
-                temperatures = []
-                
-                for d47 in d47_range:
-                    if pd.notna(d47):
-                        try:
-                            # Calculate temperature using D47calib with the calibration object
-                            temp = self.sss["04_calibs"][calib_name].__dict__["_T_from_D47"](d47)
-                            #temp = D47calib.temperature(d47, calib_obj)
-                            temperatures.append(round(temp, 2))
-                        except Exception as e:
-                            # Log the specific error for debugging
-                            temperatures.append(e)
-                    else:
-                        temperatures.append(np.nan)
-                
-                summary[f"{temp_type}, {calib_name}"] = temperatures
-            
-        except Exception as e:
-            summary[f"T (°C), {calib_name}"] = f"Error: {str(e)}"
-    
-    def _calculate_temperatures(self, summary: pd.DataFrame) -> pd.DataFrame:
-        """Calculate temperatures using selected calibrations."""
-        calibrations = self.sss.get("04_selected_calibs", [])
-        self.sss['04_used_calibs'] = list(calibrations)
-        
-        if "D47" not in summary.columns:
-            return summary
-        
-        d47_values = summary["D47"]
-        se_values = summary.get("SE_D47", pd.Series([0] * len(summary)))
-        _2se_values = summary.get("2SE_D47", pd.Series([0] * len(summary)))
-
-        # Process each calibration
-        for calib_name in calibrations:
-            if calib_name == "Fiebig24 (original)":
-                self._add_fiebig24_temperatures(summary, d47_values, se_values,_2se_values)
-            elif calib_name == "Fiebig21 (original)":
-                self._add_fiebig21_temperatures(summary, d47_values, se_values,_2se_values)
-            elif calib_name == "Anderson21 (original)":
-                self._add_anderson21_temperatures(summary, d47_values, se_values,_2se_values)
-            elif calib_name == "Swart21 (original)":
-                self._add_swart21_temperatures(summary, d47_values, se_values,_2se_values)
-            else:
-                self._add_d47calib_temperatures(summary, d47_values, se_values, _2se_values, calib_name)
-        
-        return summary
-   
     def _create_processing_params_dataframe(self) -> pd.DataFrame:
         """Create a DataFrame with processing parameters."""
 
         IP = IsotopeProcessor
+        
+        
+        #if self.sss.scale in self.sss.standards_nominal:
+        STDS = {}
+        for mz in '47', '48', '49':
+            if self.sss.params_last_run.get(f"process_D{mz}", False):
+                if self.sss.params_last_run.get('scale', None):
+                    if mz in self.sss["standards_nominal"][self.sss.params_last_run['scale']]:
+                        STDS[mz] = str({key: self.sss["standards_nominal"][self.sss.scale]["47"][key] for key in self.sss.standards_nominal[self.sss.scale].get('47', False) if key in self.sss.standards['Sample'].values})
+                        
+                else:
+                    STDS[mz] = 'N/A'
+            else:
+                STDS[mz] = 'N/A'
+                
         params = {
             "Parameter": [
                 "Processing sessions",
@@ -1269,13 +1559,15 @@ class ProcessingPage:
                 "Standards d13C",
                 "Standards d18O",
             ],
+            
+            
             "Value": [
                 ", ".join(str(s) for s in self.sss.params_last_run.get("processing_sessions", [])),
                 self.sss.params_last_run.get("scale", ""),
                 "Independent sessions" if "indep" in self.sss.params_last_run.get("correction_method", "") else "Pooled sessions",
-                str({key:self.sss["standards_nominal"][self.sss.scale]["47"][key] for key in self.sss["standards_nominal"][self.sss.scale]["47"] if key in self.sss.standards['Sample'].values}) if self.sss.params_last_run.get("process_D47", False) else "N/A",
-                str({key:self.sss["standards_nominal"][self.sss.scale]["48"][key] for key in self.sss["standards_nominal"][self.sss.scale]["48"] if key in self.sss.standards['Sample'].values}) if self.sss.params_last_run.get("process_D48", False) else "N/A",
-                str({key:self.sss["standards_nominal"][self.sss.scale]["49"][key] for key in self.sss["standards_nominal"][self.sss.scale]["49"] if key in self.sss.standards['Sample'].values}) if self.sss.params_last_run.get("process_D49", False) else "N/A",
+                STDS['47'],
+                STDS['48'],
+                STDS['49'],
                 "Yes" if self.sss.params_last_run.get("process_D47", False) else "No",
                 "Yes" if self.sss.params_last_run.get("process_D48", False) else "No", 
                 "Yes" if self.sss.params_last_run.get("process_D49", False) else "No",
@@ -1486,7 +1778,7 @@ class ProcessingPage:
         summary = self._calculate_longterm_error("summary")
         
         # Calculate temperatures
-        summary = self._calculate_temperatures(summary)
+        summary = self.temp_calculator.calc_temp(summary)
         
         # Store final summary
         self.sss["correction_output_summary"] = summary
@@ -1514,11 +1806,11 @@ class ProcessingPage:
                     
         # Main processing button
         run_button = st.sidebar.button("Run...", key="BUTTON1",
-        #disabled= not(
-        #    self.sss.get("process_D47", False) or 
-        #    self.sss.get("process_D48", False) or 
+        # disabled= not(
+        #    self.sss.get("process_D47", False) or
+        #    self.sss.get("process_D48", False) or
         #    self.sss.get("process_D49", False)
-                    #)
+        #             )
         )
         
         # Render input data editor
