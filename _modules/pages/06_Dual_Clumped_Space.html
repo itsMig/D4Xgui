@@ -539,7 +539,7 @@
         
         <span class="c1"># Prepare hover data</span>
         <span class="n">hover_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_hover_data</span><span class="p">()</span>
-        
+        <span class="c1">#st.write(summary)</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
             <span class="n">summary</span><span class="p">,</span>
             <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">x_axis</span><span class="p">,</span>
@@ -601,17 +601,22 @@
 <a class="viewcode-back" href="../../06_Dual_Clumped_Space.html#pages.06_Dual_Clumped_Space.DualClumpedSpacePage._prepare_hover_data">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_hover_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare hover data for mean plots.&quot;&quot;&quot;</span>
+        
         <span class="n">hover_data</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;d13C_VPDB&quot;</span><span class="p">,</span> <span class="s2">&quot;d18O_CO2_VSMOW&quot;</span><span class="p">]</span>
         
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;process_D47&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">hover_data</span>
+        
         <span class="k">for</span> <span class="n">calib</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="p">[</span><span class="s2">&quot;04_used_calibs&quot;</span><span class="p">]:</span>
+            <span class="c1">#st.write(calib)</span>
             <span class="n">error_type</span> <span class="o">=</span> <span class="s2">&quot;2SE&quot;</span> <span class="k">if</span> <span class="s2">&quot;2&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">error_dualClumped</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mz</span><span class="o">=</span><span class="s2">&quot;D47&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;1SE&quot;</span>
             <span class="n">hover_data</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
                 <span class="sa">f</span><span class="s2">&quot;T(min, </span><span class="si">{</span><span class="n">error_type</span><span class="si">}</span><span class="s2">), </span><span class="si">{</span><span class="n">calib</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="sa">f</span><span class="s2">&quot;T(mean), </span><span class="si">{</span><span class="n">calib</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="sa">f</span><span class="s2">&quot;T(max, </span><span class="si">{</span><span class="n">error_type</span><span class="si">}</span><span class="s2">), </span><span class="si">{</span><span class="n">calib</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">])</span>
-        
-        <span class="k">return</span> <span class="n">hover_data</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sss</span><span class="o">.</span><span class="n">params_last_run</span><span class="p">[</span><span class="s2">&quot;process_D47&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">]</span></div>
+        <span class="c1">#st.write(hover_data)</span>
+        <span class="k">return</span> <span class="n">hover_data</span></div>
 
 
 <div class="viewcode-block" id="DualClumpedSpacePage._add_calibration_curves">

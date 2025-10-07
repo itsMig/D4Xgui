@@ -94,7 +94,7 @@
 <h1>04_Processing<a class="headerlink" href="#processing" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pages.04_Processing.</span></span><span class="sig-name descname"><span class="pre">DataProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_state:</span> <span class="pre">&lt;MagicMock</span> <span class="pre">name='mock.session_state'</span> <span class="pre">id='140072567952048'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pages/04_Processing.html#DataProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pages.04_Processing.</span></span><span class="sig-name descname"><span class="pre">DataProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_state:</span> <span class="pre">&lt;MagicMock</span> <span class="pre">name='mock.session_state'</span> <span class="pre">id='139658456060592'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pages/04_Processing.html#DataProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Handles data merging and processing operations.</p>
 <dl class="py method">
@@ -204,7 +204,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pages.04_Processing.</span></span><span class="sig-name descname"><span class="pre">IsotopeProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_state:</span> <span class="pre">&lt;MagicMock</span> <span class="pre">name='mock.session_state'</span> <span class="pre">id='140072567952048'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pages/04_Processing.html#IsotopeProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pages.04_Processing.</span></span><span class="sig-name descname"><span class="pre">IsotopeProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_state:</span> <span class="pre">&lt;MagicMock</span> <span class="pre">name='mock.session_state'</span> <span class="pre">id='139658456060592'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pages/04_Processing.html#IsotopeProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Handles isotope data processing using D47crunch.</p>
 <dl class="py attribute">
@@ -303,49 +303,13 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">STATE_PARAMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['process_D47',</span> <span class="pre">'process_D48',</span> <span class="pre">'process_D49',</span> <span class="pre">'scale',</span> <span class="pre">'correction_method',</span> <span class="pre">'processing_sessions',</span> <span class="pre">'drifting_sessions']</span></em></dt>
+<span class="sig-name descname"><span class="pre">STATE_PARAMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['process_D47',</span> <span class="pre">'process_D48',</span> <span class="pre">'process_D49',</span> <span class="pre">'scale',</span> <span class="pre">'correction_method',</span> <span class="pre">'processing_sessions',</span> <span class="pre">'drifting_sessions',</span> <span class="pre">'selected_calibrations']</span></em></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">_add_anderson21_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d47_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_2se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#ProcessingPage._add_anderson21_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Add Anderson21 temperature calculations to summary.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">_add_d47calib_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d47_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_2se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calib_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#ProcessingPage._add_d47calib_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Add D47calib temperature calculations to summary.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">_add_fiebig21_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d47_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_2se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#ProcessingPage._add_fiebig21_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Add Fiebig21 temperature calculations to summary.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">_add_fiebig24_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d47_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_2se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#ProcessingPage._add_fiebig24_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Add Fiebig24 temperature calculations to summary.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">_add_swart21_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d47_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_2se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#ProcessingPage._add_swart21_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Add Swart21 temperature calculations to summary using the Swart21 (2021) CDES90 calibration.</p>
-</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">_calculate_longterm_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#ProcessingPage._calculate_longterm_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate long-term error estimates.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">_calculate_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#ProcessingPage._calculate_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Calculate temperatures using selected calibrations.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -466,9 +430,192 @@
 
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pages.04_Processing.</span></span><span class="sig-name descname"><span class="pre">TemperatureCalculator</span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pages.04_Processing.</span></span><span class="sig-name descname"><span class="pre">TemperatureCalculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_state:</span> <span class="pre">&lt;MagicMock</span> <span class="pre">name='mock.session_state'</span> <span class="pre">id='139658456060592'&gt;</span> <span class="pre">=</span> <span class="pre">&lt;MagicMock</span> <span class="pre">name='mock.session_state'</span> <span class="pre">id='139658456060592'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Handles temperature calculations from D47 values using various calibrations.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2021_D47_OFFSET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1855537</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2021_D47_SCALING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0381881</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2021_D48_OFFSET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1244564</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2021_D48_SCALING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0280693</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D47_OFFSET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1848</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D47_SCALING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.038</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D48_OFFSET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1214</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D48_SCALING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.038</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">POLY_63_COEFFS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(-5.896755,</span> <span class="pre">-3520.888,</span> <span class="pre">23912740.0,</span> <span class="pre">-3540693000.0)</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">POLY_64_COEFFS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(6.001624,</span> <span class="pre">-12989.78,</span> <span class="pre">8995634.0,</span> <span class="pre">-742297200.0)</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">POLY_65_COEFFS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(-6.741,</span> <span class="pre">-19500.0,</span> <span class="pre">58450000.0,</span> <span class="pre">-8093000000.0)</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_add_anderson21_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d47_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_2se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator._add_anderson21_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Add Anderson21 temperature calculations to summary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_add_d47calib_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d47_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_2se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calib_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator._add_d47calib_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Add D47calib temperature calculations to summary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_add_fiebig21_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d47_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_2se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator._add_fiebig21_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Add Fiebig21 temperature calculations to summary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_add_fiebig24_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d47_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_2se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator._add_fiebig24_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Add Fiebig24 temperature calculations to summary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_add_swart21_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d47_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_2se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator._add_swart21_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Add Swart21 temperature calculations to summary using the Swart21 (2021) CDES90 calibration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_calculate_temperatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator._calculate_temperatures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate temperatures using selected calibrations.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_direct_temperature_swart2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">D47</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator._direct_temperature_swart2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate temperature using the Swart21 equation: Δ47(CDES90) = 0.039 * 10^6/T^2 + 0.158</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>D47</strong> – The D47 value</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Temperature in °C</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_evaluate_polynomial_4th_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator._evaluate_polynomial_4th_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Evaluate a 4th-degree polynomial.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>coeffs: Polynomial coefficients (a, b, c, d) for ax + bx² + cx³ + dx⁴.
+x: Input value(s).</p>
+</dd>
+<dt>Returns:</dt><dd><p>Polynomial evaluation result.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">calc_temp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator.calc_temp"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_d47_fiebig2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator.calculate_d47_fiebig2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate D47 values using Fiebig et al. (2021) calibration.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
+</dd>
+<dt>Returns:</dt><dd><p>D47 values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">calculate_d47_fiebig2024</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator.calculate_d47_fiebig2024"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate D47 values using Fiebig et al. (2024) calibration.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
+</dd>
+<dt>Returns:</dt><dd><p>D47 values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_d63_hill2014</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator.calculate_d63_hill2014"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate D63 values using Hill et al. (2014) calibration.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
+</dd>
+<dt>Returns:</dt><dd><p>D63 values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_d64_hill2014</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator.calculate_d64_hill2014"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate D64 values using Hill et al. (2014) calibration.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
+</dd>
+<dt>Returns:</dt><dd><p>D64 values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_d65_hill2014</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator.calculate_d65_hill2014"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate D65 values using Hill et al. (2014) calibration.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
+</dd>
+<dt>Returns:</dt><dd><p>D65 values.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py">
 <em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_swart21_temperature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d47_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator.calculate_swart21_temperature"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -479,6 +626,37 @@
 <dt class="sig sig-object py">
 <em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_temperature_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d47_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator.calculate_temperature_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate temperature ranges for a given calibration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_temperature_difference_d47_anderson2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d47</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator.get_temperature_difference_d47_anderson2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_temperature_difference_d47_fiebig2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d47</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator.get_temperature_difference_d47_fiebig2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate absolute difference between target D47 and calculated D47 (Fiebig 2021).</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>temp_celsius: Temperature in Celsius.
+target_d47: Target D47 value.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Absolute difference between target and calculated D47.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_temperature_difference_d47_fiebig2024</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d47</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/pages/04_Processing.html#TemperatureCalculator.get_temperature_difference_d47_fiebig2024"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate absolute difference between target D47 and calculated D47 (Fiebig 2024).</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>temp_celsius: Temperature in Celsius.
+target_d47: Target D47 value.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Absolute difference between target and calculated D47.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
