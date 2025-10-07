@@ -397,7 +397,7 @@ class DualClumpedSpacePage:
         
         # Prepare hover data
         hover_data = self._prepare_hover_data()
-        
+        #st.write(summary)
         fig = px.scatter(
             summary,
             x=self.sss.x_axis,
@@ -453,17 +453,22 @@ class DualClumpedSpacePage:
 
     def _prepare_hover_data(self) -> List[str]:
         """Prepare hover data for mean plots."""
+        
         hover_data = ["N", "d13C_VPDB", "d18O_CO2_VSMOW"]
         
+        if not self.sss.params_last_run["process_D47"]:
+            return hover_data
+        
         for calib in self.sss["04_used_calibs"]:
+            #st.write(calib)
             error_type = "2SE" if "2" in self.sss.error_dualClumped.format(mz="D47") else "1SE"
             hover_data.extend([
                 f"T(min, {error_type}), {calib}",
                 f"T(mean), {calib}",
                 f"T(max, {error_type}), {calib}"
             ])
-        
-        return hover_data if self.sss.params_last_run["process_D47"] else ["N"]
+        #st.write(hover_data)
+        return hover_data
 
     def _add_calibration_curves(self, fig: go.Figure, reprocessed: bool = False) -> None:
         """Add carbonate equilibrium calibration curves to the plot."""
