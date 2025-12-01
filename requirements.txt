@@ -1,0 +1,59 @@
+# Core Streamlit and web dependencies
+streamlit>=1.28.0
+altair
+blinker
+cachetools
+click
+gitdb
+GitPython
+jinja2
+jsonschema
+markdown
+pillow
+protobuf
+pyarrow
+pydeck
+pympler
+requests
+rich
+tenacity
+toml
+tornado
+tzdata
+tzlocal
+validators
+watchdog
+
+
+python-dateutil
+pytz
+
+
+# Data processing essentials
+numpy>=1.24.0
+pandas>=2.0.0
+openpyxl
+xlrd
+xlsxwriter
+
+# Plotting
+plotly
+
+# Scientific computing - only what's actually used
+scipy
+
+# project specific dependencies
+D47crunch
+D47calib
+ogls
+lmfit
+uncertainties
+
+
+# Authentication/extras
+streamlit-extras
+
+
+# Documentation
+sphinx 
+sphinx-autobuild

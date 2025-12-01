@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "D4Xgui"
+version = "1.0.0"
+dynamic = ["dependencies"]
+
+
+authors = [
+  { name="Miguel Bernecker", email="mbernecker@posteo.de" },
+]
+description = "Processing app for mass-spectrometric CO₂ clumped isotope (∆₄₇, ∆₄₈ and ∆₄₉) data."
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICENSE"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[project.scripts]
+D4Xgui = "D4Xgui.run:main"
+
+[project.urls]
+Homepage = "https://github.com/itsMig/D4Xgui"
+Issues = "https://github.com/itsMig/D4Xgui/issues"

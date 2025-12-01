@@ -1,0 +1,16 @@
+import os
+import streamlit as st
+sss = st.session_state
+
+from tools.page_config import set_page_config
+set_page_config(99)
+
+if not "PYTEST_CURRENT_TEST" in os.environ:
+    from tools import authenticator
+    if not authenticator.check_password():
+        st.stop()  # Do not continue if check_password is not True.
+
+
+
+st.title("Explore st.session_state")
+sss

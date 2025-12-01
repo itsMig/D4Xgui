@@ -1,0 +1,11 @@
+include LICENSE
+include README.md
+include D4Xgui/.streamlit *
+recursive-include D4Xgui *
+recursive-include D4Xgui/static *
+recursive-include D4Xgui/commons *
+recursive-include D4Xgui/tools *
+recursive-include D4Xgui/pages *
+include requirements.txt
+
+
