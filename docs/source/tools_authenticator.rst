@@ -1,7 +1,7 @@
 authenticator
 =============
 
-.. automodule:: tools.authenticator
+.. automodule:: D4Xgui.tools.authenticator
    :members:
    :undoc-members:
    :show-inheritance:
