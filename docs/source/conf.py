@@ -7,6 +7,8 @@ from pathlib import Path
 
 from unittest.mock import MagicMock
 
+sys.path.insert(0, os.path.abspath('../D4Xgui'))
+
 # Mock streamlit to avoid secrets errors during import
 sys.modules['streamlit'] = MagicMock()
 
