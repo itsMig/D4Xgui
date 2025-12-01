@@ -1,7 +1,7 @@
 page_config
 ===========
 
-.. automodule:: tools.page_config
+.. automodule:: D4Xgui.tools.page_config
    :members:
    :undoc-members:
    :show-inheritance:

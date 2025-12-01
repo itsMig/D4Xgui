@@ -92,6 +92,206 @@
              
   <section id="database">
 <h1>database<a class="headerlink" href="#database" title="Link to this heading"></a></h1>
+<p>Database management module for D4Xgui application.</p>
+<p>This module provides database operations for storing and retrieving replicate data
+using SQLite as the backend database.</p>
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.database.</span></span><span class="sig-name descname"><span class="pre">DatabaseError</span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Raised when database operations fail.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.database.</span></span><span class="sig-name descname"><span class="pre">DatabaseManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'pre_replicates.db'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages SQLite database operations for replicate data.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CREATE_TABLE_SQL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">CREATE</span> <span class="pre">TABLE</span> <span class="pre">IF</span> <span class="pre">NOT</span> <span class="pre">EXISTS</span> <span class="pre">replicates</span> <span class="pre">(\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">UID</span> <span class="pre">INTEGER</span> <span class="pre">PRIMARY</span> <span class="pre">KEY</span> <span class="pre">AUTOINCREMENT,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Sample</span> <span class="pre">TEXT</span> <span class="pre">NOT</span> <span class="pre">NULL,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Session</span> <span class="pre">TEXT</span> <span class="pre">NOT</span> <span class="pre">NULL,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Timetag</span> <span class="pre">DATETIME</span> <span class="pre">UNIQUE</span> <span class="pre">NOT</span> <span class="pre">NULL,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">d45</span> <span class="pre">REAL,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">d46</span> <span class="pre">REAL,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">d47</span> <span class="pre">REAL,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">d48</span> <span class="pre">REAL,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">d49</span> <span class="pre">REAL,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Outlier</span> <span class="pre">TEXT,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Project</span> <span class="pre">TEXT,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Type</span> <span class="pre">TEXT\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">)\n</span>&#160;&#160;&#160; <span class="pre">'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT_DB_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'pre_replicates.db'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">OPTIONAL_COLUMNS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Outlier',</span> <span class="pre">'Project',</span> <span class="pre">'Type']</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">REQUIRED_COLUMNS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Sample',</span> <span class="pre">'Session',</span> <span class="pre">'Timetag',</span> <span class="pre">'d45',</span> <span class="pre">'d46',</span> <span class="pre">'d47',</span> <span class="pre">'d48',</span> <span class="pre">'d49']</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">TABLE_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'replicates'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_ensure_initialized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager._ensure_initialized"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Ensure the database is initialized with required tables.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_prepare_dataframe_for_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager._prepare_dataframe_for_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Prepare DataFrame for database insertion.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>df: Input DataFrame.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Prepared DataFrame with correct columns and data types.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">delete_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager.delete_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Delete the replicates table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager.get_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get a database connection with automatic cleanup.</p>
+<dl class="simple">
+<dt>Yields:</dt><dd><p>sqlite3.Connection: Database connection.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager.get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Retrieve data from the database as a DataFrame.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>session: Optional session filter. If None, returns all data.</p>
+</dd>
+<dt>Returns:</dt><dd><p>DataFrame containing the requested data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_session_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager.get_session_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get the count of rows for a specific session.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>session: Session identifier.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Number of rows for the session.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_sessions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager.get_sessions"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Get list of distinct sessions in the database.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>List of session names.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Initialize the database with required tables.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">is_initialized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager.is_initialized"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Check if the database is initialized.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>True if the replicates table exists, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">upsert_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager.upsert_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Insert or update DataFrame data in the database.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>df: DataFrame containing replicate data.
+session: Session identifier for the data.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Number of rows affected.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">upsert_dataframe_with_conflict_resolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#DatabaseManager.upsert_dataframe_with_conflict_resolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Insert or update DataFrame data using SQLite UPSERT.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>df: DataFrame containing replicate data.
+session: Session identifier for the data.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Number of rows affected.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.database.</span></span><span class="sig-name descname"><span class="pre">db_to_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#db_to_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Legacy function for backward compatibility.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.database.</span></span><span class="sig-name descname"><span class="pre">delete_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#delete_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Legacy function for backward compatibility.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.database.</span></span><span class="sig-name descname"><span class="pre">df_to_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#df_to_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Legacy function for backward compatibility.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.database.</span></span><span class="sig-name descname"><span class="pre">df_to_db_afterPBLcorrection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#df_to_db_afterPBLcorrection"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Legacy function for backward compatibility.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.database.</span></span><span class="sig-name descname"><span class="pre">get_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#get_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Legacy function for backward compatibility.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.database.</span></span><span class="sig-name descname"><span class="pre">get_sessions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#get_sessions"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Legacy function for backward compatibility.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.database.</span></span><span class="sig-name descname"><span class="pre">init_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#init_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Legacy function for backward compatibility.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.database.</span></span><span class="sig-name descname"><span class="pre">is_db_initialized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/database.html#is_db_initialized"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Legacy function for backward compatibility.</p>
+</dd></dl>
+
 </section>
 
 

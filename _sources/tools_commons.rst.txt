@@ -1,7 +1,7 @@
 commons
 =======
 
-.. automodule:: tools.commons
+.. automodule:: D4Xgui.tools.commons
    :members:
    :undoc-members:
    :show-inheritance:

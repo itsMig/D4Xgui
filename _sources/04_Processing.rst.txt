@@ -1,7 +1,7 @@
 04_Processing
 =============
 
-.. automodule:: pages.04_Processing
+.. automodule:: D4Xgui.pages.04_Processing
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,7 +1,7 @@
 08_D47crunch_plots
 ==================
 
-.. automodule:: pages.08_D47crunch_plots
+.. automodule:: D4Xgui.pages.08_D47crunch_plots
    :members:
    :undoc-members:
    :show-inheritance:

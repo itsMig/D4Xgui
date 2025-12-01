@@ -1,0 +1,332 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D4Xgui.tools.init_params &mdash; D4Xgui v1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=76e2d817"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            D4Xgui
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Pages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../01_Data_IO.html">01_Data_IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../03_Baseline_correction.html">03_Baseline_correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../04_Processing.html">04_Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../05_Standardization_Results.html">05_Standardization_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../06_Dual_Clumped_Space.html">06_Dual_Clumped_Space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../07_Discover_Results.html">07_Discover_Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../08_D47crunch_plots.html">08_D47crunch_plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../100_Save_and_Reload.html">100_Save_and_Reload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../97_Database_Management.html">97_Database_Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools_Pysotope_fork.html">Pysotope_fork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools_authenticator.html">authenticator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools_calc_temperature.html">calc_temperature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools_commons.html">commons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools_database.html">database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools_init_params.html">init_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools_page_config.html">page_config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools_sidebar_logo.html">sidebar_logo</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">D4Xgui</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">D4Xgui.tools.init_params</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for D4Xgui.tools.init_params</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Initial parameters and standards for D4Xgui application.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
+
+
+<div class="viewcode-block" id="IsotopeStandards">
+<a class="viewcode-back" href="../../../tools_init_params.html#D4Xgui.tools.init_params.IsotopeStandards">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IsotopeStandards</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for isotopic standard values and working gas parameters.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Standard reference frames and their isotopic compositions</span>
+    <span class="n">STANDARDS_NOMINAL</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;CDES&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;#info&quot;</span><span class="p">:</span> <span class="s2">&quot;Wang_2004, revised by Petersen_2019&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;47&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.0266</span><span class="p">,</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.9196</span><span class="p">,</span>
+                <span class="s2">&quot;60C&quot;</span><span class="p">:</span> <span class="mf">0.77062</span><span class="p">,</span>
+                <span class="s2">&quot;4C&quot;</span><span class="p">:</span> <span class="mf">1.0402</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;48&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.000</span><span class="p">,</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.345</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;49&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.000</span><span class="p">,</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">2.228</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        
+        <span class="s2">&quot;ICDES&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;#info&quot;</span><span class="p">:</span> <span class="s2">&quot;InterCarb, Bernasconi et al. (2021)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;47&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">0.2052</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="mf">0.2085</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-3&quot;</span><span class="p">:</span> <span class="mf">0.6132</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        
+        <span class="s2">&quot;mixed Fiebig24+CDES&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;#info&quot;</span><span class="p">:</span> <span class="s2">&quot;Longterm GU, Fiebig et al. (2024)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;47&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.0266</span><span class="p">,</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.9196</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">0.2052</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="mf">0.2085</span><span class="p">,</span>
+                <span class="s2">&quot;ETH3OXI&quot;</span><span class="p">:</span> <span class="mf">0.6132</span><span class="p">,</span>
+                <span class="s2">&quot;ETH3B&quot;</span><span class="p">:</span> <span class="mf">0.6132</span><span class="p">,</span>
+                <span class="s2">&quot;ETH3oxi&quot;</span><span class="p">:</span> <span class="mf">0.6132</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-3&quot;</span><span class="p">:</span> <span class="mf">0.6132</span><span class="p">,</span>
+                <span class="s2">&quot;GU1&quot;</span><span class="p">:</span> <span class="mf">0.2254</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;48&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.000</span><span class="p">,</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.345</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">0.1277</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="mf">0.1299</span><span class="p">,</span>
+                <span class="s2">&quot;ETH3OXI&quot;</span><span class="p">:</span> <span class="mf">0.2481</span><span class="p">,</span>
+                <span class="s2">&quot;ETH3oxi&quot;</span><span class="p">:</span> <span class="mf">0.2481</span><span class="p">,</span>
+                <span class="s2">&quot;ETH3B&quot;</span><span class="p">:</span> <span class="mf">0.2481</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-3&quot;</span><span class="p">:</span> <span class="mf">0.2481</span><span class="p">,</span>
+                <span class="s2">&quot;GU1&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.3998</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        
+        <span class="s2">&quot;Fiebig2024 carb&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;#info&quot;</span><span class="p">:</span> <span class="s2">&quot;Longterm GU, Fiebig et al. (2024)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;47&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">0.2052</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="mf">0.2085</span><span class="p">,</span>
+                <span class="s2">&quot;ETH3OXI&quot;</span><span class="p">:</span> <span class="mf">0.6132</span><span class="p">,</span>
+                <span class="s2">&quot;ETH3oxi&quot;</span><span class="p">:</span> <span class="mf">0.6132</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-3&quot;</span><span class="p">:</span> <span class="mf">0.6132</span><span class="p">,</span>
+                <span class="s2">&quot;GU1&quot;</span><span class="p">:</span> <span class="mf">0.2254</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;48&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">0.1277</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="mf">0.1299</span><span class="p">,</span>
+                <span class="s2">&quot;ETH3OXI&quot;</span><span class="p">:</span> <span class="mf">0.2481</span><span class="p">,</span>
+                <span class="s2">&quot;ETH3oxi&quot;</span><span class="p">:</span> <span class="mf">0.2481</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-3&quot;</span><span class="p">:</span> <span class="mf">0.2481</span><span class="p">,</span>
+                <span class="s2">&quot;GU1&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.3998</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        
+        <span class="c1"># &quot;Bernecker2023 carb&quot;: {</span>
+        <span class="c1">#     &quot;#info&quot;: &quot;Longterm GU, Bernecker et al. (2023)&quot;,</span>
+        <span class="c1">#     &quot;47&quot;: {</span>
+        <span class="c1">#         &quot;ETH-1&quot;: 0.2061,</span>
+        <span class="c1">#         &quot;ETH-2&quot;: 0.2085,</span>
+        <span class="c1">#         &quot;ETH-3&quot;: 0.6032,</span>
+        <span class="c1">#         &quot;GU1&quot;: 0.2244,</span>
+        <span class="c1">#     },</span>
+        <span class="c1">#     &quot;48&quot;: {</span>
+        <span class="c1">#         &quot;ETH-1&quot;: 0.1286,</span>
+        <span class="c1">#         &quot;ETH-2&quot;: 0.1286,</span>
+        <span class="c1">#         &quot;ETH-3&quot;: 0.3039,</span>
+        <span class="c1">#         &quot;GU1&quot;: -0.4015,</span>
+        <span class="c1">#     },</span>
+        <span class="c1"># },</span>
+        
+        <span class="s2">&quot;mixed47&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;#info&quot;</span><span class="p">:</span> <span class="s2">&quot;ETH1+2 (47), 25+1000C (47+48)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;47&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">0.2052</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="mf">0.2085</span><span class="p">,</span>
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.0266</span><span class="p">,</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.9196</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;48&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.000</span><span class="p">,</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.345</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        
+        <span class="s2">&quot;mixed4748&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;#info&quot;</span><span class="p">:</span> <span class="s2">&quot;ETH1+2, 25+1000C (47+48)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;47&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">0.2052</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="mf">0.2085</span><span class="p">,</span>
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.0266</span><span class="p">,</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.9196</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;48&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">0.1277</span><span class="p">,</span>
+                <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="mf">0.1299</span><span class="p">,</span>
+                <span class="s2">&quot;1000C&quot;</span><span class="p">:</span> <span class="mf">0.000</span><span class="p">,</span>
+                <span class="s2">&quot;25C&quot;</span><span class="p">:</span> <span class="mf">0.345</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="n">STANDARDS_BULK</span> <span class="o">=</span> <span class="p">{</span><span class="mi">18</span><span class="p">:</span>
+         <span class="p">{</span>
+        <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.19</span><span class="p">,</span> <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">18.69</span><span class="p">,</span> <span class="s2">&quot;ETH-3&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.78</span><span class="p">,</span>
+             <span class="s2">&quot;ETH3oxi&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.78</span><span class="p">,</span>
+        <span class="c1"># &quot;ETH-1-110C&quot;: -2.19, &quot;ETH-2-110C&quot;: -18.69,</span>
+        <span class="c1"># &quot;ETH-1_110C&quot;: -2.19, &quot;ETH-2_110C&quot;: -18.69,</span>
+    <span class="p">},</span>
+    
+    <span class="mi">13</span><span class="p">:{</span>
+        <span class="s2">&quot;ETH-1&quot;</span><span class="p">:</span> <span class="mf">2.02</span><span class="p">,</span> <span class="s2">&quot;ETH-2&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">10.17</span><span class="p">,</span> <span class="s2">&quot;ETH-3&quot;</span><span class="p">:</span> <span class="mf">1.71</span><span class="p">,</span>
+        <span class="s1">&#39;ETH3oxi&#39;</span><span class="p">:</span> <span class="mf">1.71</span><span class="p">,</span>
+        <span class="c1"># &quot;ETH-1-110C&quot;: 2.02, &quot;ETH-2-110C&quot;: -10.17,</span>
+        <span class="c1"># &quot;ETH-1_110C&quot;: 2.02, &quot;ETH-2_110C&quot;: -10.17,</span>
+    <span class="p">}}</span>
+    
+    <span class="c1"># @classmethod</span>
+    <span class="c1"># def get_working_gas(cls) -&gt; Dict[str, float]:</span>
+    <span class="c1">#     &quot;&quot;&quot;Get working gas isotopic composition.</span>
+    <span class="c1">#</span>
+    <span class="c1">#     Returns:</span>
+    <span class="c1">#         Dictionary containing working gas d13C and d18O values.</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     return cls.WORKING_GAS.copy()</span>
+    
+<div class="viewcode-block" id="IsotopeStandards.get_standards">
+<a class="viewcode-back" href="../../../tools_init_params.html#D4Xgui.tools.init_params.IsotopeStandards.get_standards">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_standards</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all isotopic standards.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary containing all standard reference frames.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">STANDARDS_NOMINAL</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="IsotopeStandards.get_bulk">
+<a class="viewcode-back" href="../../../tools_init_params.html#D4Xgui.tools.init_params.IsotopeStandards.get_bulk">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_bulk</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all isotopic standards.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary containing all standard reference frames.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">STANDARDS_BULK</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="IsotopeStandards.get_standard">
+<a class="viewcode-back" href="../../../tools_init_params.html#D4Xgui.tools.init_params.IsotopeStandards.get_standard">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_standard</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">standard_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a specific isotopic standard.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            standard_name: Name of the standard to retrieve.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary containing the standard&#39;s isotopic values.</span>
+<span class="sd">            </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If the standard name is not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">standard_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">STANDARDS_NOMINAL</span><span class="p">:</span>
+            <span class="n">available</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">STANDARDS_NOMINAL</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Standard &#39;</span><span class="si">{</span><span class="n">standard_name</span><span class="si">}</span><span class="s2">&#39; not found. Available: </span><span class="si">{</span><span class="n">available</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">STANDARDS_NOMINAL</span><span class="p">[</span><span class="n">standard_name</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="c1"># Legacy dictionary for backward compatibility</span>
+<span class="n">INIT_PARAMS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1">#&quot;working_gas&quot;: IsotopeStandards.get_working_gas(),</span>
+    <span class="s2">&quot;standards_nominal&quot;</span><span class="p">:</span> <span class="n">IsotopeStandards</span><span class="o">.</span><span class="n">get_standards</span><span class="p">(),</span>
+    <span class="s1">&#39;standards_bulk&#39;</span> <span class="p">:</span> <span class="n">IsotopeStandards</span><span class="o">.</span><span class="n">get_bulk</span><span class="p">(),</span>
+<span class="p">}</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Miguel Bernecker.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
