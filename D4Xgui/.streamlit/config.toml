@@ -1,0 +1,15 @@
+[theme]
+base="dark"
+primaryColor= '#aa80f7'#aa80f7'#"#7070A0"        # Dark Purple-Blue    primaryColor="#3B4A59"        # Dark Blue for primary elements
+backgroundColor='#0E1117'#"#121212"     # Very Dark Gray for background
+secondaryBackgroundColor="#262730"  # Darker Gray for secondary background
+textColor="#FAFAFA"           # Lightest Gray for text
+font="sans serif"
+
+
+[browser]
+gatherUsageStats = false
+
+[server]
+showEmailPrompt = false
+port = 1337
