@@ -101,7 +101,7 @@ Please find the [code documentation here](https://itsmig.github.io/D4Xgui/index.
         """Display the welcome page content."""
         
         info_content = self._get_info_content()
-        self._save_readme(info_content)
+        # self._save_readme(info_content)
         st.markdown(info_content, unsafe_allow_html=True)
 
 

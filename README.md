@@ -8,6 +8,7 @@ This web-app allows users to discover replicate- or sample-based processing resu
 <br>
 
 Example data is accessible from the Data-IO page, or can be downloaded from [GitHub](https://github.com/itsMig/D4Xgui/tree/main/D4Xgui/static).
+Please check `INSTALLATION.md` to find help setting up D4Xgui.
 
 <br>
 
