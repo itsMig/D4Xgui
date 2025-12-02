@@ -734,6 +734,11 @@ class DataProcessor:
     def smart_numeric_conversion(series):
         """Convert series to numeric only if it contains numeric data."""
         # Check if the series contains any numeric-like values
+        
+        col_name = series.name
+        if col_name in ['Sample', 'Session']:
+            return series
+        
         numeric_count = 0
         total_non_null = 0
         CHECK_ARR = []
@@ -754,8 +759,7 @@ class DataProcessor:
         new_series = []
         for idx, _ in enumerate(series):
             new_series.append(float(_) if CHECK_ARR[idx] else (np.nan if len(str(_)) == 0 else _))
-        #print(series.values)
-        #print(new_series)
+        
         return new_series
         # if numeric_count == len(series):
         #     return pd.to_numeric(series)#, errors='coerce')
