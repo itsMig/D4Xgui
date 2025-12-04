@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=65.0", "wheel"]
-build-backend = "setuptools.build"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "D4Xgui"
@@ -51,7 +51,10 @@ Documentation = "https://github.com/itsMig/D4Xgui/blob/main/README.md"
 d4xgui = "D4Xgui.run:main"
 
 [tool.setuptools]
-packages = ["D4Xgui"]
+packages = ["D4Xgui", "D4Xgui.tools", "D4Xgui.pages"]
+
+[tool.setuptools.package-data]
+D4Xgui = ["static/**", ]
 
 [tool.black]
 line-length = 120
