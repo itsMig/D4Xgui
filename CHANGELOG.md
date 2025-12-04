@@ -15,3 +15,8 @@
 + Support for multiple calibration methods using D47calib
 + Temperature calculation from D47 values
 + Excel export functionality for results
+
+## [1.0.1] - 2025-12-04
+
++ exclude `Session` and `Sample` from smart_numeric_conversion()
++ Publish D4Xgui to PyPI
