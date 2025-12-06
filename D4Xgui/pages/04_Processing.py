@@ -1726,7 +1726,7 @@ class ProcessingPage:
             if self.sss.params_last_run.get(f"process_D{mz}", False):
                 if self.sss.params_last_run.get('scale', None):
                     if mz in self.sss["standards_nominal"][self.sss.params_last_run['scale']]:
-                        STDS[mz] = str({key: self.sss["standards_nominal"][self.sss.scale]["47"][key] for key in self.sss.standards_nominal[self.sss.scale].get('47', False) if key in self.sss.standards['Sample'].values})
+                        STDS[mz] = str({key: self.sss["standards_nominal"][self.sss.scale][mz][key] for key in self.sss.standards_nominal[self.sss.scale].get(mz, False) if key in self.sss.standards['Sample'].values})
                         
                 else:
                     STDS[mz] = 'N/A'
@@ -1779,7 +1779,7 @@ class ProcessingPage:
         }
         
 
-        if self.sss.get('bg_success', False):
+        if self.sss.get('scaling_factors', False):
             params['Parameter'].append('Scaling factors')
             params['Value'].append(str(self.sss.scaling_factors))
 
