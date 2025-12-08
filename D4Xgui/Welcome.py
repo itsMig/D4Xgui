@@ -7,6 +7,7 @@ import toml
 
 import streamlit as st
 import D47crunch
+import D4Xgui
 
 from tools.page_config import set_page_config
 from tools import sidebar_logo
@@ -47,17 +48,12 @@ class WelcomePageManager:
         Returns:
             Formatted markdown string with welcome information.
         """
-        with open('../pyproject.toml', 'r') as f:
-            data = toml.load(f)
-            version = data['project']['version']
-        
-        
-        
-        return rf"""## Welcome to D4Xgui v{version}!
+       
+        return rf"""## Welcome to D4Xgui v1.0.2!
 
 [D4Xgui](https://github.com/itsMig/D4Xgui) is developed to enable easy access to state-of-the-art CO₂ clumped isotope (∆₄₇, ∆₄₈ and ∆₄₉) data processing.
 A recently developed optimizer algorithm allows pre-processing of mass spectrometric raw intensities utilizing a m/z47.5 half-mass Faraday cup correction to account for the effect of a negative pressure baseline, which is essential for accurate and highest precision clumped isotope analysis of CO₂ ([Bernecker et al., 2023](https://doi.org/10.1016/j.chemgeo.2023.121803)).
-It is backed with the recently published processing tool [D47crunch (v.{D47crunch.__version__})](https://github.com/mdaeron/D47crunch) (following the methodology outlined in [Daeron, 2021](https://doi.org/10.1029/2020GC009592)), which allows standardization under consideration of full error propagation and has been used for the InterCarb community effort ([Bernasconi et al., 2021](https://doi.org/10.1029/2020GC009588)).
+It is backed with the recently published processing tool [D47crunch (v{D47crunch.__version__})](https://github.com/mdaeron/D47crunch) (following the methodology outlined in [Daeron, 2021](https://doi.org/10.1029/2020GC009592)), which allows standardization under consideration of full error propagation and has been used for the InterCarb community effort ([Bernasconi et al., 2021](https://doi.org/10.1029/2020GC009588)).
 This web-app allows users to discover replicate- or sample-based processing results in interactive spreadsheets and plots.
 
 <br>
