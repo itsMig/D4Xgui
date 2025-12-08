@@ -3,6 +3,7 @@
 import os.path
 from pathlib import Path
 from typing import Dict, Any
+import toml
 
 import streamlit as st
 import D47crunch
@@ -46,7 +47,13 @@ class WelcomePageManager:
         Returns:
             Formatted markdown string with welcome information.
         """
-        return rf"""## Welcome to D4Xgui v1.0.0!
+        with open('../pyproject.toml', 'r') as f:
+            data = toml.load(f)
+            version = data['project']['version']
+        
+        
+        
+        return rf"""## Welcome to D4Xgui v{version}!
 
 [D4Xgui](https://github.com/itsMig/D4Xgui) is developed to enable easy access to state-of-the-art CO₂ clumped isotope (∆₄₇, ∆₄₈ and ∆₄₉) data processing.
 A recently developed optimizer algorithm allows pre-processing of mass spectrometric raw intensities utilizing a m/z47.5 half-mass Faraday cup correction to account for the effect of a negative pressure baseline, which is essential for accurate and highest precision clumped isotope analysis of CO₂ ([Bernecker et al., 2023](https://doi.org/10.1016/j.chemgeo.2023.121803)).
