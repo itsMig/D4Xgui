@@ -7,7 +7,6 @@ import toml
 
 import streamlit as st
 import D47crunch
-import D4Xgui
 
 from tools.page_config import set_page_config
 from tools import sidebar_logo
