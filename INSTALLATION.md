@@ -29,7 +29,7 @@ The easiest way to run D4Xgui is using `uv`. This runs the application in an iso
 2. **Run D4Xgui:**
    
    ```bash
-   uvx --from git+https://github.com/itsMig/D4Xgui D4Xgui  
+   uvx d4xgui
    ```
    
    The application will automatically download, install dependencies, and launch in your default web browser.

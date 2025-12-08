@@ -43,7 +43,7 @@ plotly
 scipy
 
 # project specific dependencies
-D47crunch
+D47crunch>=2.4.3
 D47calib
 ogls
 lmfit

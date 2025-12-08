@@ -20,3 +20,10 @@
 
 + exclude `Session` and `Sample` from smart_numeric_conversion()
 + Publish D4Xgui to PyPI
+
+## [1.0.2] - 2025-12-08
+
++ no `scaling_factors` without PBL correction
++ typo in `STDs` output
++ Python≥3.12 (D47crunch dependency)
++ installation from PyPI

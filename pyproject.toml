@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "D4Xgui"
-version = "1.0.0"
+version = "1.0.2"
 description = "Processing app for mass-spectrometric CO₂ clumped isotope (∆₄₇, ∆₄₈, ∆₄₉) data"
 readme = "README.md"
 license = {text = "MIT"}
@@ -25,12 +25,11 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Chemistry",
     "Topic :: Scientific/Engineering :: Physics",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 
 
 dynamic = ["dependencies"]
@@ -57,4 +56,4 @@ D4Xgui = ["static/**", ]
 
 [tool.black]
 line-length = 120
-target-version = ['py311', 'py312']
+target-version = ['py312']
