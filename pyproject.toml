@@ -54,6 +54,9 @@ packages = ["D4Xgui", "D4Xgui.tools", "D4Xgui.pages"]
 [tool.setuptools.package-data]
 D4Xgui = ["static/**", ]
 
+[tool.setuptools.exclude-package-data]
+"*" = ["*.db"]
+
 [tool.black]
 line-length = 120
 target-version = ['py312']
