@@ -272,6 +272,7 @@ class DataIOPage:
         elif filename.endswith((".csv", ".txt")):
             stringio = io.StringIO(file.getvalue().decode("utf-8"))
             STR = stringio.read()
+            STR
             if '\t' in STR:
                 SEP = '\t'
             elif ';' in STR:
@@ -279,9 +280,9 @@ class DataIOPage:
             elif ',' in STR:
                 SEP = ','
             else:
-                
                 SEP = None
-            st.info('Could not recognize column separator, please use `\\t`   `;`  or  `,` !')
+                st.info('Could not recognize column separator, please use `\\t`   `;`  or  `,` !')
+            
             df=pd.read_csv(file, sep=SEP)
             return df
         raise ValueError(f"Unsupported file type: {filename}")
