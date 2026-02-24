@@ -6,16 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>page_config &mdash; D4Xgui v1.0.0 documentation</title>
+  <title>page_config &mdash; D4Xgui v1.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=76e2d817"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=411a527d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -92,73 +92,6 @@
              
   <section id="page-config">
 <h1>page_config<a class="headerlink" href="#page-config" title="Link to this heading"></a></h1>
-<p>Page configuration module for D4Xgui Streamlit application.</p>
-<p>This module provides centralized configuration for all pages in the application,
-including page titles, icons, layout settings, and menu items.</p>
-<dl class="py class">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.page_config.</span></span><span class="sig-name descname"><span class="pre">PageConfigManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">icon_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/D4Xgui/tools/page_config.html#PageConfigManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Manages page configuration for the Streamlit application.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">DEFAULT_ICON_PATH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'static/D4Xgui_logo_master_red08.png'</span></em></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">_get_page_configurations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/page_config.html#PageConfigManager._get_page_configurations"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Get configuration for all pages.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>Dictionary mapping page numbers to their configurations.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">_get_shared_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/page_config.html#PageConfigManager._get_shared_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Get shared configuration for all pages.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>Dictionary containing shared page configuration.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">_load_icon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Image</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/page_config.html#PageConfigManager._load_icon"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Load the application icon.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>PIL Image object or None if loading fails.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">configure_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/page_config.html#PageConfigManager.configure_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Configure a Streamlit page.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>page_number: Page number to configure.</p>
-</dd>
-<dt>Raises:</dt><dd><p>ValueError: If page number is not found in configuration.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.page_config.</span></span><span class="sig-name descname"><span class="pre">set_page_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/page_config.html#set_page_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Configure a Streamlit page (legacy function for backward compatibility).</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>page_number: Page number to configure.</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 
 

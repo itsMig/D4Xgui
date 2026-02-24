@@ -6,16 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>init_params &mdash; D4Xgui v1.0.0 documentation</title>
+  <title>init_params &mdash; D4Xgui v1.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=76e2d817"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=411a527d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -92,58 +92,6 @@
              
   <section id="init-params">
 <h1>init_params<a class="headerlink" href="#init-params" title="Link to this heading"></a></h1>
-<p>Initial parameters and standards for D4Xgui application.</p>
-<dl class="py class">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.init_params.</span></span><span class="sig-name descname"><span class="pre">IsotopeStandards</span></span><a class="reference internal" href="_modules/D4Xgui/tools/init_params.html#IsotopeStandards"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Container for isotopic standard values and working gas parameters.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">STANDARDS_BULK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{13:</span> <span class="pre">{'ETH-1':</span> <span class="pre">2.02,</span> <span class="pre">'ETH-1_110C':</span> <span class="pre">2.02,</span> <span class="pre">'ETH-2':</span> <span class="pre">-10.17,</span> <span class="pre">'ETH-2_110C':</span> <span class="pre">-10.17,</span> <span class="pre">'ETH-3':</span> <span class="pre">1.71,</span> <span class="pre">'ETH3oxi':</span> <span class="pre">1.71},</span> <span class="pre">18:</span> <span class="pre">{'ETH-1':</span> <span class="pre">-2.19,</span> <span class="pre">'ETH-1_110C':</span> <span class="pre">-2.19,</span> <span class="pre">'ETH-2':</span> <span class="pre">-18.69,</span> <span class="pre">'ETH-2_110C':</span> <span class="pre">-18.69,</span> <span class="pre">'ETH-3':</span> <span class="pre">-1.78,</span> <span class="pre">'ETH3oxi':</span> <span class="pre">-1.78}}</span></em></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">STANDARDS_NOMINAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'CDES':</span> <span class="pre">{'#info':</span> <span class="pre">'Wang_2004,</span> <span class="pre">revised</span> <span class="pre">by</span> <span class="pre">Petersen_2019',</span> <span class="pre">'47':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0266,</span> <span class="pre">'25C':</span> <span class="pre">0.9196,</span> <span class="pre">'4C':</span> <span class="pre">1.0402,</span> <span class="pre">'60C':</span> <span class="pre">0.77062},</span> <span class="pre">'48':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">0.345},</span> <span class="pre">'49':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">2.228}},</span> <span class="pre">'Fiebig2024</span> <span class="pre">carb':</span> <span class="pre">{'#info':</span> <span class="pre">'Longterm</span> <span class="pre">GU,</span> <span class="pre">Fiebig</span> <span class="pre">et</span> <span class="pre">al.</span> <span class="pre">(2024)',</span> <span class="pre">'47':</span> <span class="pre">{'ETH-1':</span> <span class="pre">0.2052,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.6132,</span> <span class="pre">'ETH3OXI':</span> <span class="pre">0.6132,</span> <span class="pre">'ETH3oxi':</span> <span class="pre">0.6132,</span> <span class="pre">'GU1':</span> <span class="pre">0.2254},</span> <span class="pre">'48':</span> <span class="pre">{'ETH-1':</span> <span class="pre">0.1277,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.1299,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.2481,</span> <span class="pre">'ETH3OXI':</span> <span class="pre">0.2481,</span> <span class="pre">'ETH3oxi':</span> <span class="pre">0.2481,</span> <span class="pre">'GU1':</span> <span class="pre">-0.3998}},</span> <span class="pre">'ICDES':</span> <span class="pre">{'#info':</span> <span class="pre">'InterCarb,</span> <span class="pre">Bernasconi</span> <span class="pre">et</span> <span class="pre">al.</span> <span class="pre">(2021)',</span> <span class="pre">'47':</span> <span class="pre">{'ETH-1':</span> <span class="pre">0.2052,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.6132}},</span> <span class="pre">'mixed</span> <span class="pre">Fiebig24+CDES':</span> <span class="pre">{'#info':</span> <span class="pre">'Longterm</span> <span class="pre">GU,</span> <span class="pre">Fiebig</span> <span class="pre">et</span> <span class="pre">al.</span> <span class="pre">(2024)',</span> <span class="pre">'47':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0266,</span> <span class="pre">'25C':</span> <span class="pre">0.9196,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.2052,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.6132,</span> <span class="pre">'ETH3B':</span> <span class="pre">0.6132,</span> <span class="pre">'ETH3OXI':</span> <span class="pre">0.6132,</span> <span class="pre">'ETH3oxi':</span> <span class="pre">0.6132,</span> <span class="pre">'GU1':</span> <span class="pre">0.2254},</span> <span class="pre">'48':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">0.345,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.1277,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.1299,</span> <span class="pre">'ETH-3':</span> <span class="pre">0.2481,</span> <span class="pre">'ETH3B':</span> <span class="pre">0.2481,</span> <span class="pre">'ETH3OXI':</span> <span class="pre">0.2481,</span> <span class="pre">'ETH3oxi':</span> <span class="pre">0.2481,</span> <span class="pre">'GU1':</span> <span class="pre">-0.3998}},</span> <span class="pre">'mixed47':</span> <span class="pre">{'#info':</span> <span class="pre">'ETH1+2</span> <span class="pre">(47),</span> <span class="pre">25+1000C</span> <span class="pre">(47+48)',</span> <span class="pre">'47':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0266,</span> <span class="pre">'25C':</span> <span class="pre">0.9196,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.2052,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085},</span> <span class="pre">'48':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">0.345}},</span> <span class="pre">'mixed4748':</span> <span class="pre">{'#info':</span> <span class="pre">'ETH1+2,</span> <span class="pre">25+1000C</span> <span class="pre">(47+48)',</span> <span class="pre">'47':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0266,</span> <span class="pre">'25C':</span> <span class="pre">0.9196,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.2052,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.2085},</span> <span class="pre">'48':</span> <span class="pre">{'1000C':</span> <span class="pre">0.0,</span> <span class="pre">'25C':</span> <span class="pre">0.345,</span> <span class="pre">'ETH-1':</span> <span class="pre">0.1277,</span> <span class="pre">'ETH-2':</span> <span class="pre">0.1299}}}</span></em></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_bulk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/init_params.html#IsotopeStandards.get_bulk"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Get all isotopic standards.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>Dictionary containing all standard reference frames.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_standard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">standard_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/init_params.html#IsotopeStandards.get_standard"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Get a specific isotopic standard.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>standard_name: Name of the standard to retrieve.</p>
-</dd>
-<dt>Returns:</dt><dd><p>Dictionary containing the standard’s isotopic values.</p>
-</dd>
-<dt>Raises:</dt><dd><p>KeyError: If the standard name is not found.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_standards</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/init_params.html#IsotopeStandards.get_standards"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Get all isotopic standards.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>Dictionary containing all standard reference frames.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 </section>
 
 

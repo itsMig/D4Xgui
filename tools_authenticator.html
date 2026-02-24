@@ -6,16 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>authenticator &mdash; D4Xgui v1.0.0 documentation</title>
+  <title>authenticator &mdash; D4Xgui v1.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=76e2d817"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=411a527d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -97,39 +97,39 @@
 application using Streamlit’s session state and secrets management.</p>
 <dl class="py exception">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.authenticator.</span></span><span class="sig-name descname"><span class="pre">AuthenticationError</span></span><a class="reference internal" href="_modules/D4Xgui/tools/authenticator.html#AuthenticationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.authenticator.</span></span><span class="sig-name descname"><span class="pre">AuthenticationError</span></span><a class="reference internal" href="_modules/D4Xgui/tools/authenticator.html#AuthenticationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Raised when authentication fails.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.authenticator.</span></span><span class="sig-name descname"><span class="pre">Authenticator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delay_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.25</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/D4Xgui/tools/authenticator.html#Authenticator"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.authenticator.</span></span><span class="sig-name descname"><span class="pre">Authenticator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delay_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.25</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/D4Xgui/tools/authenticator.html#Authenticator"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Handles user authentication for the Streamlit application.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">CONTACT_MESSAGE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Contact</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;mailto:bernecker&#64;em.uni-frankfurt.de?subject=D4Xgui</span> <span class="pre">-</span> <span class="pre">Alpha</span> <span class="pre">password</span> <span class="pre">request&amp;body=Hi</span> <span class="pre">Miguel,%0D%0Awe</span> <span class="pre">are</span> <span class="pre">interested</span> <span class="pre">in</span> <span class="pre">testing</span> <span class="pre">your</span> <span class="pre">app.%0D%0A%0D%0AInstitute:%0D%0AMass</span> <span class="pre">spectrometer:%0D%0APreparation</span> <span class="pre">line:%0D%0A%0D%0ACould</span> <span class="pre">you</span> <span class="pre">please</span> <span class="pre">provide</span> <span class="pre">me</span> <span class="pre">the</span> <span class="pre">password</span> <span class="pre">needed</span> <span class="pre">to</span> <span class="pre">join</span> <span class="pre">alpha</span> <span class="pre">testing?&quot;&gt;Miguel</span> <span class="pre">Bernecker&lt;/a&gt;</span> <span class="pre">if</span> <span class="pre">you</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">join</span> <span class="pre">alpha</span> <span class="pre">testing.'</span></em></dt>
+<span class="sig-name descname"><span class="pre">CONTACT_MESSAGE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Contact</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;mailto:bernecker&#64;em.uni-frankfurt.de?subject=D4Xgui</span> <span class="pre">-</span> <span class="pre">Alpha</span> <span class="pre">password</span> <span class="pre">request&amp;body=Hi</span> <span class="pre">Miguel,%0D%0Awe</span> <span class="pre">are</span> <span class="pre">interested</span> <span class="pre">in</span> <span class="pre">testing</span> <span class="pre">your</span> <span class="pre">app.%0D%0A%0D%0AInstitute:%0D%0AMass</span> <span class="pre">spectrometer:%0D%0APreparation</span> <span class="pre">line:%0D%0A%0D%0ACould</span> <span class="pre">you</span> <span class="pre">please</span> <span class="pre">provide</span> <span class="pre">me</span> <span class="pre">the</span> <span class="pre">password</span> <span class="pre">needed</span> <span class="pre">to</span> <span class="pre">join</span> <span class="pre">alpha</span> <span class="pre">testing?&quot;&gt;Miguel</span> <span class="pre">Bernecker&lt;/a&gt;</span> <span class="pre">if</span> <span class="pre">you</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">join</span> <span class="pre">alpha</span> <span class="pre">testing.'</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">ERROR_MESSAGE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'😕</span> <span class="pre">Password</span> <span class="pre">incorrect'</span></em></dt>
+<span class="sig-name descname"><span class="pre">ERROR_MESSAGE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'😕</span> <span class="pre">Password</span> <span class="pre">incorrect'</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">PASSWORD_CORRECT_KEY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'password_correct'</span></em></dt>
+<span class="sig-name descname"><span class="pre">PASSWORD_CORRECT_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'password_correct'</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">PASSWORD_KEY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'password'</span></em></dt>
+<span class="sig-name descname"><span class="pre">PASSWORD_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'password'</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">WELCOME_MESSAGE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'This</span> <span class="pre">is</span> <span class="pre">an</span> <span class="pre">early</span> <span class="pre">version</span> <span class="pre">of</span> <span class="pre">D4Xgui.</span> <span class="pre">Please</span> <span class="pre">enter</span> <span class="pre">the</span> <span class="pre">password</span> <span class="pre">to</span> <span class="pre">access</span> <span class="pre">this</span> <span class="pre">app.'</span></em></dt>
+<span class="sig-name descname"><span class="pre">WELCOME_MESSAGE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'This</span> <span class="pre">is</span> <span class="pre">an</span> <span class="pre">early</span> <span class="pre">version</span> <span class="pre">of</span> <span class="pre">D4Xgui.</span> <span class="pre">Please</span> <span class="pre">enter</span> <span class="pre">the</span> <span class="pre">password</span> <span class="pre">to</span> <span class="pre">access</span> <span class="pre">this</span> <span class="pre">app.'</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py method">

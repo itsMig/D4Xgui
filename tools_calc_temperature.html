@@ -6,16 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>calc_temperature &mdash; D4Xgui v1.0.0 documentation</title>
+  <title>calc_temperature &mdash; D4Xgui v1.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=76e2d817"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=411a527d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -92,69 +92,73 @@
              
   <section id="calc-temperature">
 <h1>calc_temperature<a class="headerlink" href="#calc-temperature" title="Link to this heading"></a></h1>
+<p>Temperature calculation module for clumped isotope analysis.</p>
+<p>This module provides functions to calculate clumped isotope values (D47, D48, D63, D64, D65)
+as a function of temperature using polynomial equations from published calibrations
+(Hill et al., 2014; Fiebig et al. 2021, 2024).</p>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.calc_temperature.</span></span><span class="sig-name descname"><span class="pre">TemperatureCalculator</span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">D4Xgui.tools.calc_temperature.</span></span><span class="sig-name descname"><span class="pre">TemperatureCalculator</span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Calculator for clumped isotope temperature relationships.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">FIEBIG2021_D47_OFFSET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1855537</span></em></dt>
+<span class="sig-name descname"><span class="pre">FIEBIG2021_D47_OFFSET</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1855537</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">FIEBIG2021_D47_SCALING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0381881</span></em></dt>
+<span class="sig-name descname"><span class="pre">FIEBIG2021_D47_SCALING</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0381881</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">FIEBIG2021_D48_OFFSET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1244564</span></em></dt>
+<span class="sig-name descname"><span class="pre">FIEBIG2021_D48_OFFSET</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1244564</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">FIEBIG2021_D48_SCALING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0280693</span></em></dt>
+<span class="sig-name descname"><span class="pre">FIEBIG2021_D48_SCALING</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0280693</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">FIEBIG2024_D47_OFFSET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1848</span></em></dt>
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D47_OFFSET</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1848</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">FIEBIG2024_D47_SCALING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.038</span></em></dt>
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D47_SCALING</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.038</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">FIEBIG2024_D48_OFFSET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1214</span></em></dt>
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D48_OFFSET</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1214</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">FIEBIG2024_D48_SCALING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.038</span></em></dt>
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D48_SCALING</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.038</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">POLY_63_COEFFS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(-5.896755,</span> <span class="pre">-3520.888,</span> <span class="pre">23912740.0,</span> <span class="pre">-3540693000.0)</span></em></dt>
+<span class="sig-name descname"><span class="pre">POLY_63_COEFFS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(-5.896755,</span> <span class="pre">-3520.888,</span> <span class="pre">23912740.0,</span> <span class="pre">-3540693000.0)</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">POLY_64_COEFFS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(6.001624,</span> <span class="pre">-12989.78,</span> <span class="pre">8995634.0,</span> <span class="pre">-742297200.0)</span></em></dt>
+<span class="sig-name descname"><span class="pre">POLY_64_COEFFS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(6.001624,</span> <span class="pre">-12989.78,</span> <span class="pre">8995634.0,</span> <span class="pre">-742297200.0)</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">POLY_65_COEFFS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(-6.741,</span> <span class="pre">-19500.0,</span> <span class="pre">58450000.0,</span> <span class="pre">-8093000000.0)</span></em></dt>
+<span class="sig-name descname"><span class="pre">POLY_65_COEFFS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(-6.741,</span> <span class="pre">-19500.0,</span> <span class="pre">58450000.0,</span> <span class="pre">-8093000000.0)</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_evaluate_polynomial_4th_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator._evaluate_polynomial_4th_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">_evaluate_polynomial_4th_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator._evaluate_polynomial_4th_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Evaluate a 4th-degree polynomial.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>coeffs: Polynomial coefficients (a, b, c, d) for ax + bx² + cx³ + dx⁴.
@@ -167,7 +171,7 @@ x: Input value(s).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_d47_fiebig2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d47_fiebig2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">calculate_d47_fiebig2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d47_fiebig2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate D47 values using Fiebig et al. (2021) calibration.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
@@ -179,7 +183,7 @@ x: Input value(s).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_d47_fiebig2024</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d47_fiebig2024"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">calculate_d47_fiebig2024</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d47_fiebig2024"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate D47 values using Fiebig et al. (2024) calibration.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
@@ -191,7 +195,7 @@ x: Input value(s).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_d48_fiebig2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d48_fiebig2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">calculate_d48_fiebig2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d48_fiebig2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate D48 values using Fiebig et al. (2021) calibration.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
@@ -203,7 +207,7 @@ x: Input value(s).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_d48_fiebig2024</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d48_fiebig2024"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">calculate_d48_fiebig2024</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d48_fiebig2024"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate D48 values using Fiebig et al. (2024) calibration.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
@@ -215,7 +219,7 @@ x: Input value(s).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_d63_hill2014</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d63_hill2014"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">calculate_d63_hill2014</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d63_hill2014"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate D63 values using Hill et al. (2014) calibration.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
@@ -227,7 +231,7 @@ x: Input value(s).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_d64_hill2014</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d64_hill2014"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">calculate_d64_hill2014</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d64_hill2014"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate D64 values using Hill et al. (2014) calibration.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
@@ -239,7 +243,7 @@ x: Input value(s).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_d65_hill2014</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d65_hill2014"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">calculate_d65_hill2014</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inverse_temp_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.calculate_d65_hill2014"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate D65 values using Hill et al. (2014) calibration.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>inverse_temp_k: 1/T in Kelvin.</p>
@@ -251,7 +255,32 @@ x: Input value(s).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_temperature_difference_d47_fiebig2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d47</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.get_temperature_difference_d47_fiebig2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">direct_temperature_swart2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d47</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.direct_temperature_swart2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate temperature using Swart (2021): D47(CDES90) = 0.039 * 10^6/T^2 + 0.158.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>d47: The D47 value.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Temperature in degrees Celsius.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_temperature_difference_d47_anderson2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d47</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.get_temperature_difference_d47_anderson2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculate absolute difference between target D47 and Anderson (2021) D47.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>temp_celsius: Temperature in Celsius.
+target_d47: Target D47 value.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Absolute difference.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_temperature_difference_d47_fiebig2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d47</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.get_temperature_difference_d47_fiebig2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate absolute difference between target D47 and calculated D47 (Fiebig 2021).</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>temp_celsius: Temperature in Celsius.
@@ -264,7 +293,7 @@ target_d47: Target D47 value.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_temperature_difference_d47_fiebig2024</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d47</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.get_temperature_difference_d47_fiebig2024"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_temperature_difference_d47_fiebig2024</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d47</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.get_temperature_difference_d47_fiebig2024"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate absolute difference between target D47 and calculated D47 (Fiebig 2024).</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>temp_celsius: Temperature in Celsius.
@@ -277,7 +306,7 @@ target_d47: Target D47 value.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_temperature_difference_d48_fiebig2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d48</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.get_temperature_difference_d48_fiebig2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_temperature_difference_d48_fiebig2021</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d48</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.get_temperature_difference_d48_fiebig2021"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate absolute difference between target D48 and calculated D48 (Fiebig 2021).</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>temp_celsius: Temperature in Celsius.
@@ -290,7 +319,7 @@ target_d48: Target D48 value.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_temperature_difference_d48_fiebig2024</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d48</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.get_temperature_difference_d48_fiebig2024"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_temperature_difference_d48_fiebig2024</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_celsius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_d48</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.get_temperature_difference_d48_fiebig2024"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculate absolute difference between target D48 and calculated D48 (Fiebig 2024).</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>temp_celsius: Temperature in Celsius.

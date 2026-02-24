@@ -5,16 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>D4Xgui.tools.calc_temperature &mdash; D4Xgui v1.0.0 documentation</title>
+  <title>D4Xgui.tools.calc_temperature &mdash; D4Xgui v1.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=76e2d817"></script>
-      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/documentation_options.js?v=411a527d"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -88,8 +88,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for D4Xgui.tools.calc_temperature</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span>  <span class="n">minimize_scalar</span>
-<span class="sd">&quot;&quot;&quot;Temperature calculation module for clumped isotope analysis.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Temperature calculation module for clumped isotope analysis.</span>
 
 <span class="sd">This module provides functions to calculate clumped isotope values (D47, D48, D63, D64, D65)</span>
 <span class="sd">as a function of temperature using polynomial equations from published calibrations</span>
@@ -97,7 +96,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize_scalar</span>
 
 
 
@@ -319,6 +320,41 @@
         <span class="n">inverse_temp_k</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">temp_celsius</span> <span class="o">+</span> <span class="mf">273.15</span><span class="p">)</span>
         <span class="n">calculated_d48</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">calculate_d48_fiebig2024</span><span class="p">(</span><span class="n">inverse_temp_k</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">target_d48</span> <span class="o">-</span> <span class="n">calculated_d48</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TemperatureCalculator.get_temperature_difference_d47_anderson2021">
+<a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.get_temperature_difference_d47_anderson2021">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_temperature_difference_d47_anderson2021</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">temp_celsius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">target_d47</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate absolute difference between target D47 and Anderson (2021) D47.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            temp_celsius: Temperature in Celsius.</span>
+<span class="sd">            target_d47: Target D47 value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Absolute difference.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">target_d47</span> <span class="o">-</span> <span class="p">((</span><span class="mf">0.0391</span> <span class="o">*</span> <span class="mf">1e6</span> <span class="o">/</span> <span class="n">temp_celsius</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.154</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TemperatureCalculator.direct_temperature_swart2021">
+<a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.direct_temperature_swart2021">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">direct_temperature_swart2021</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d47</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate temperature using Swart (2021): D47(CDES90) = 0.039 * 10^6/T^2 + 0.158.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            d47: The D47 value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Temperature in degrees Celsius.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">temp_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1e6</span> <span class="o">*</span> <span class="mf">0.039</span> <span class="o">/</span> <span class="p">(</span><span class="n">d47</span> <span class="o">-</span> <span class="mf">0.158</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">temp_k</span> <span class="o">-</span> <span class="mf">273.15</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">ZeroDivisionError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span></div>
 </div>
 
 
