@@ -1,72 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
 import numpy as np
 import streamlit as st
 import plotly.graph_objects as go
+import plotly.express as px
 from scipy.stats import linregress, t
-from typing import List, Tuple, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
-from tools.page_config import set_page_config
-from tools import sidebar_logo
+from tools.base_page import BasePage
 from tools.commons import PlotParameters, modify_plot_text_sizes, PlotlyConfig
-from tools.authenticator import Authenticator
-
-# Configure page
-set_page_config(5)
-
-# Add logo
-sidebar_logo.add_logo()
-
-
-
-
-class DataFilter:
-    """Handles filtering of DataFrame data based on sample name patterns."""
-    
-    def __init__(self):
-        self.session_state = st.session_state
-    
-    def apply_filters(self, df, column: str = "Sample"):
-        """
-        Apply include/exclude filters to DataFrame based on sample names.
-        
-        Args:
-            df: DataFrame to filter
-            column: Column name to apply filters on
-            
-        Returns:
-            Filtered DataFrame
-        """
-        filtered_df = df.copy()
-        
-        # Apply include filter
-        include_keywords = self._get_filter_keywords("05_sample_contains")
-        if include_keywords:
-            filtered_df = self._include_samples(filtered_df, column, include_keywords)
-        
-        # Apply exclude filter
-        exclude_keywords = self._get_filter_keywords("05_sample_not_contains")
-        if exclude_keywords:
-            filtered_df = self._exclude_samples(filtered_df, column, exclude_keywords)
-        
-        return filtered_df
-    
-    def _get_filter_keywords(self, key: str) -> List[str]:
-        """Extract filter keywords from session state."""
-        value = self.session_state.get(key, "")
-        if value and isinstance(value, str):
-            return [keyword.strip() for keyword in value.split(";") if keyword.strip()]
-        return []
-    
-    def _include_samples(self, df, column: str, keywords: List[str]):
-        """Include samples containing any of the specified keywords."""
-        return df[df[column].apply(lambda x: any(keyword in x for keyword in keywords))]
-    
-    def _exclude_samples(self, df, column: str, keywords: List[str]):
-        """Exclude samples containing any of the specified keywords."""
-        return df[~df[column].apply(lambda x: any(keyword in x for keyword in keywords))]
+from tools.filters import apply_session_filters, render_sample_filter_sidebar
 
 
 class PlotGenerator:
@@ -564,31 +508,122 @@ class PlotGenerator:
         fig.update_xaxes(showline=True, linewidth=2, linecolor="white", mirror=True)
         fig.update_yaxes(showline=True, linewidth=2, linecolor="white", mirror=True)
 
+    def _get_std_error_hover_data(self, session: str, mz: int, data_type: str) -> Dict[str, Any]:
+        """Get hover data for standardization error scatter points."""
+        hover_data: Dict[str, Any] = {"sample_names": [], "timestamps": [], "UID": []}
+        df_session = self.session_state.input_rep.loc[
+            self.session_state.input_rep["Session"] == session
+        ].sort_values(by="Timetag")
+        key = f"D{mz}_standardization_error_{session}_{data_type}"
+        df_filtered = df_session.loc[
+            df_session["Sample"].isin(self.session_state[key])
+        ]
+        hover_data["sample_names"] = df_filtered["Sample"].values
+        hover_data["UID"] = df_filtered["UID"].values
+        hover_data["timestamps"] = [str(t_) for t_ in df_filtered["Timetag"]]
+        return hover_data
 
-class StandardizationResultsPage:
+    def _create_std_error_scatter(
+        self,
+        x_data: List[float],
+        y_data: List[float],
+        name: str,
+        color: str,
+        mz: int,
+        symbol: str = "circle",
+        hover_data: Optional[Dict[str, Any]] = None,
+    ) -> go.Scatter:
+        """Create a scatter trace for standardization error plots."""
+        hover_text = []
+        if (
+            hover_data
+            and hover_data.get("sample_names") is not None
+            and hover_data.get("timestamps") is not None
+            and len(hover_data["sample_names"]) == len(x_data)
+            and len(hover_data["timestamps"]) == len(x_data)
+        ):
+            for i, (sample, timestamp, uid) in enumerate(
+                zip(hover_data["sample_names"], hover_data["timestamps"], hover_data["UID"])
+            ):
+                hover_text.append(
+                    f"UID: {uid}<br>"
+                    f"Sample: {sample}<br>"
+                    f"Timestamp: {timestamp}<br>"
+                    f"δ{mz}: {x_data[i]:.4f}‰<br>"
+                    f"∆{mz}: {y_data[i]:.4f}‰"
+                )
+        else:
+            label = "Standard" if name == "anchors" else "Sample"
+            for i, (x, y) in enumerate(zip(x_data, y_data)):
+                hover_text.append(
+                    f"{label} {i + 1}<br>δ{mz}: {x:.4f}‰<br>∆{mz}: {y:.4f}‰"
+                )
+        return go.Scatter(
+            x=x_data,
+            y=y_data,
+            name=name,
+            mode="markers",
+            marker=dict(color=color, symbol=symbol),
+            showlegend=False,
+            hovertemplate="%{text}<extra></extra>",
+            text=hover_text,
+        )
+
+    def create_standardization_error_plot(
+        self, session: str, mz: int, std_err_obj: Dict[str, Any], shape_filling: bool = True
+    ) -> go.Figure:
+        """Create the standardization error contour plot with anchor/unknown scatter points."""
+        fig = go.Figure(
+            layout=go.Layout(
+                height=600,
+                title="Standardization error including standards and sample data points",
+                xaxis=dict(title=f"δ<sup>{mz}</sup> [‰]"),
+                yaxis=dict(title=f"∆<sub>{mz}</sub> [‰]"),
+                hoverlabel=dict(font=dict(family="sans-serif", size=18)),
+            )
+        )
+
+        contour_data = std_err_obj[f"D{mz}_standardization_error_{session}_contour"]
+        fig.add_trace(
+            go.Contour(
+                x=contour_data[0][0, :],
+                y=contour_data[1][:, 0],
+                z=contour_data[2],
+                colorscale=px.colors.sequential.YlGnBu[:-5:],
+                line=dict(width=2, color="black"),
+                contours=dict(
+                    coloring="heatmap" if shape_filling else "lines",
+                    showlabels=True,
+                    labelfont=dict(size=12, color="grey"),
+                ),
+                colorbar=dict(title="Standardization error [‰]"),
+            )
+        )
+
+        for data_type, color, symbol in [("anchors", "red", "circle"), ("unknowns", "black", "x")]:
+            x_key = f"D{mz}_standardization_error_{session}_{data_type}_d"
+            y_key = f"D{mz}_standardization_error_{session}_{data_type}_D"
+            hover = self._get_std_error_hover_data(session, mz, data_type)
+            fig.add_trace(
+                self._create_std_error_scatter(
+                    std_err_obj[x_key], std_err_obj[y_key], data_type, color, mz, symbol, hover
+                )
+            )
+
+        self._apply_plot_styling(fig)
+        return fig
+
+
+class StandardizationResultsPage(BasePage):
     """Main class for the Standardization Results page."""
+    
+    PAGE_NUMBER = 5
+    PAGE_TITLE = "Stable and clumped isotope results"
     
     def __init__(self):
         """Initialize the page with required components."""
-        self.session_state = st.session_state
-        self.data_filter = DataFilter()
         self.plot_generator = PlotGenerator()
-        
-        self._setup_page()
-        self._initialize_session_state()
-    
-    def _setup_page(self):
-        """Set up page configuration and sidebar controls."""
-        # Page title
-        st.title("Stable and clumped isotope results")
-        
-        if "PYTEST_CURRENT_TEST" not in os.environ:
-            authenticator = Authenticator()
-            if not authenticator.require_authentication():
-                st.stop()
-
-        # Sidebar filters
-        #self._render_sidebar_filters()
+        super().__init__()
     
     def _initialize_session_state(self):
         """Initialize session state variables with defaults."""
@@ -605,20 +640,7 @@ class StandardizationResultsPage:
     
     def _render_sidebar_filters(self):
         """Render sidebar filter controls."""
-        st.sidebar.text_input(
-            "Sample name contains (KEEP):",
-            help="Set multiple keywords by separating them through semicolons ;",
-            key="05_sample_contains",
-            value=""
-        )
-        
-        st.sidebar.text_input(
-            "Sample name contains (DROP):",
-            help="Set multiple keywords by separating them through semicolons ;",
-            key="05_sample_not_contains",
-            value=""
-        )
-        
+        render_sample_filter_sidebar("05")
         st.sidebar.toggle('Scaled marker colors', key='05_cbar')
     
     def run(self):
@@ -672,11 +694,11 @@ class StandardizationResultsPage:
     def _apply_data_filters(self):
         """Apply data filters to datasets."""
         if "correction_output_summary" in self.session_state:
-            self.df_rep = self.data_filter.apply_filters(
-                self.session_state.correction_output_full_dataset, "Sample"
+            self.df_rep = apply_session_filters(
+                self.session_state.correction_output_full_dataset, "05"
             )
-            self.df_summary = self.data_filter.apply_filters(
-                self.session_state.correction_output_summary, "Sample"
+            self.df_summary = apply_session_filters(
+                self.session_state.correction_output_summary, "05"
             )
     
     def _setup_colorbar_controls(self):
@@ -721,12 +743,17 @@ class StandardizationResultsPage:
         # Session selection
         self._setup_session_selection()
         
-        # Sample type selection
-        self.sample_display_type = st.radio(
-            "What to display:",
-            ("All together", "Samples only", "Standards only"),
-            horizontal=True
-        )
+        # Sample type selection and legend toggle
+        col_display, col_legend = st.columns([3, 1])
+        with col_display:
+            self.sample_display_type = st.radio(
+                "What to display:",
+                ("All together", "Samples only", "Standards only"),
+                horizontal=True
+            )
+        with col_legend:
+            st.markdown("<div style='margin-top:1.8em'></div>", unsafe_allow_html=True)
+            self.hide_legend = st.checkbox("Hide legend", key="05_hide_legend")
         
         self.sample_type_code = self._get_sample_type_code(self.sample_display_type)
     
@@ -784,6 +811,18 @@ class StandardizationResultsPage:
         else:
             return "all"
     
+    def _maybe_hide_legend(self, fig: go.Figure) -> go.Figure:
+        """Hide legend from figure if the user toggled the option."""
+        if self.hide_legend:
+            fig.update_layout(showlegend=False)
+        return fig
+
+    def _get_standardization_error_data(self) -> Dict[str, Any]:
+        """Collect all standardization error keys for the selected isotope."""
+        mz = self.session_state.result_mz
+        prefix = f"D{mz}_standardization_error_"
+        return {k: self.session_state[k] for k in self.session_state.keys() if prefix in k}
+
     def _render_results_tabs(self):
         """Render the main results tabs."""
         # Check if heated gas standards are available
@@ -791,25 +830,19 @@ class StandardizationResultsPage:
         has_heated_gas = "25C" in standards_data["Sample"].values
         
         # Create tabs
+        mz_sub = PlotGenerator.to_subscript('', str(self.session_state.result_mz))
+        tab_labels = [
+            f"∆{mz_sub}/{self.session_state.xval}",
+            f"∆∆{mz_sub} residuals/{self.session_state.xval}",
+            "δ¹⁸O/δ¹³C",
+            "∆δ¹⁸O/∆δ¹³C",
+            f"∆¹⁸O residuals/{self.session_state.xval}",
+            f"∆¹³C residuals/{self.session_state.xval}",
+            "Standardization errors",
+        ]
         if has_heated_gas:
-            tabs = st.tabs([
-                f"∆{PlotGenerator.to_subscript('',str(self.session_state.result_mz))}/{self.session_state.xval}",
-                f"∆∆{PlotGenerator.to_subscript('',str(self.session_state.result_mz))} residuals/{self.session_state.xval}",
-                "δ¹⁸O/δ¹³C",
-                "∆δ¹⁸O/∆δ¹³C",
-                f"∆¹⁸O residuals/{self.session_state.xval}",
-                f"∆¹³C residuals/{self.session_state.xval}",
-                "Heated gas line(s)"
-            ])
-        else:
-            tabs = st.tabs([
-                f"∆{PlotGenerator.to_subscript('',str(self.session_state.result_mz))}/{self.session_state.xval}",
-                f"∆∆{PlotGenerator.to_subscript('',str(self.session_state.result_mz))} residuals/{self.session_state.xval}",
-                "δ¹⁸O/δ¹³C",
-                "∆δ¹⁸O/∆δ¹³C",
-                f"∆¹⁸O residuals/{self.session_state.xval}",
-                f"∆¹³C residuals/{self.session_state.xval}"
-            ])
+            tab_labels.append("Heated gas line(s)")
+        tabs = st.tabs(tab_labels)
         
         # Get standards list for plotting
         standards_list = self._get_standards_list()
@@ -819,44 +852,66 @@ class StandardizationResultsPage:
             fig = self.plot_generator.create_delta_plot(
                 self.df_rep, standards_list, show_residuals=False
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
+            st.plotly_chart(modify_plot_text_sizes(self._maybe_hide_legend(fig)), config=PlotlyConfig.CONFIG)
         
         with tabs[1]:  # Delta residuals
             fig = self.plot_generator.create_delta_plot(
                 self.df_rep, standards_list, show_residuals=True
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
+            st.plotly_chart(modify_plot_text_sizes(self._maybe_hide_legend(fig)), config=PlotlyConfig.CONFIG)
         
         with tabs[2]:  # Bulk isotopes
             fig = self.plot_generator.create_bulk_isotope_plot(
                 self.df_rep, standards_list, show_residuals=False
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
+            st.plotly_chart(modify_plot_text_sizes(self._maybe_hide_legend(fig)), config=PlotlyConfig.CONFIG)
         
         with tabs[3]:  # Bulk isotope residuals
             fig = self.plot_generator.create_bulk_isotope_plot(
                 self.df_rep, standards_list, show_residuals=True
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
+            st.plotly_chart(modify_plot_text_sizes(self._maybe_hide_legend(fig)), config=PlotlyConfig.CONFIG)
         
         with tabs[4]:  # δ18O residuals over time
             fig = self.plot_generator.create_bulk_isotope_plot(
                 self.df_rep, standards_list, show_residuals=True, over_time=True, bulk_isotope="18"
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
+            st.plotly_chart(modify_plot_text_sizes(self._maybe_hide_legend(fig)), config=PlotlyConfig.CONFIG)
         
         with tabs[5]:  # δ13C residuals over time
             fig = self.plot_generator.create_bulk_isotope_plot(
                 self.df_rep, standards_list, show_residuals=True, over_time=True, bulk_isotope="13"
             )
-            st.plotly_chart(modify_plot_text_sizes(fig), config=PlotlyConfig.CONFIG)
+            st.plotly_chart(modify_plot_text_sizes(self._maybe_hide_legend(fig)), config=PlotlyConfig.CONFIG)
         
-        # Heated gas lines tab (if available)
+        with tabs[6]:  # Standardization errors
+            shape_filling = st.checkbox("Shape filling", value=True, key="05_std_err_shape")
+            mz = self.session_state.result_mz
+            std_err_obj = self._get_standardization_error_data()
+            if not std_err_obj:
+                st.warning("No standardization error data available for the selected isotope.")
+            else:
+                sessions = self.session_state.params_last_run.get("processing_sessions", [])
+                for session in sessions:
+                    if self.session_state.params_last_run.get(f"process_D{mz}", False):
+                        session_err_obj = {
+                            k: v for k, v in std_err_obj.items() if session in k
+                        }
+                        if session_err_obj:
+                            with st.expander(f"Session {session}", expanded=True):
+                                fig = self.plot_generator.create_standardization_error_plot(
+                                    session, mz, session_err_obj, shape_filling
+                                )
+                                st.plotly_chart(
+                                    modify_plot_text_sizes(self._maybe_hide_legend(fig)),
+                                    config=PlotlyConfig.CONFIG,
+                                )
+        
         if has_heated_gas:
-            with tabs[6]:
+            with tabs[7]:
                 for gas_name in ["25C", "1000C"]:
                     fig, _ = self.plot_generator.create_heated_gas_line_plot(gas_name)
-                    st.plotly_chart(modify_plot_text_sizes(fig))
+                    st.plotly_chart(modify_plot_text_sizes(self._maybe_hide_legend(fig)))
     
     def _get_standards_list(self):
         """Get list of standards or samples based on selection."""

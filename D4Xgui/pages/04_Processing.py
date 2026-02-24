@@ -1,27 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from doctest import DocFileCase
 import streamlit as st
 import pandas as pd
 import numpy as np
-import json
 import io
 import base64
 import os
+import re
 from datetime import datetime
 from typing import Dict, List, Optional, Any, Union, Tuple
 from dataclasses import dataclass
+from dateutil import parser as dateutil_parser
 
 import D47crunch as D47c
 from scipy.stats import t
-from streamlit_extras.stylable_container import stylable_container
-
-from tools.page_config import PageConfigManager
-from tools.sidebar_logo import SidebarLogoManager
-from tools.authenticator import Authenticator
+from tools.base_page import BasePage
+from tools.constants import (
+    VPDB_FACTOR, VPDB_OFFSET, KELVIN_OFFSET, DEFAULT_ACID_TEMPERATURE,
+    ISOTOPIC_CONSTANTS, D18O_VPDB_VSMOW, DEFAULT_WG_RATIOS,
+    DEFAULT_WG_VIA_STANDARDS, DEFAULT_CO2_STANDARDS,
+)
 from tools.init_params import IsotopeStandards
 from tools.commons import clear_session_cache
+from tools.calc_temperature import TemperatureCalculator as _BaseTemperatureCalculator
 from scipy import optimize as so
 
 @dataclass
@@ -84,17 +86,23 @@ class IsotopeProcessor:
         else:
             d47crunch_obj.LEVENE_REF_SAMPLE = raw_data["Sample"].iloc[0]
         
-        # Set acid reaction constant
-        # d47crunch_obj.ALPHA_18O_ACID_REACTION = np.exp(
-        #     3.59 / (self.ACID_TEMPERATURE + 273.15) - 1.79e-3
-        # )
         if self.sss.get('working_gas_co2_stds', False):
             d47crunch_obj.ALPHA_18O_ACID_REACTION = 1
         else:
             d47crunch_obj.ALPHA_18O_ACID_REACTION = np.exp(
-                3.59 / (self.sss.temp_acid + 273.15) - 1.79e-3
+                3.59 / (self.sss.temp_acid + KELVIN_OFFSET) - 1.79e-3
             )
-        
+
+        ic = ISOTOPIC_CONSTANTS
+        d47crunch_obj.R13_VPDB = ic["R13_VPDB"]
+        d47crunch_obj.R17_VSMOW = ic["R17_VSMOW"]
+        d47crunch_obj.R18_VSMOW = ic["R18_VSMOW"]
+        d47crunch_obj.LAMBDA_17 = ic.get("lambda_17", ic.get("lambda_", 0.528))
+        d47crunch_obj.R18_VPDB = d47crunch_obj.R18_VSMOW * (1 + D18O_VPDB_VSMOW / 1000)
+        d47crunch_obj.R17_VPDB = d47crunch_obj.R17_VSMOW * (
+            d47crunch_obj.R18_VPDB / d47crunch_obj.R18_VSMOW
+        ) ** d47crunch_obj.LAMBDA_17
+
         if self.sss.working_gas:  # "Working gas composition via standards"
             # 🔑 KEY: Use session state values (preserves user edits)
             d47crunch_obj.Nominal_d18O_VPDB = self.sss['standards_bulk'][18].copy()
@@ -120,9 +128,7 @@ class IsotopeProcessor:
             d47crunch_obj.d18O_standardization_method = False
             d47crunch_obj.d13C_standardization_method = False
             # Set nominal isotope values
-            #d47crunch_obj.Nominal_d18O_VPDB = self.sss.d18O_wg
             self.sss['d18Owg_VSMOW'] = self.sss.d18O_wg
-            #d47crunch_obj.Nominal_d13C_VPDB = self.sss.d13C_wg
             self.sss['d13Cwg_VPDB'] = self.sss.d13C_wg
             for record in d47crunch_obj:
                 record["d13Cwg_VPDB"] = self.sss.d13C_wg
@@ -132,8 +138,6 @@ class IsotopeProcessor:
                 d47crunch_obj.sessions[s]['d13C_standardization_method'] = False
                 d47crunch_obj.sessions[s]["d18O_standardization_method"] = False
                 
-            # d47crunch_obj.wg()
-        
 
     def _activate_drift_corrections(self, d47crunch_obj: Any) -> None:
         """Activate drift corrections for all sessions."""
@@ -174,7 +178,6 @@ class IsotopeProcessor:
         
         if isotope_type == "D47":
             st.toast("Bulk isotope processing finished!")
-            #st.toast(f"Processing Δ₄₇ data...")
         
         self._activate_drift_corrections(processor)
         
@@ -216,170 +219,17 @@ class IsotopeProcessor:
         return processors
 
 
-class TemperatureCalculator:
-    """Handles temperature calculations from D47 values using various calibrations."""
-    POLY_63_COEFFS = (-5.896755e00, -3.520888e03, 2.391274e07, -3.540693e09)
-    POLY_64_COEFFS = (6.001624e00, -1.298978e04, 8.995634e06, -7.422972e08)
-    POLY_65_COEFFS = (-6.741e00, -1.950e04, 5.845e07, -8.093e09)
-    #  Scaling and offset parameters for Fiebig et al. (2021)
-    FIEBIG2021_D47_SCALING = 1.0381881
-    FIEBIG2021_D47_OFFSET = 0.1855537
-    FIEBIG2021_D48_SCALING = 1.0280693
-    FIEBIG2021_D48_OFFSET = 0.1244564
-    # Scaling and offset parameters for Fiebig et al. (2024)
-    FIEBIG2024_D47_SCALING = 1.038
-    FIEBIG2024_D47_OFFSET = 0.1848
-    FIEBIG2024_D48_SCALING = 1.038
-    FIEBIG2024_D48_OFFSET = 0.1214
-    
+class TemperatureCalculator(_BaseTemperatureCalculator):
+    """Extends base TemperatureCalculator with session-state-dependent methods."""
+
     def __init__(self, session_state: st.session_state = st.session_state):
         self.sss = session_state
-        # Polynomial coefficients for Hill et al. (2014)
-      
-    
-    @staticmethod
-    def _evaluate_polynomial_4th_order(coeffs: Tuple[float, ...], x: Union[float, np.ndarray]) -> Union[
-        float, np.ndarray]:
-        """Evaluate a 4th-degree polynomial.
 
-        Args:
-            coeffs: Polynomial coefficients (a, b, c, d) for ax + bx² + cx³ + dx⁴.
-            x: Input value(s).
-
-        Returns:
-            Polynomial evaluation result.
-        """
-        a, b, c, d = coeffs
-        return a * x + b * x ** 2 + c * x ** 3 + d * x ** 4
-    
-    @classmethod
-    def calculate_d63_hill2014(cls, inverse_temp_k: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-        """Calculate D63 values using Hill et al. (2014) calibration.
-
-        Args:
-            inverse_temp_k: 1/T in Kelvin.
-
-        Returns:
-            D63 values.
-        """
-        return cls._evaluate_polynomial_4th_order(cls.POLY_63_COEFFS, inverse_temp_k)
-    
-    @classmethod
-    def calculate_d64_hill2014(cls, inverse_temp_k: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-        """Calculate D64 values using Hill et al. (2014) calibration.
-
-        Args:
-            inverse_temp_k: 1/T in Kelvin.
-
-        Returns:
-            D64 values.
-        """
-        return cls._evaluate_polynomial_4th_order(cls.POLY_64_COEFFS, inverse_temp_k)
-    
-    @classmethod
-    def calculate_d65_hill2014(cls, inverse_temp_k: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-        """Calculate D65 values using Hill et al. (2014) calibration.
-
-        Args:
-            inverse_temp_k: 1/T in Kelvin.
-
-        Returns:
-            D65 values.
-        """
-        return cls._evaluate_polynomial_4th_order(cls.POLY_65_COEFFS, inverse_temp_k)
-    
-    @classmethod
-    def calculate_d47_fiebig2021(cls, inverse_temp_k: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-        """Calculate D47 values using Fiebig et al. (2021) calibration.
-
-        Args:
-            inverse_temp_k: 1/T in Kelvin.
-
-        Returns:
-            D47 values.
-        """
-        d63 = cls.calculate_d63_hill2014(inverse_temp_k)
-        return (d63 * cls.FIEBIG2021_D47_SCALING) + cls.FIEBIG2021_D47_OFFSET
-    
-    def calculate_d47_fiebig2024(cls, inverse_temp_k: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
-        """Calculate D47 values using Fiebig et al. (2024) calibration.
-
-		Args:
-			inverse_temp_k: 1/T in Kelvin.
-
-		Returns:
-			D47 values.
-		"""
-        d63 = cls.calculate_d63_hill2014(inverse_temp_k)
-        return (d63 * cls.FIEBIG2024_D47_SCALING) + cls.FIEBIG2024_D47_OFFSET
-    
-    @classmethod
-    def get_temperature_difference_d47_fiebig2021(cls, temp_celsius: float, target_d47: float) -> float:
-        """Calculate absolute difference between target D47 and calculated D47 (Fiebig 2021).
-
-		Args:
-			temp_celsius: Temperature in Celsius.
-			target_d47: Target D47 value.
-
-		Returns:
-			Absolute difference between target and calculated D47.
-		"""
-        inverse_temp_k = 1 / (temp_celsius + 273.15)
-        calculated_d47 = cls.calculate_d47_fiebig2021(inverse_temp_k)
-        return abs(target_d47 - calculated_d47)
-    
-    def get_temperature_difference_d47_fiebig2024(cls, temp_celsius: float, target_d47: float) -> float:
-        """Calculate absolute difference between target D47 and calculated D47 (Fiebig 2024).
-
-		Args:
-			temp_celsius: Temperature in Celsius.
-			target_d47: Target D47 value.
-
-		Returns:
-			Absolute difference between target and calculated D47.
-		"""
-        inverse_temp_k = 1 / (temp_celsius + 273.15)
-        calculated_d47 = cls.calculate_d47_fiebig2024(inverse_temp_k)
-        return abs(target_d47 - calculated_d47)
-    
-    def get_temperature_difference_d47_anderson2021(cls, temp_celsius: float, target_d47: float) -> float:
-        return abs(target_d47 - ((0.0391 * 1e6 / temp_celsius ** 2) + 0.154))
-    
-    def _direct_temperature_swart2021(cls, D47):
-        """
-        Calculate temperature using the Swart21 equation: Δ47(CDES90) = 0.039 * 10^6/T^2 + 0.158
-
-        :param D47: The D47 value
-        :return: Temperature in °C
-        """
-        # Rearranged equation: T = sqrt(10^6 * 0.039 / (D47 - 0.158))
-        # Convert from Kelvin to Celsius by subtracting 273.15
-        try:
-            temp_K = np.sqrt(1e6 * 0.039 / (D47 - 0.158))
-            return temp_K - 273.15
-        except Exception as e:
-            # Handle cases where D47 <= 0.158 which would result in negative or zero denominator
-            return e
-    
     def calc_temp(self, summary):
         calibs = self.sss["04_selected_calibs"]
-        
+
         self.sss['04_used_calibs'] = [_ for _ in calibs]
-        
 
-        _ = """
-        if not "04_calibs" in self.sss:
-        import inspect
-        import D47calib
-
-        self.sss["04_calibs"] = {
-            name: obj
-            for name, obj in inspect.getmembers(D47calib)
-            if isinstance(obj, D47calib.D47calib)
-        }
-
-        """
-        
         if "Fiebig24 (original)" in calibs:
             for (label, key, sign) in zip (['min, 2SE', 'min, 1SE', 'mean', 'max, 1SE', 'max, 2SE'],
                                             ['2SE_D47', 'SE_D47', 'D47', 'SE_D47', '2SE_D47'],
@@ -390,7 +240,7 @@ class TemperatureCalculator:
                                              args=(t,)).x, 2)
                     for t in (summary["D47"] + (summary[key]) * sign)
                 ]
-            
+
         if "Anderson21 (original)" in calibs:
             for (label, key, sign) in zip(['min, 2SE', 'min, 1SE', 'mean', 'max, 1SE', 'max, 2SE'],
                                           ['2SE_D47', 'SE_D47', 'D47', 'SE_D47', '2SE_D47'],
@@ -398,329 +248,62 @@ class TemperatureCalculator:
                                           ):
                 summary[f"T({label}), Anderson21 (original)"] = [
                             round(
-                                - 273.15 + so.minimize_scalar(
+                                - KELVIN_OFFSET + so.minimize_scalar(
                                     self.get_temperature_difference_d47_anderson2021, args=(t,), bounds=(0.000000001, 1000)
                                 ).x,
                                 2,
                             )
                             for t in (summary["D47"] + (summary[key]) * sign)
                         ]
-                
-        
+
         if "Swart21 (original)" in calibs:
             for (label, key, sign) in zip(['min, 2SE', 'min, 1SE', 'mean', 'max, 1SE', 'max, 2SE'],
                                           ['2SE_D47', 'SE_D47', 'D47', 'SE_D47', '2SE_D47'],
                                           [+1, +1, 0, -1, -1]
                                           ):
-           
+
                 summary[f"T({label}), Swart21 (original)"] = [
-                    round(self._direct_temperature_swart2021(t), 2)
+                    round(self.direct_temperature_swart2021(t), 2)
                     for t in (summary["D47"] + (summary[key]) * sign)
                 ]
 
         for calib in calibs:
             if calib in [
                 "Fiebig24 (original)",
+                "Fiebig21 (original)",
                 "Swart21 (original)",
                 "Anderson21 (original)"
             ]:
                 continue
-            # summary[f"T(mean), {calib}"] = [None] * len(summary)
             for idx in range(len(summary)):
-                # st.write(idx)
                 try:
-                    
+
                     summary.loc[summary.index == idx, f"T(min, 2SE), {calib}"] = round(
                         self.sss["04_calibs"][calib].__dict__["_T_from_D47"](
                             summary.loc[summary.index == idx, 'D47'] + summary.loc[summary.index == idx, '2SE_D47'])[0],
                         2)
-                    
+
                     summary.loc[summary.index == idx, f"T(min, 1SE), {calib}"] = round(
                         self.sss["04_calibs"][calib].__dict__["_T_from_D47"](
                             summary.loc[summary.index == idx, 'D47'] + summary.loc[summary.index == idx, 'SE_D47'])[0],
                         2)
-                    
+
                     summary.loc[summary.index == idx, f"T(mean), {calib}"] = round(
                         self.sss["04_calibs"][calib].__dict__["_T_from_D47"](summary.loc[summary.index == idx, 'D47'])[0], 2)
-                    
+
                     summary.loc[summary.index == idx, f"T(max, 1SE), {calib}"] = round(
                         self.sss["04_calibs"][calib].__dict__["_T_from_D47"](
                             summary.loc[summary.index == idx, 'D47'] - summary.loc[summary.index == idx, 'SE_D47'])[0],
                         2)
-                    
+
                     summary.loc[summary.index == idx, f"T(max, 2SE), {calib}"] = round(
                         self.sss["04_calibs"][calib].__dict__["_T_from_D47"](
                             summary.loc[summary.index == idx, 'D47'] - summary.loc[summary.index == idx, '2SE_D47'])[0],
                         2)
-                
+
                 except Exception as e:
                     summary.loc[summary.index == idx, f"T(mean), {calib}"] = str(e)
-        
-        return summary
-    
-    @staticmethod
-    def calculate_swart21_temperature(d47_value: float) -> float:
-        """Calculate temperature using Swart21 calibration."""
-        try:
-            temp_k = np.sqrt(1e6 * 0.039 / (d47_value - 0.158))
-            return temp_k - 273.15
-        except (ValueError, ZeroDivisionError):
-            return float('nan')
-    
-    @staticmethod
-    def calculate_temperature_range(d47_values: pd.Series, se_values: pd.Series, 
-                                  calibration_func, calibration_name: str) -> Dict[str, List[float]]:
-        """Calculate temperature ranges for a given calibration."""
-        results = {}
-        
-        # Define error ranges
-        error_ranges = {
-            "T(min, 2SE)": d47_values + 2 * se_values,
-            "T(min, 1SE)": d47_values + se_values,
-            "T(mean)": d47_values,
-            "T(max, 1SE)": d47_values - se_values,
-            "T(max, 2SE)": d47_values - 2 * se_values,
-        }
-        
-        for temp_type, d47_range in error_ranges.items():
-            column_name = f"{temp_type}, {calibration_name}"
-            if calibration_name in ["Fiebig24 (original)", "Anderson21 (original)"]:
-                results[column_name] = [
-                    round(calibration_func(d47), 2) for d47 in d47_range
-                ]
-            else:
-                results[column_name] = [
-                    round(calibration_func(d47), 2) for d47 in d47_range
-                ]
-        
-        return results
-    
-    def _add_fiebig21_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series,
-                                   _2se_values: pd.Series) -> None:
-        """Add Fiebig21 temperature calculations to summary."""
-        try:
-            from scipy.optimize import minimize_scalar
-            
-            
-            # Define error ranges for temperature calculation
-            error_ranges = {
-                "T(min, 2SE)": d47_values + _2se_values,
-                "T(min, 1SE)": d47_values + se_values,
-                "T(mean)": d47_values,
-                "T(max, 1SE)": d47_values - se_values,
-                "T(max, 2SE)": d47_values - _2se_values,
-            }
-            
-            # Calculate temperatures for each error range
-            for temp_type, d47_range in error_ranges.items():
-                temperatures = []
-                
-                for d47 in d47_range:
-                    if pd.notna(d47):
-                        try:
-                            # Calculate temperature using optimization
-                            result = minimize_scalar(
-                                TemperatureCalculator.get_temperature_difference_d47_fiebig2021,
-                                args=(d47,),
-                                # bounds=(-100, 1000),
-                                # method='bounded'
-                            )
-                            temp = result.x
-                            temperatures.append(round(temp, 2))
-                        except Exception as e:
-                            temperatures.append(e)
-                    else:
-                        temperatures.append(np.nan)
-                
-                summary[f"{temp_type}, Fiebig21 (original)"] = temperatures
-        
-        except Exception as e:
-            summary[f"T (°C), Fiebig21 (original)"] = f"Error: {str(e)}"
-    
-    def _add_fiebig24_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series,
-                                   _2se_values: pd.Series) -> None:
-        """Add Fiebig24 temperature calculations to summary."""
-        try:
-            from scipy.optimize import minimize_scalar
-            #from tools.calc_temperature import TemperatureCalculator
-            st.write(d47_values, se_values, _2se_values)
-            # Define error ranges for temperature calculation
-            error_ranges = {
-                "T(min, 2SE)": d47_values + _2se_values,
-                "T(min, 1SE)": d47_values + se_values,
-                "T(mean)": d47_values,
-                "T(max, 1SE)": d47_values - se_values,
-                "T(max, 2SE)": d47_values - _2se_values,
-            }
-            
-            # Calculate temperatures for each error range
-            for temp_type, d47_range in error_ranges.items():
-                temperatures = []
-                
-                for d47 in d47_range:
-                    if pd.notna(d47):
-                        try:
-                            # Calculate temperature using optimization
-                            result = minimize_scalar(
-                                TemperatureCalculator.get_temperature_difference_d47_fiebig2024,
-                                args=(d47,),
-                                # bounds=(0, 1000),
-                                # method='bounded'
-                            )
-                            temp = result.x
-                            temperatures.append(round(temp, 2))
-                        except Exception as e:
-                            temperatures.append(e)
-                    else:
-                        temperatures.append(np.nan)
-                
-                summary[f"{temp_type}, Fiebig24 (original)"] = temperatures
-        
-        except Exception as e:
-            summary[f"T (°C), Fiebig24 (original)"] = f"Error: {str(e)}"
-    
-    def _add_anderson21_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series,
-                                     _2se_values: pd.Series) -> None:
-        """Add Anderson21 temperature calculations to summary."""
-        try:
-            # Anderson21 calibration: T = 0.0449 * 10^6 / D47^2 - 273.15
-            
-            # Define error ranges for temperature calculation
-            error_ranges = {
-                "T(min, 2SE)": d47_values + _2se_values,
-                "T(min, 1SE)": d47_values + se_values,
-                "T(mean)": d47_values,
-                "T(max, 1SE)": d47_values - se_values,
-                "T(max, 2SE)": d47_values - _2se_values,
-            }
-            
-            # Calculate temperatures for each error range
-            for temp_type, d47_range in error_ranges.items():
-                temperatures = []
-                
-                for d47 in d47_range:
-                    if pd.notna(d47) and d47 > 0:
-                        try:
-                            temp = np.sqrt((0.0391 * 1e6) / (d47 - 0.154)) - 273.15
-                            temperatures.append(round(temp, 2))
-                        except Exception:
-                            temperatures.append(np.nan)
-                    else:
-                        temperatures.append(np.nan)
-                
-                summary[f"{temp_type}, Anderson21 (original)"] = temperatures
-        
-        except Exception as e:
-            summary[f"T (°C), Anderson21 (original)"] = f"Error: {str(e)}"
-    
-    def _add_swart21_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series,
-                                  _2se_values: pd.Series) -> None:
-        """Add Swart21 temperature calculations to summary using the Swart21 (2021) CDES90 calibration."""
-        try:
-            error_ranges = {
-                "T(min, 2SE)": d47_values + _2se_values,
-                "T(min, 1SE)": d47_values + se_values,
-                "T(mean)": d47_values,
-                "T(max, 1SE)": d47_values - se_values,
-                "T(max, 2SE)": d47_values - _2se_values,
-            }
-            
-            coef = 1e6 * 0.039  # from
-            
-            # Calculate temperatures for each error range
-            for temp_type, d47_range in error_ranges.items():
-                temperatures = []
-                
-                for d47 in d47_range:
-                    denom = d47 - 0.158
-                    if denom == 0:
-                        temperatures.append(np.nan)
-                        continue
-                    
-                    try:
-                        temp_K = np.sqrt(coef / denom)
-                        temp_C = temp_K - 273.15
-                        # Only round/append if finite; otherwise append NaN
-                        temperatures.append(round(float(temp_C), 2) if np.isfinite(temp_C) else np.nan)
-                    except (ValueError, ZeroDivisionError, FloatingPointError, TypeError):
-                        temperatures.append(np.nan)
-                
-                summary[f"{temp_type}, Swart21 (original)"] = temperatures
-        
-        except Exception as e:
-            # In case of an unexpected error, record it in the summary
-            summary[f"T (°C), Swart21 (original)"] = f"Error: {str(e)}"
-    
-    def _add_d47calib_temperatures(self, summary: pd.DataFrame, d47_values: pd.Series, se_values: pd.Series,
-                                   _2se_values: pd.Series, calib_name: str) -> None:
-        """Add D47calib temperature calculations to summary."""
-        try:
-            # Use the D47calib library for other calibrations
-            import D47calib
-            
-            # Define error ranges for temperature calculation
-            error_ranges = {
-                "T(min, 2SE)": d47_values + _2se_values,
-                "T(min, 1SE)": d47_values + se_values,
-                "T(mean)": d47_values,
-                "T(max, 1SE)": d47_values - se_values,
-                "T(max, 2SE)": d47_values - _2se_values,
-            }
-            
-            # Calculate temperatures for each error range
-            for temp_type, d47_range in error_ranges.items():
-                temperatures = []
-                
-                for d47 in d47_range:
-                    if pd.notna(d47):
-                        try:
-                            # Calculate temperature using D47calib with the calibration object
-                            temp = self.sss["04_calibs"][calib_name].__dict__["_T_from_D47"](d47)
-                            # temp = D47calib.temperature(d47, calib_obj)
-                            temperatures.append(round(temp, 2))
-                        except Exception as e:
-                            # Log the specific error for debugging
-                            temperatures.append(e)
-                    else:
-                        temperatures.append(np.nan)
-                
-                summary[f"{temp_type}, {calib_name}"] = temperatures
-        
-        except Exception as e:
-            summary[f"T (°C), {calib_name}"] = f"Error: {str(e)}"
-    
-    def _calculate_temperatures(self, summary: pd.DataFrame) -> pd.DataFrame:
-        """Calculate temperatures using selected calibrations."""
-        calibrations = self.sss.get("04_selected_calibs", [])
-        self.sss['04_used_calibs'] = list(calibrations)
-        
-        TC = TemperatureCalculator(self.sss)
-        TC._calc_temp(summary)
-        if "D47" not in summary.columns:
-            return summary
-        
-        d47_values = summary["D47"]
-        se_values = summary[
-            "SE_D47"]  # [float(_) for _ in summary["SE_D47"]]# if len(str(_)) != 0]#isinstance(float(_), float)]
-        _2se_values = summary[
-            "2SE_D47"]  # [float(_) for _ in summary["2SE_D47"]]# if len(str(_)) != 0]  # isinstance(float(_), float)]
-        st.write(d47_values.dtypes)
-        # se_values = summary.get("SE_D47", pd.Series([0] * len(summary)))
-        # _2se_values = summary.get("2SE_D47", pd.Series([0] * len(summary)))
-        # se_values[np.isnan(se_values)] = 0
-        # Process each calibration
-        for calib_name in calibrations:
-            if calib_name == "Fiebig24 (original)":
-                self._add_fiebig24_temperatures(summary, d47_values, se_values, _2se_values)
-            elif calib_name == "Fiebig21 (original)":
-                self._add_fiebig21_temperatures(summary, d47_values, se_values, _2se_values)
-            elif calib_name == "Anderson21 (original)":
-                self._add_anderson21_temperatures(summary, d47_values, se_values, _2se_values)
-            elif calib_name == "Swart21 (original)":
-                self._add_swart21_temperatures(summary, d47_values, se_values, _2se_values)
-            else:
-                self._add_d47calib_temperatures(summary, d47_values, se_values, _2se_values, calib_name)
-        
+
         return summary
 
 
@@ -729,6 +312,13 @@ class DataProcessor:
     
     def __init__(self, session_state: st.session_state):
         self.sss = session_state
+        self.DATETIME_FORMATS = [
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%dT%H:%M:%S",
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%dT%H:%M",
+        "%Y-%m-%d",
+    ]
     
     @staticmethod
     def smart_numeric_conversion(series):
@@ -761,11 +351,6 @@ class DataProcessor:
             new_series.append(float(_) if CHECK_ARR[idx] else (np.nan if len(str(_)) == 0 else _))
         
         return new_series
-        # if numeric_count == len(series):
-        #     return pd.to_numeric(series)#, errors='coerce')
-        # else:
-        #     # Keep as is (string or mixed type)
-        #     return series
     
     @staticmethod
     def apply_smart_numeric_conversion(df):
@@ -875,36 +460,169 @@ class DataProcessor:
         if "d18O_VSMOW" in dataset.columns:
             dataset.insert(
                 12, "d18O_VPDB", 
-                (dataset["d18O_VSMOW"] * 0.97001) - 29.99
+                (dataset["d18O_VSMOW"] * VPDB_FACTOR) - VPDB_OFFSET
             )
         
         return dataset
     
-    def _process_timestamps(self, dataset: pd.DataFrame) -> pd.DataFrame:
-        """Process and standardize timestamp formats."""
-        if np.issubdtype(dataset["Timetag"].dtype, np.datetime64):
+
+    
+    def _is_datetime_column(dtype) -> bool:
+        """Check if column is already datetime type."""
+        return np.issubdtype(dtype, np.datetime64)
+    
+    def _try_standard_formats(self, timestamp_str: str) -> Optional[datetime]:
+        """Try parsing with standard datetime formats."""
+        for fmt in self.DATETIME_FORMATS:
+            try:
+                return datetime.strptime(timestamp_str, fmt)
+            except ValueError:
+                continue
+        return None
+    
+    def _clean_timestamp(timestamp_str: str) -> str:
+        """
+        Clean timestamp string by removing problematic characters.
+
+        Preserves: digits, spaces, colons, hyphens, periods, T separator
+        Removes: timezone abbreviations (PDT, EST, etc.), extra symbols
+
+        Args:
+            timestamp_str: Raw timestamp string
+
+        Returns:
+            Cleaned timestamp string
+        """
+        # Remove timezone abbreviations (3-4 letter codes at end)
+        # e.g., "2020-07-29 01:00 PDT" -> "2020-07-29 01:00"
+        cleaned = re.sub(r'\s+[A-Z]{2,4}$', '', timestamp_str)
+        
+        # Keep only useful characters: digits, space, :, -, ., T, +, Z
+        cleaned = "".join(
+            char for char in cleaned
+            if char.isdigit() or char in (" ", ":", "-", ".", "T", "+", "Z")
+        )
+        
+        return cleaned.rstrip()
+    
+    def _parse_single_timestamp(self, timestamp_str: str) -> Optional[datetime]:
+        """
+        Parse a single timestamp string with multiple fallback strategies.
+
+        Strategies in order:
+        1. Standard datetime formats (fastest)
+        2. ISO format parsing
+        3. dateutil flexible parser (handles timezone abbreviations like PDT, EST)
+        4. Last resort: attempt to clean and reparse
+
+        Args:
+            timestamp_str: Timestamp string to parse
+
+        Returns:
+            Parsed datetime object or None if parsing fails
+        """
+        if pd.isna(timestamp_str) or timestamp_str == "":
+            return None
+        
+        timestamp_str = str(timestamp_str).strip()
+        
+        # Strategy 1: Try standard formats (fast)
+        result = self._try_standard_formats(timestamp_str)
+        if result is not None:
+            return result
+        
+        # Strategy 2: Try ISO format (handles T separator)
+        try:
+            return datetime.fromisoformat(timestamp_str)
+        except ValueError:
+            pass
+        
+        # Strategy 3: Use dateutil parser for flexibility
+        # Handles timezone abbreviations (PDT, EST, etc.), various formats
+        try:
+            return dateutil_parser.parse(timestamp_str, fuzzy=False)
+        except (ValueError, TypeError):
+            pass
+        
+        # Strategy 4: Clean special characters and retry
+        try:
+            cleaned = self._clean_timestamp(timestamp_str)
+            # Try standard formats on cleaned string
+            result = self._try_standard_formats(cleaned)
+            if result is not None:
+                return result
+            # Final attempt with dateutil
+            return dateutil_parser.parse(cleaned, fuzzy=False)
+        except (ValueError, TypeError):
+            return None
+    
+    def _process_timestamps(
+            self,
+            dataset: pd.DataFrame,
+            column: str = "Timetag",
+            errors: str = "coerce",
+            infer_datetime_format: bool = True,
+    ) -> pd.DataFrame:
+        """
+        Process and standardize timestamp column in dataframe.
+
+        Args:
+            dataset: Input dataframe
+            column: Name of timestamp column (default: "Timetag")
+            errors: How to handle parsing errors
+                - "coerce": Convert unparseable values to NaT (default)
+                - "raise": Raise exception on first error
+                - "warn": Log warnings but continue
+            infer_datetime_format: Let pandas infer datetime format
+
+        Returns:
+            Dataframe with standardized datetime column
+
+        Raises:
+            ValueError: If column not found or errors='raise'
+            KeyError: If column doesn't exist
+        """
+        if column not in dataset.columns:
+            raise KeyError(f"Column '{column}' not found in dataframe")
+        
+        if isinstance(dataset[column].dtype, np.datetime64):
             return dataset
         
-        def clean_timestamp(timestamp_str):
-            """Clean timestamp string for parsing."""
-            return "".join(
-                char for char in str(timestamp_str)
-                if not char.isalpha() or char.isspace() or char in (":", "-", ".", "T")
-            ).rstrip(" ")
+        dataset = dataset.copy()
         
+        # Try pandas to_datetime first (fastest for standard formats)
         try:
-            dataset["Timetag"] = [
-                datetime.fromisoformat(clean_timestamp(ts))
-                for ts in dataset["Timetag"]
-            ]
-        except Exception:
-            # Fallback processing without 'T'
-            dataset["Timetag"] = [
-                datetime.fromisoformat(
-                    clean_timestamp(ts).replace("T", " ")
+            dataset[column] = pd.to_datetime(
+                dataset[column],
+                errors="coerce" if errors != "raise" else "raise",
+                infer_datetime_format=infer_datetime_format,
+            )
+            # Check if all values parsed successfully
+            if dataset[column].isna().sum() == 0:
+                return dataset
+        except Exception as e:
+            if errors == "raise":
+                raise ValueError(
+                    f"Failed to parse timestamps in column '{column}': {e}"
                 )
-                for ts in dataset["Timetag"]
-            ]
+
+
+        parsed_timestamps = []
+        failed_rows = []
+        
+        for idx, ts in enumerate(dataset[column]):
+            parsed_ts = self._parse_single_timestamp(ts)
+            
+            if parsed_ts is None:
+                failed_rows.append((idx, ts))
+                if errors == "raise":
+                    raise ValueError(
+                        f"Cannot parse timestamp at row {idx}: {ts!r}"
+                    )
+            
+            parsed_timestamps.append(parsed_ts)
+        
+        dataset[column] = pd.to_datetime(parsed_timestamps, errors="coerce")
         
         return dataset
     
@@ -1016,9 +734,6 @@ class DataProcessor:
         # Check which columns exist in temp_summary
         for col in [f"d{isotope_num}", f"D{isotope_num}", "SD", "SE", "95% CL"]:
             if col in temp_summary.columns:
-                # st.write(temp_summary[col])
-                # temp_summary[col] = temp_summary[col].astype(float)
-                # st.write(temp_summary[col])
                 isotope_cols.append(col)
         
         if not isotope_cols:
@@ -1076,7 +791,7 @@ class DataProcessor:
             summary.insert(3, "d18O_CO2_VSMOW", summary["d18O_VSMOW"])
             summary.drop(columns=["d18O_VSMOW"], inplace=True)
             summary.insert(4, "d18O_CO2_VPDB", 
-                          (summary["d18O_CO2_VSMOW"] * 0.97001) - 29.99)
+                          (summary["d18O_CO2_VSMOW"] * VPDB_FACTOR) - VPDB_OFFSET)
         
         # Add standard deviation columns
         sd_configs = [
@@ -1135,25 +850,42 @@ class DataProcessor:
 
 class ExcelExporter:
     """Handles Excel file creation and export functionality."""
-    
+
     @staticmethod
-    def create_excel_download(dataframe: pd.DataFrame) -> str:
-        """Create base64 encoded Excel file from DataFrame."""
+    def create_excel_download(
+        dataframe: pd.DataFrame,
+        extra_meta: Optional[Dict[str, Any]] = None,
+    ) -> str:
+        """Create base64 encoded Excel file with a FAIR metadata sheet."""
+        from tools.commons import build_fair_metadata
+
         buffer = io.BytesIO()
-        dataframe.to_excel(
-            buffer,
-            index="Value" in dataframe.columns,
-            header=True,
-        )
+        with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+            build_fair_metadata(extra=extra_meta).to_excel(
+                writer, index=False, sheet_name="FAIR_metadata",
+            )
+            dataframe.to_excel(
+                writer,
+                index="Value" in dataframe.columns,
+                header=True,
+                sheet_name="data",
+            )
         buffer.seek(0)
         return base64.b64encode(buffer.read()).decode()
-    
+
     @staticmethod
-    def create_multi_sheet_excel(dataframes: Dict[str, pd.DataFrame]) -> str:
-        """Create base64 encoded Excel file with multiple sheets."""
+    def create_multi_sheet_excel(
+        dataframes: Dict[str, pd.DataFrame],
+        extra_meta: Optional[Dict[str, Any]] = None,
+    ) -> str:
+        """Create base64 encoded Excel file with a leading FAIR metadata sheet."""
+        from tools.commons import build_fair_metadata
+
         buffer = io.BytesIO()
-        
         with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+            build_fair_metadata(extra=extra_meta).to_excel(
+                writer, index=False, sheet_name="Metadata",
+            )
             for sheet_name, df in dataframes.items():
                 df.to_excel(
                     writer,
@@ -1161,13 +893,15 @@ class ExcelExporter:
                     header=True,
                     sheet_name=sheet_name,
                 )
-        
         buffer.seek(0)
         return base64.b64encode(buffer.read()).decode()
 
 
-class ProcessingPage:
+class ProcessingPage(BasePage):
     """Main class for the clumped isotope data processing page."""
+    
+    PAGE_NUMBER = 4
+    PAGE_TITLE = "Processing"
     
     # Standard samples for filtering
     STANDARD_SAMPLES = [
@@ -1183,9 +917,7 @@ class ProcessingPage:
     
     def __init__(self):
         """Initialize the processing page."""
-        self.sss = st.session_state
-        self._setup_page()
-        self._initialize_session_state()
+        super().__init__()
         self._initialize_calibrations()
         
         # Initialize processors
@@ -1194,30 +926,23 @@ class ProcessingPage:
         self.temp_calculator = TemperatureCalculator()
         self.excel_exporter = ExcelExporter()
     
-    def _setup_page(self) -> None:
-        """Set up page configuration and authentication."""
-        PageConfigManager().configure_page(4)
-        SidebarLogoManager().add_logo()
-        
-        st.title("Processing")
-        
-        # Require authentication (skip during testing)
-        if "PYTEST_CURRENT_TEST" not in os.environ:
-            if not Authenticator().require_authentication():
-                st.stop()
-    
     def _initialize_session_state(self) -> None:
         """Initialize session state variables."""
-        # Initialize standards if not present
-        if "standards_nominal" not in self.sss or "standards_bulk" not in self.sss:
-            self._load_initial_standards()
+        self.sss["standards_nominal"] = IsotopeStandards.get_standards()
+        self.sss["standards_bulk"] = IsotopeStandards.get_bulk()
 
-        
-        # Initialize parameters tracking
+        self.sss.temp_acid = DEFAULT_ACID_TEMPERATURE
+
+        wg_ratios = DEFAULT_WG_RATIOS or {"d18O": 25.260, "d13C": -4.20}
+        self.sss.d18O_wg = wg_ratios["d18O"]
+        self.sss.d13C_wg = wg_ratios["d13C"]
+
+        self.sss.working_gas = DEFAULT_WG_VIA_STANDARDS
+        self.sss.working_gas_co2_stds = DEFAULT_CO2_STANDARDS
+
         if "params_last_run" not in self.sss:
             self.sss.params_last_run = {param: None for param in self.STATE_PARAMS}
         
-        # Initialize other session state variables
         session_defaults = {
             "plots_D47crunch": [],
             "show_confirmation": False,
@@ -1258,39 +983,7 @@ class ProcessingPage:
                 }
     
 
-    def _load_initial_standards(self, force=False) -> None:
-        """Load initial isotope standards and bulk values."""
-        self.sss["standards_nominal"] = IsotopeStandards.get_standards()
-        
-        # 🔑 KEY: Only load if not present - preserves user edits
-        if 'standards_bulk' not in self.sss or force==True:
-            self.sss['standards_bulk'] = IsotopeStandards.get_bulk()
-        
-        
     
-        self.sss.show_confirmation = False
-        
-        # Clear bulk isotope text area caches (δ13C, δ18O)
-        for bulk in ["13", "18"]:
-            key = f"update_{bulk}_text"
-            if key in self.sss:
-                del self.sss[key]
-
-        # Clear any cached edited text areas for standards
-        for mz in ["47", "48", "49"]:
-            key = f"update_{mz}_text"
-            if key in self.sss:
-                del self.sss[key]
-        
-        # Clear last updated standards key to avoid stale state
-        if "last_updated_stds" in self.sss:
-            del self.sss["last_updated_stds"]
-        
-        # Clear any JSON error messages
-        if "error_json" in self.sss:
-            del self.sss["error_json"]
-
-        st.rerun()
     
     def _validate_input_data(self) -> bool:
         """Validate that required input data is available."""
@@ -1313,11 +1006,6 @@ class ProcessingPage:
                 key="outlier_inputReps",
             )
     
-    def _off_on(self):
-        pass
-        #self.sss.process_D47 = None#.set(False)
-    
-    
     def _render_sidebar_controls(self) -> ProcessingConfig:
         """Render sidebar controls and return processing configuration."""
         # Isotope selection checkboxes
@@ -1332,42 +1020,8 @@ class ProcessingPage:
         )
         config.drifting_sessions = all_sessions
         
-        # Acid temperature
-        st.sidebar.number_input("Acid temperature (°C)", key="temp_acid", value=90)
-        
-        cols_stds = st.sidebar.columns(2)
-        with cols_stds[0]:
-            st.toggle("Working gas via standards", key="working_gas", value=True, help='Bulk isotopic standardization is either calculated via 1pt ETF or multi-point ETF, when calculated via standards. Otherwise, you can enter the known working gas ocmposition.')
-            
-        if self.sss.working_gas:
-            with cols_stds[1]:
-                st.checkbox("CO$_{2}$ standards", key="working_gas_co2_stds",
-                            help='Activating this option will allow users to work solely with CO2 gases, by setting the acid fractionation factor to 1.')
-        else:
-            # Initialize session state variables if they don't exist
-            if 'd18O_wg' not in self.sss:
-                self.sss['d18O_wg'] = 0.0  # or your default value
-            if 'd13C_wg' not in self.sss:
-                self.sss['d13C_wg'] = 0.0
-            
-            # Use in your inputs:
-            cols_wg = st.sidebar.columns(2)
-            with cols_wg[0]:
-                self.sss['d18O_wg'] = st.number_input(
-                    '$\delta^{18}O$ VPDB',
-                    value=self.sss['d18O_wg']
-                )
-            with cols_wg[1]:
-                self.sss['d13C_wg'] = st.number_input(
-                    '$\delta^{13}C$ VPDB',
-                    value=self.sss['d13C_wg']
-                )
-            
-            # cols_wg = st.sidebar.columns(2)
-            # with cols_wg[0]:
-            #     st.number_input('$\delta^{18}O$ VPDB', key='d18O_wg', value=self.sss.get('d18O_wg', 0.0))
-            # with cols_wg[1]:
-            #     st.number_input('$\delta^{13}C$ VPDB', key='d13C_wg', value=self.sss.get('d13C_wg', 0.0))
+        wg_mode = "via standards" if self.sss.working_gas else "known composition"
+        st.sidebar.caption(f"Working gas mode: **{wg_mode}** (change in Settings)")
         
         # Calibration selection
         default_calibs = (
@@ -1391,22 +1045,13 @@ class ProcessingPage:
         else:
             try:
                 last_std_idx = all_standards.index('CDES')
-            except:
-                last_std_idx =  0
-        # if "last_updated_stds" in self.sss:
-        #     try:
-        #         last_std_idx = all_standards.index(self.sss["last_updated_stds"])
-        #     except ValueError:
-        #         last_std_idx = 0
-        # elif "params_last_run" in self.sss and "scale" in self.sss.params_last_run:
-        #     last_std_idx = all_standards.index(self.sss.params_last_run["scale"])
-        #
+            except ValueError:
+                last_std_idx = 0
         scale = st.sidebar.selectbox(
             "**Reference frame:**",
             all_standards,
             index=last_std_idx,
             key="scale",
-            on_change=self._off_on(),
         )
         
         # Display reference frame info
@@ -1432,19 +1077,45 @@ class ProcessingPage:
                     #
                     setattr(config, process_key, value) 
             else:
-                setattr(config, f"process_{isotope.lower()}", False)
-        
+                setattr(config, f"process_{isotope}", False)
+                if f"process_{isotope}" in self.sss:
+                    del self.sss[f"process_{isotope}"]
 
+        # Read-only display of anchors present in dataset for selected frame
+        available_samples = set(self.sss.input_rep['Sample'].unique())
+        all_anchor_names = set()
+        for mz in ("47", "48", "49"):
+            if mz in self.sss.standards_nominal[scale]:
+                all_anchor_names.update(
+                    k for k in self.sss.standards_nominal[scale][mz] if k in available_samples
+                )
+        if all_anchor_names:
+            rows = []
+            for std_name in sorted(all_anchor_names):
+                row = {"Standard": std_name}
+                for mz in ("47", "48", "49"):
+                    if mz in self.sss.standards_nominal[scale] and std_name in self.sss.standards_nominal[scale][mz]:
+                        row[f"Δ{mz}"] = self.sss.standards_nominal[scale][mz][std_name]
+                rows.append(row)
+            st.sidebar.caption("Anchors (in dataset)")
+            st.sidebar.dataframe(pd.DataFrame(rows), hide_index=True, width='stretch')
 
-        # Standards editing
-        self._render_standards_editor(scale)
-        
-        if self.sss.working_gas: #via standards
-            self._render_standards_editor_bulk()
-        
-        # Reset standards button
-        self._render_reset_standards_button()
-        
+        all_defined_anchors = set()
+        for mz in ("47", "48", "49"):
+            if mz in self.sss.standards_nominal[scale]:
+                all_defined_anchors.update(self.sss.standards_nominal[scale][mz].keys())
+        missing_anchor_names = all_defined_anchors - available_samples
+        if missing_anchor_names:
+            rows_missing = []
+            for std_name in sorted(missing_anchor_names):
+                row = {"Standard": std_name}
+                for mz in ("47", "48", "49"):
+                    if mz in self.sss.standards_nominal[scale] and std_name in self.sss.standards_nominal[scale][mz]:
+                        row[f"Δ{mz}"] = self.sss.standards_nominal[scale][mz][std_name]
+                rows_missing.append(row)
+            st.sidebar.caption("Anchors (not in dataset)")
+            st.sidebar.dataframe(pd.DataFrame(rows_missing), hide_index=True, width='stretch')
+
         # Session treatment method
         method_radio = st.sidebar.radio(
             "Treat sessions:",
@@ -1460,212 +1131,6 @@ class ProcessingPage:
         
         return config
     
-    def _render_standards_editor(self, scale: str) -> None:
-        """Render standards editing interface."""
-        for mz in ["47", "48", "49"]:
-            process_key = f"process_D{mz}"
-            
-            # Check if this isotope's checkbox should be shown
-            if mz in self.sss.standards_nominal[scale] and self.sss.get(f"process_D{mz}", False):
-                with st.sidebar.expander(rf"$\Delta_{{{mz}}}$ anchors"):
-                    current_standards = self.sss.standards_nominal[scale][mz]
-                    
-                    # Use a key that includes the scale to make it responsive
-                    text_key = f"update_{mz}_text_{scale}"  # ← Include scale in key
-                    
-                    updated_text = st.text_area(
-                        f"anchors {mz}",
-                        json.dumps(current_standards, indent=4),
-                        key=text_key,
-                        label_visibility="collapsed",
-                    )
-                    
-                    if st.button(rf"Update $\Delta_{{{mz}}}$ values!", key=f"update_{mz}_{scale}"):
-                        self._update_standards_dict(mz, updated_text, scale)
-    
-    def _render_standards_editor_bulk(self) -> None:
-        """Render bulk isotope standards editor with persistent state."""
-        for bulk in [13, 18]:
-            key_str = rf"$\delta^{{{bulk}}}${'O' if bulk == 18 else 'C'}"
-            
-            with st.sidebar.expander(f"{key_str} anchors", expanded=False):
-                # 🔑 KEY: Always read current values from session state
-                current_standards = self.sss['standards_bulk'][bulk]
-                
-                # Show summary
-                num_anchors = len(current_standards)
-                st.caption(f"Current: {num_anchors} anchor{'s' if num_anchors != 1 else ''}")
-                
-                # Text area with current values
-                updated_text = st.text_area(
-                    f"Edit {key_str} anchors (JSON format)",
-                    value=json.dumps(current_standards, indent=4),
-                    key=f"update_{bulk}_text",
-                    height=150,
-                    label_visibility="collapsed",
-                    help=f"Edit {key_str} anchor values. Format: {{\"ETH-1\": -2.19}}"
-                )
-                
-                if st.button(f"Update {key_str} values", key=f"update_{bulk}", type="primary"):
-                    self._update_standards_bulk_dict(str(bulk), updated_text)
-        
-        # Display JSON errors if any
-        if "error_json" in self.sss:
-            for error, formatted_json in self.sss["error_json"]:
-                st.sidebar.error(f"Invalid JSON: {error}", icon="🚨")
-                st.sidebar.code(formatted_json)
-    
-    
-    def _render_standards_editor_old(self, scale: str) -> None:
-        """Render standards editing interface."""
-        for mz in ["47", "48", "49"]:
-            process_key = f"process_D{mz}"
-            if (getattr(self.sss, process_key, False) and 
-                mz in self.sss.standards_nominal[scale]):
-                
-                with st.sidebar.expander(rf"$\Delta_{{{mz}}}$ anchors"):
-                    current_standards = self.sss.standards_nominal[scale][mz]
-                    
-                    updated_text = st.text_area(
-                        f"anchors {mz}",
-                        json.dumps(current_standards, indent=4),
-                        key=f"update_{mz}_text",
-                        label_visibility="collapsed",
-                    )
-                    
-                    if st.button(rf"Update $\Delta_{{{mz}}}$ values!", key=f"update_{mz}"):
-                        self._update_standards_dict(mz, updated_text, scale)
-        
-        for bulk in [13, 18]:
-            # Check if the isotope anchors exist in the standards dictionary for the scale
-            #if iso in self.sss.standards_nominal[scale]:
-            key_str = rf"$\delta^{{{bulk}}}${'O' if bulk == 18 else 'C'}"
-            with st.sidebar.expander(f"{key_str} anchors"):
-                current_standards = self.sss.standards_bulk[bulk]
-                
-                updated_text = st.text_area(
-                    f"anchors {bulk}",
-                    json.dumps(current_standards, indent=4),
-                    key=f"update_{bulk}_text",
-                    label_visibility="collapsed",
-                )
-                
-                if st.button(f"Update {key_str} values!", key=f"update_{bulk}"):
-                    self._update_standards_dict(bulk, updated_text, scale)
-
-
-        # Display JSON errors if any
-        if "error_json" in self.sss:
-            for error, formatted_json in self.sss["error_json"]:
-                st.error(f"Invalid JSON format: {error}", icon="🚨")
-                st.code(formatted_json)
-    
-    def _update_standards_bulk_dict(self, param: str, json_text: str) -> None:
-        """Update standards_bulk dictionary with new values and persist in session state."""
-        try:
-            new_dict = json.loads(json_text)
-            param_int = int(param)
-            
-            if not isinstance(new_dict, dict):
-                raise ValueError("Input must be a dictionary")
-            
-            # 🔑 KEY: Direct update to session state
-            self.sss.standards_bulk[param_int] = new_dict
-            
-            st.success(f"δ{'¹⁸O' if param_int == 18 else '¹³C'} anchors updated!")
-            st.info(f"Updated values will persist until app restart")
-            
-            if "error_json" in self.sss:
-                del self.sss.error_json
-            
-            # 🔑 KEY: Clear cached text area to show updated values
-            cache_key = f"update_{param}_text"
-            if cache_key in self.sss:
-                del self.sss[cache_key]
-            
-            st.rerun()
-        
-        except json.JSONDecodeError as e:
-            # Format error message with highlighted error line
-            lines = json_text.split("\n")
-            if e.lineno <= len(lines):
-                lines[e.lineno - 1] = f":red[{lines[e.lineno - 1]}]"
-            
-            # Add indentation to non-first/last lines
-            for idx in range(1, len(lines) - 1):
-                lines[idx] = f"    {lines[idx]}"
-            
-            formatted_json = "\n".join(lines)
-            
-            if "error_json" not in self.sss:
-                self.sss["error_json"] = []
-            self.sss["error_json"].append((e, formatted_json))
-    
-    
-    def _update_standards_dict(self, mz: str, json_text: str, scale: str) -> None:
-        """Update standards dictionary with new values."""
-        self.sss["last_updated_stds"] = scale
-        
-        try:
-            new_dict = json.loads(json_text)
-            self.sss.standards_nominal[scale][mz] = new_dict
-            st.success("Dictionary updated successfully!")
-            
-            # Clear any previous errors
-            if "error_json" in self.sss:
-                del self.sss.error_json
-            
-            st.rerun()
-            
-        except json.JSONDecodeError as e:
-            # Format error message with highlighted error line
-            lines = json_text.split("\n")
-            if e.lineno <= len(lines):
-                lines[e.lineno - 1] = f":red[{lines[e.lineno - 1]}]"
-            
-            # Add indentation to non-first/last lines
-            for idx in range(1, len(lines) - 1):
-                lines[idx] = f"    {lines[idx]}"
-            
-            formatted_json = "\n".join(lines)
-            
-            if "error_json" not in self.sss:
-                self.sss["error_json"] = []
-            self.sss["error_json"].append((e, formatted_json))
-    
-    def _render_reset_standards_button(self) -> None:
-        """Render reset standards button with confirmation dialog."""
-        if st.sidebar.button("Reset standards!", key="reset_standards"):
-            self.sss.show_confirmation = True
-        
-        if self.sss.show_confirmation:
-            st.sidebar.warning("Reset all standard values?")
-            confirm_col, cancel_col = st.sidebar.columns(2)
-            
-            with confirm_col:
-                with stylable_container(
-                    key="confirm_reset_button",
-                    css_styles="""
-                    [data-testid="baseButton-secondary"] {
-                        background-color: red;
-                    }
-                    """,
-                ):
-                    if st.button("Yes"):
-                        self._load_initial_standards(force=True)
-            
-            with cancel_col:
-                with stylable_container(
-                    key="cancel_reset_button",
-                    css_styles="""
-                    [data-testid="baseButton-secondary"] {
-                        background-color: grey;
-                    }
-                    """,
-                ):
-                    if st.button("No"):
-                        self.sss.show_confirmation = False
-                        st.rerun()
     
     def _prepare_processing_data(self, config: ProcessingConfig) -> None:
         """Prepare data for processing."""
@@ -1677,6 +1142,9 @@ class ProcessingPage:
         # Rename datetime column if present
         if "datetime" in raw_data.columns:
             raw_data = raw_data.rename(columns={"datetime": "Timetag"})
+        
+        COLS = ['d45', 'd46', 'd47', 'd48', 'd49', 'Timetag', 'Sample', 'UID', 'Session', ]
+        raw_data = raw_data[[_ for _ in COLS if _ in raw_data.columns]]
         
         # Sort by timestamp and prepare CSV
         raw_data = raw_data.sort_values(by="Timetag")
@@ -1726,7 +1194,8 @@ class ProcessingPage:
             if self.sss.params_last_run.get(f"process_D{mz}", False):
                 if self.sss.params_last_run.get('scale', None):
                     if mz in self.sss["standards_nominal"][self.sss.params_last_run['scale']]:
-                        STDS[mz] = str({key: self.sss["standards_nominal"][self.sss.scale][mz][key] for key in self.sss.standards_nominal[self.sss.scale].get(mz, False) if key in self.sss.standards['Sample'].values})
+                        last_scale = self.sss.params_last_run['scale']
+                        STDS[mz] = str({key: self.sss["standards_nominal"][last_scale][mz][key] for key in self.sss.standards_nominal[last_scale].get(mz, {}) if key in self.sss.standards['Sample'].values})
                         
                 else:
                     STDS[mz] = 'N/A'
@@ -1842,8 +1311,24 @@ class ProcessingPage:
             f"{self.sss.params_last_run['scale']}_{self.sss.params_last_run['correction_method']}.xlsx"
         )
         
-        # Create download link
-        excel_data = self.excel_exporter.create_multi_sheet_excel(dataframes)
+        run_meta = {
+            "Processing sessions": ", ".join(str(s) for s in sessions),
+            "Reference frame": self.sss.params_last_run.get("scale", ""),
+            "Correction method": self.sss.params_last_run.get("correction_method", ""),
+            "Δ47 processed": self.sss.params_last_run.get("process_D47", False),
+            "Δ48 processed": self.sss.params_last_run.get("process_D48", False),
+            "Δ49 processed": self.sss.params_last_run.get("process_D49", False),
+            "Calibrations used": ", ".join(self.sss.get("04_used_calibs", [])),
+            "Acid temperature (run)": self.sss.get("temp_acid", ""),
+            "Working gas δ¹³C (run)": round(self.sss.get("d13Cwg_VPDB", 0), 5),
+            "Working gas δ¹⁸O (run)": round(self.sss.get("d18Owg_VSMOW", 0), 5),
+        }
+        if self.sss.get("scaling_factors"):
+            run_meta["Scaling factors"] = self.sss.scaling_factors
+
+        excel_data = self.excel_exporter.create_multi_sheet_excel(
+            dataframes, extra_meta=run_meta,
+        )
         download_link = (
             f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;'
             f'base64,{excel_data}" download="{filename}">📥 download full results!</a>'
@@ -2000,13 +1485,7 @@ class ProcessingPage:
 
                     
         # Main processing button
-        run_button = st.sidebar.button("Run...", key="BUTTON1",
-        # disabled= not(
-        #    self.sss.get("process_D47", False) or
-        #    self.sss.get("process_D48", False) or
-        #    self.sss.get("process_D49", False)
-        #             )
-        )
+        run_button = st.sidebar.button("Run...", key="BUTTON1")
         
         # Render input data editor
         self._render_input_data_editor()

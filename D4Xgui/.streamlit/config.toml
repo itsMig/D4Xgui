@@ -1,9 +1,9 @@
 [theme]
 base="dark"
-primaryColor= '#aa80f7'#aa80f7'#"#7070A0"        # Dark Purple-Blue    primaryColor="#3B4A59"        # Dark Blue for primary elements
-backgroundColor='#0E1117'#"#121212"     # Very Dark Gray for background
-secondaryBackgroundColor="#262730"  # Darker Gray for secondary background
-textColor="#FAFAFA"           # Lightest Gray for text
+primaryColor="#aa80f7"
+backgroundColor="#0E1117"
+secondaryBackgroundColor="#262730"
+textColor="#FAFAFA"
 font="sans serif"
 
 

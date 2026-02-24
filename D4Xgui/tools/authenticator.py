@@ -40,14 +40,14 @@ class Authenticator:
     ERROR_MESSAGE = "😕 Password incorrect"
     
     def __init__(self, delay_seconds: float = 0.25):
-        if not 'password' in st.secrets:
-            st.session_state[self.PASSWORD_CORRECT_KEY] = True
-
         """Initialize the authenticator.
         
         Args:
             delay_seconds: Delay after password entry to prevent brute force attacks.
         """
+        if 'password' not in st.secrets:
+            st.session_state[self.PASSWORD_CORRECT_KEY] = True
+
         self.delay_seconds = delay_seconds
     
     def _get_stored_password(self) -> Optional[str]:
@@ -154,7 +154,3 @@ def require_authentication() -> None:
     if not _authenticator.require_authentication():
         st.stop()
 
-
-# Maintain backward compatibility
-if not check_password():
-    st.stop()

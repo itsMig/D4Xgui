@@ -1,4 +1,4 @@
-## Welcome to D4Xgui v1.0.2!
+## Welcome to D4Xgui v1.0.3!
 
 [D4Xgui](https://github.com/itsMig/D4Xgui) is developed to enable easy access to state-of-the-art CO₂ clumped isotope (∆₄₇, ∆₄₈ and ∆₄₉) data processing.
 A recently developed optimizer algorithm allows pre-processing of mass spectrometric raw intensities utilizing a m/z47.5 half-mass Faraday cup correction to account for the effect of a negative pressure baseline, which is essential for accurate and highest precision clumped isotope analysis of CO₂ ([Bernecker et al., 2023](https://doi.org/10.1016/j.chemgeo.2023.121803)).

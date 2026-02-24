@@ -30,9 +30,13 @@ __pycache__/
 .VolumeIcon.icns
 
 *.db
+user_settings.json
 
 *~
+~$*
 .~*
+
+*.egg-info/
 
 
 *.pyc

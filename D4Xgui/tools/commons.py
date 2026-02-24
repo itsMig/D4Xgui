@@ -21,6 +21,8 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+from tools.database import DatabaseError, db_connection
+
 
 class Colors:
     """ANSI color codes for terminal output.
@@ -251,43 +253,7 @@ class SettingsManager:
 
 def download_upload_settings():
     """Legacy function for backward compatibility."""
-    settings_manager = SettingsManager()
-    settings_manager.create_download_upload_interface()
-    st.markdown("# UPLOAD")
-    uploaded_file = st.file_uploader(
-        label="Select the Settings File to be uploaded",
-        help="Select the Settings File (Downloaded in a previous run) that you want"
-        " to be uploaded and then applied (by clicking 'Apply Settings' above)"
-        " in order to filter the perimeter",
-    )
-    if uploaded_file is not None:
-        uploaded_settings = json.load(uploaded_file)
-    else:
-        uploaded_settings = settings_to_download
-        # st.warning("Please select the cached file to be uploaded!")
-
-    # 3. Apply Settings
-    def upload_json_settings(json_settings):
-        """Set session state values to what specified in the json_settings."""
-        for k in json_settings.keys():
-            if k.startswith("pdDF="):
-                st.session_state[k.split("=")[-1]] = pd.read_csv(
-                    StringIO(json_settings[k]), sep=";", index_col=0
-                )
-            elif k.startswith("npARR="):
-                st.session_state[k.split("=")[-1]] = np.array([float(_) for _ in json_settings[k].split(";")])
-            else:
-                st.session_state[k] = json_settings[k]
-        return st.toast('Successfully uploaded data!', icon='💾')
-
-    if uploaded_file is not None:
-        button_apply_settings = st.button(
-            label="Apply Settings",
-            on_click=upload_json_settings,
-            args=(uploaded_settings,),
-            # help="Click to Apply the Settings of the Uploaded file.\\\n"
-            #      "Please start by uploading a Settings File below"
-        )
+    SettingsManager().create_download_upload_interface()
         
         
 
@@ -334,39 +300,32 @@ def modify_plot_text_sizes(fig):
     return fig
 
 
-import dill  # Better than pickle for complex objects
-import sqlite3
-import uuid
-import base64
-from datetime import datetime
+def render_plotly_chart(fig, **kwargs):
+    """Style and render a Plotly figure with standard D4Xgui formatting."""
+    styled = modify_plot_text_sizes(fig)
+    chart_kwargs = {"config": PlotlyConfig.CONFIG}
+    chart_kwargs.update(kwargs)
+    st.plotly_chart(styled, **chart_kwargs)
 
 
 class SessionStateManager:
     """Manages saving and loading of Streamlit session states to/from SQLite database."""
     
-    def __init__(self, db_path: str = "session_states.db"):
+    def __init__(self, db_path: str = None):
         """Initialize the session state manager.
         
         Args:
             db_path: Path to the SQLite database file.
         """
-        self.db_path = Path(db_path)
+        from tools.constants import SESSION_STATES_DB_PATH
+        self.db_path = Path(db_path or SESSION_STATES_DB_PATH)
         self._initialize_database()
     
     @contextmanager
     def _get_connection(self):
         """Get database connection with automatic cleanup."""
-        conn = None
-        try:
-            conn = sqlite3.connect(str(self.db_path))
+        with db_connection(self.db_path) as conn:
             yield conn
-        except sqlite3.Error as e:
-            if conn:
-                conn.rollback()
-            raise DatabaseError(f"Database error: {e}") from e
-        finally:
-            if conn:
-                conn.close()
     
     def _initialize_database(self) -> None:
         """Initialize the database with required tables."""
@@ -467,6 +426,70 @@ class SessionStateManager:
             ''')
             conn.commit()
             return cursor.rowcount
+
+
+def build_fair_metadata(
+    *,
+    extra: Optional[Dict[str, Any]] = None,
+) -> pd.DataFrame:
+    """Build a FAIR-compliant metadata DataFrame for Excel export.
+
+    The sheet documents *all* processing-relevant parameters so that
+    results are **F**indable, **A**ccessible, **I**nteroperable and
+    **R**eusable without manual record-keeping.
+
+    Parameters
+    ----------
+    extra : dict, optional
+        Additional key/value pairs (e.g. run-specific session lists)
+        appended after the global settings.
+
+    Returns
+    -------
+    pd.DataFrame with columns ``Parameter`` and ``Value``.
+    """
+    from D4Xgui import __version__ as app_version
+    from tools import config as _cfg
+
+    try:
+        import D47crunch
+        d47c_ver = D47crunch.__version__
+    except Exception:
+        d47c_ver = "N/A"
+
+    all_cfg = _cfg.get_all()
+
+    rows: list[list] = [
+        # ── Provenance ────────────────────────────────────────────
+        ["Software", "D4Xgui"],
+        ["Software version", app_version],
+        ["D47crunch version", d47c_ver],
+        ["Export timestamp (UTC)", datetime.utcnow().isoformat(timespec="seconds")],
+        ["Settings file", str(_cfg.config_path())],
+        ["δ¹⁸O VPDB-VSMOW (‰)", all_cfg.get("d18O_VPDB_VSMOW")],
+        # ── Isotopic constants ────────────────────────────────────
+        ["R¹³_VPDB", all_cfg.get("isotopic_constants", {}).get("R13_VPDB")],
+        ["R¹⁷_VSMOW", all_cfg.get("isotopic_constants", {}).get("R17_VSMOW")],
+        ["R¹⁸_VSMOW", all_cfg.get("isotopic_constants", {}).get("R18_VSMOW")],
+        ["λ₁₇", all_cfg.get("isotopic_constants", {}).get("lambda_17")],
+        # ── Baseline-correction standards ─────────────────────────
+        ["Δ₄₇ standards", json.dumps(all_cfg.get("standard_d47", {}))],
+        ["Δ₄₈ standards", json.dumps(all_cfg.get("standard_d48", {}))],
+        ["Δ₄₉ standards", json.dumps(all_cfg.get("standard_d49", {}))],
+        # ── Processing configuration ─────────────────────────────
+        ["CO₂ standards", all_cfg.get("co2_standards")],
+        ["Baseline correction method", all_cfg.get("baseline_correction_method")],
+        # ── Database paths ────────────────────────────────────────
+        ["Sample DB filename", all_cfg.get("sample_db_filename")],
+        ["Replicates DB filename", all_cfg.get("replicates_db_name")],
+        ["Session states DB filename", all_cfg.get("session_states_db_name")],
+    ]
+
+    if extra:
+        for k, v in extra.items():
+            rows.append([str(k), v if isinstance(v, str) else json.dumps(v, default=str)])
+
+    return pd.DataFrame(rows, columns=["Parameter", "Value"])
 
 
 #backward compatibility

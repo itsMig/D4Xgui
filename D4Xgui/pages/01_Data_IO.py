@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
 import re
 import base64
 import io
@@ -11,35 +10,21 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-from tools.authenticator import Authenticator
-from tools.page_config import PageConfigManager
-from tools.sidebar_logo import SidebarLogoManager
+from tools.base_page import BasePage
+from tools.constants import SAMPLE_DB_PATH, STATIC_DIR
 from tools.database import DatabaseManager
 from tools.init_params import IsotopeStandards
 
 
-class DataIOPage:
+class DataIOPage(BasePage):
     """Manages the Data I/O page of the D4Xgui application."""
+
+    PAGE_NUMBER = 1
 
     def __init__(self):
         """Initialize the DataIOPage."""
-        self.sss = st.session_state
         self.db_manager = DatabaseManager()
-        self._setup_page()
-        self._initialize_session_state()
-
-    def _setup_page(self) -> None:
-        """Set up page configuration, logo, and authentication."""
-        page_config_manager = PageConfigManager()
-        page_config_manager.configure_page(page_number=1)
-        
-        logo_manager = SidebarLogoManager()
-        logo_manager.add_logo()
-        
-        if "PYTEST_CURRENT_TEST" not in os.environ:
-            authenticator = Authenticator()
-            if not authenticator.require_authentication():
-                st.stop()
+        super().__init__()
 
     def _initialize_session_state(self) -> None:
         """Initialize session state with default parameters if not present."""
@@ -179,11 +164,10 @@ class DataIOPage:
 
     def _load_sample_database(self) -> Optional[pd.DataFrame]:
         """Load the sample database from Excel."""
-        sample_db_path = "static/SampleDatabase.xlsx"
         try:
-            return pd.read_excel(sample_db_path, engine="openpyxl")
+            return pd.read_excel(SAMPLE_DB_PATH, engine="openpyxl")
         except FileNotFoundError:
-            st.warning(f"SampleDatabase not found at {sample_db_path}.")
+            st.warning(f"SampleDatabase not found at {SAMPLE_DB_PATH}.")
             st.page_link("pages/97_Database_Management.py", label="→ Database Management", icon="🔗")
             return None
 
@@ -272,7 +256,7 @@ class DataIOPage:
         elif filename.endswith((".csv", ".txt")):
             stringio = io.StringIO(file.getvalue().decode("utf-8"))
             STR = stringio.read()
-            STR
+            #STR
             if '\t' in STR:
                 SEP = '\t'
             elif ';' in STR:
@@ -302,11 +286,12 @@ class DataIOPage:
             df["Sample"] = df["Sample"].astype(str)
 
             # Sanitize sample names
-            for char in ("+", ":", "(", ")", "&"):
-                if df["Sample"].str.contains(char, regex=False).any():
-                    st.info(f"Sample names must not contain `{char}` --> removed!")
-                    df["Sample"] = df["Sample"].str.replace(char, "", regex=False)
-            
+            for char in ("+", ":", "(", ")", "&", ',', ';'):
+                for col in 'Sample', 'Session':
+                    if df[col].str.contains(char, regex=False).any():
+                        st.info(f"{col} must not contain `{char}` --> removed!")
+                        df[col] = df[col].str.replace(char, "", regex=False)
+                
             # Standardize sample names
             rename_dict = {
                 **{f"ETH {i}": f"ETH-{i}" for i in range(1, 5)},
@@ -332,14 +317,17 @@ class DataIOPage:
             for col in ("Outlier", "Project", "Type"):
                 if col not in df.columns:
                     df[col] = None
+
+            if "Temp" in df.columns:
+                df["Temp"] = df["Temp"].astype(str)
         return dfs
 
     def _load_test_files(self, mode: str) -> None:
         """Load example data files."""
         self.sss.raw_files = mode != "reps"
         path = (
-            "static/exampleReplicates_anonymized.xlsx" if mode == "reps" 
-            else "static/exampleIntensities_anonymized.xlsx"
+            STATIC_DIR / "exampleReplicates_anonymized.xlsx" if mode == "reps" 
+            else STATIC_DIR / "exampleIntensities_anonymized.xlsx"
         )
         df = pd.read_excel(path, engine="openpyxl")
         input_data = self._modify_uploaded_df([df])[0]
@@ -496,10 +484,15 @@ class DataIOPage:
         st.metric("Total Types", count_unique_split('Type'))
 
     def _create_excel_download_link(self, df: pd.DataFrame, filename: str) -> str:
-        """Generate a download link for an Excel file."""
+        """Generate a download link for an Excel file with FAIR metadata."""
+        from tools.commons import build_fair_metadata
+
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            df.to_excel(writer, index=False, sheet_name='Sheet1')
+            build_fair_metadata().to_excel(
+                writer, index=False, sheet_name='FAIR_metadata',
+            )
+            df.to_excel(writer, index=False, sheet_name='data')
         b64 = base64.b64encode(output.getvalue()).decode()
         return f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="{filename}">Download Excel File</a>'
 

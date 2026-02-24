@@ -57,32 +57,51 @@ def K49_t(x_arr, scaling, offset):
 class Pysotope:
     """Minimal Pysotope class with only required functionality for D4Xgui."""
     
-    def __init__(self, level="replicate", level_etf="replicate", optimize="leastSquare"):
+    def __init__(self, level="replicate", level_etf="replicate",
+                 optimize="leastSquare", isotopic_constants=None):
         """Initialize Pysotope with minimal required attributes."""
         self.level_etf = level_etf
         self.level = level
         self.optimize = optimize
         self.analyses = dict()
-    
-        self.isotopic_constants = {
+
+        _fallback = {
             "R13_VPDB": 0.01118,
             "R17_VSMOW": 0.00038475,
             "R18_VSMOW": 0.0020052,
             "lambda_": 0.528,
             "R18_initial_guess": 0.002,
         }
+        if isotopic_constants is not None:
+            self.isotopic_constants = dict(isotopic_constants)
+        else:
+            try:
+                from tools.constants import ISOTOPIC_CONSTANTS
+                self.isotopic_constants = dict(ISOTOPIC_CONSTANTS) if ISOTOPIC_CONSTANTS else dict(_fallback)
+            except Exception:
+                self.isotopic_constants = dict(_fallback)
+
+        if "lambda_17" in self.isotopic_constants and "lambda_" not in self.isotopic_constants:
+            self.isotopic_constants["lambda_"] = self.isotopic_constants.pop("lambda_17")
+
+        try:
+            from tools.constants import D18O_VPDB_VSMOW
+            self._d18O_VPDB_VSMOW = D18O_VPDB_VSMOW if D18O_VPDB_VSMOW is not None else 30.92
+        except Exception:
+            self._d18O_VPDB_VSMOW = 30.92
 
         self.wg_ratios = {"d18O": 25.260, "d13C": -4.200}
-        
+
+        _conv = 1 + self._d18O_VPDB_VSMOW / 1000
         self.standards = {
             "d18O": {
-                "ETH-1": 6.7 * 1.03092 + 30.92,
-                "ETH-2": -10 * 1.03092 + 30.92,
-                "ETH-3": 7.18 * 1.03092 + 30.92,
+                "ETH-1": 6.7 * _conv + self._d18O_VPDB_VSMOW,
+                "ETH-2": -10 * _conv + self._d18O_VPDB_VSMOW,
+                "ETH-3": 7.18 * _conv + self._d18O_VPDB_VSMOW,
             },
             "d13C": {"ETH-1": 2.07, "ETH-2": -10.17, "ETH-3": 1.71},
             "D47": {
-                "25C": 0.9196,  
+                "25C": 0.9196,
                 "1000C": 0.0266,
             },
             "D48": {
@@ -265,7 +284,7 @@ class Pysotope:
                     df["Sample_Ratio_45_44"].values[0],
                     df["Sample_Ratio_46_44"].values[0],
                 )
-            except:
+            except (ValueError, RuntimeError) as e:
                 print(f'Couldn\'t solve R18! Using {self.isotopic_constants["R18_initial_guess"]}')
                 init_R18 = self.isotopic_constants["R18_initial_guess"]
             
@@ -388,18 +407,19 @@ class Pysotope:
             }
             #if session == 'std':
             for mz in 47, 48, 49:
-                if len(sss.get(f'bg_custom_{mz}_values', "")) == 0:
+                custom_table = sss.get(f'bg_custom_{mz}_table', None)
+                has_custom = (
+                    isinstance(custom_table, pd.DataFrame)
+                    and not custom_table.empty
+                )
+                if not has_custom:
                     standards.update([*self.standards[f"D{mz}"]])
           
-            # st.write(self.analyses[session])
-            # st.write(standards)
             df = self.analyses[session].loc[self.analyses[session]["Sample"].isin(standards)]
-            # st.write(df)
-            
 
             def optimize_ETH12_leastSquares(scale, mz):
                 """Optimize scaling factor for ETH-1 and ETH-2 standards using least squares."""
-                stdP = Pysotope()
+                stdP = Pysotope(isotopic_constants=self.isotopic_constants)
                 stdP.scaling_factors["std"] = {
                     "47b_47.5": -1,
                     "48b_47.5": -1,
@@ -424,29 +444,18 @@ class Pysotope:
                 results = linregress(df_ETHs[f"d{mz}"].values, df_ETHs[f"D{mz}"].values)
                 return results.slope
 
-            def customStds_targetValues(scale, mz, stds=dict()):
-                stdP = Pysotope()
-                #st.write(stds)
-                # st.write(scale,'scale')
+            def customStds_targetValues(scale, mz, stds=None):
+                if stds is None:
+                    stds = {}
+                stdP = Pysotope(isotopic_constants=self.isotopic_constants)
                 stdP.scaling_factors["std"] = {
                     "47b_47.5": -1,
                     "48b_47.5": -1,
                     "49b_47.5": -1,
                 }
                 
-                # {"Unrelated carbonate 06": 0.7158, "ETH-2" : 0.2119}
-                # stds = json.loads(st.session_state.get(f'bg_custom_{mz}_values', '{}'))
-                # ETH-2
-                # 0.2119
-                
-                # st.write(stds)
-                
-                # std_df = df.copy()#self.analyses.get('std', pd.DataFrame())
-                
                 stds = {_:stds[_] for _ in stds if _ in self.analyses[session]["Sample"].values}
                 df = self.analyses[session].loc[self.analyses[session]["Sample"].isin(stds)]
-                # st.write('stds',stds)
-                # st.write('@@@', std_df)
                 stdP.add_data("std", df.copy())
                 stdP.scaling_factors["std"][f"{mz}b_47.5"] = scale
                 stdP.calc_sample_ratios_1(session="std")
@@ -457,30 +466,12 @@ class Pysotope:
                 stdP.calc_sample_ratios_2(mode="bg")
                 
                 std_df = stdP.analyses["std"]
-                # std_df = stdP.analyses["std"]
-                # st.write('@@@', std_df)
-                all_res= 0
+                all_res = 0
                 PAIRS = [(x, y) for i, x in enumerate(stds) for y in [*stds.keys()][i+1:]]
-                # st.write(stds)
-                _="""
-                ETH1-2 slope
-                "47b_47.5":"array([-0.95692691])"
-                "48b_47.5":"array([-0.89661941])"
-                
-                ETH1-2 differences
-                "47b_47.5":"array([-0.98413416])"
-                "48b_47.5":"array([-0.89242249])"
-                """
                 for S1, S2 in PAIRS:
-                    #st.write('pair',S1, S2,)
                     REAL_DIFF = stds[S1] - stds[S2]
-                    #st.write('REAL_DIFF',REAL_DIFF)
-                    # st.write(std_df.loc[std_df['Sample'] == S1][f"D{mz}"].mean())
                     APPARENT_DIFF = std_df.loc[std_df['Sample'] == S1][f"D{mz}"].mean() - std_df.loc[std_df['Sample'] == S2][f"D{mz}"].mean()
-                    #st.write('APPARENT_DIFF', APPARENT_DIFF)
-                    all_res+= (APPARENT_DIFF - REAL_DIFF)**2
-                #st.write('all_res',all_res)
-                #st.write(std_df)
+                    all_res += (APPARENT_DIFF - REAL_DIFF)**2
                 return all_res
             
             
@@ -499,10 +490,8 @@ class Pysotope:
                             ),
                         ])
                     )
-                #df
                 std_df = df[df["Sample"].isin(standards)]
-                #std_df
-                stdP = Pysotope()
+                stdP = Pysotope(isotopic_constants=self.isotopic_constants)
                 stdP.scaling_factors["std"] = {
                     "47b_47.5": -1,
                     "48b_47.5": -1,
@@ -515,21 +504,20 @@ class Pysotope:
                 stdP.correctBaseline(scaling_mode="std")
                 stdP.calc_sample_ratios_2(mode="bg")
                 
+                std_analyses = stdP.analyses["std"]
+                slopes = []
                 for standard in standards:
-                    std_analyses = stdP.analyses["std"]
                     this_std_df = std_analyses[std_analyses["Sample"] == standard]
-                    
                     results = linregress(
                         this_std_df[f"d{mz}"].values, this_std_df[f"D{mz}"].values
                     )
-                    all_slopes[standard] = results.slope
+                    slopes.append(results.slope)
                 
-                return [_[1] for _ in all_slopes.items()]
+                return slopes
             
             # Optimize scaling factors for each mass
             for mz in 47, 48, 49:
                 if len(MAPPING_MZ[mz]) == 0:
-                    #st.write(len(MAPPING_MZ[mz]),'len')
                     continue
                 if self.optimize == 'customStds':
                     # result = least_squares(customStds_targetValues,
@@ -546,7 +534,6 @@ class Pysotope:
                                            gtol=1e-12,
                                            verbose=0,
                                            )
-                    #st.write(result)
                     sss['03_pbl_log'] = sss['03_pbl_log'] + f"\n ## Mass {mz} optimization results\n {result}"
                     self.scaling_factors[session].update({f"{mz}b_47.5": result.x})
                     continue
@@ -554,8 +541,10 @@ class Pysotope:
                     result = least_squares(
                         optimize_HGL_leastSquare,
                         -1.0,
-                        bounds=(-5, -1e-7),
+                        bounds=(-20, 5),
                         args=([mz]),
+                        ftol=1e-12,
+                        gtol=1e-12,
                     )
                     sss['03_pbl_log'] = sss['03_pbl_log'] + f"\n ## Mass {mz} optimization results\n {result}"
                     self.scaling_factors[session].update({f"{mz}b_47.5": result.x})
@@ -571,12 +560,13 @@ class Pysotope:
                     self.scaling_factors[session].update({f"{mz}b_47.5": result.x})
                     continue
                 else:
-                    # Default to least squares
                     result = least_squares(
                         optimize_HGL_leastSquare,
                         -1.0,
-                        bounds=(-5, -1e-7),
+                        bounds=(-20, 5),
                         args=([mz]),
+                        ftol=1e-12,
+                        gtol=1e-12,
                     )
                     sss['03_pbl_log'] = sss['03_pbl_log'] + f"\n ## Mass {mz} optimization results\n {result}"
                     self.scaling_factors[session].update({f"{mz}b_47.5": result.x})

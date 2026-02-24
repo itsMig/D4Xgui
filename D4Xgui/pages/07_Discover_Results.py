@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
 from typing import List, Optional, Tuple, Union
 from dataclasses import dataclass
 from enum import Enum
@@ -14,10 +13,9 @@ import plotly.graph_objects as go
 from ogls import Polynomial
 from scipy import stats
 
-from tools.page_config import PageConfigManager
-from tools.sidebar_logo import SidebarLogoManager
-from tools.authenticator import Authenticator
+from tools.base_page import BasePage
 from tools.commons import PLOT_PARAMS, modify_text_label_sizes, PlotlyConfig
+from tools.filters import filter_dataframe, render_sample_filter_sidebar
 
 
 class DataType(Enum):
@@ -47,51 +45,6 @@ class PlotConfig:
     error_y: float = 0.001
     error_column_x: Optional[str] = None
     error_column_y: Optional[str] = None
-
-
-@dataclass
-class FilterConfig:
-    """Configuration for data filtering."""
-    sample_contains: str = ""
-    sample_not_contains: str = ""
-
-
-class DataFilter:
-    """Handles data filtering operations."""
-    
-    @staticmethod
-    def apply_filters(df: pd.DataFrame, column: str, filter_config: FilterConfig) -> pd.DataFrame:
-        """Apply include and exclude filters to a DataFrame.
-        
-        Args:
-            df: DataFrame to filter
-            column: Column name to apply filters on
-            filter_config: Filter configuration
-            
-        Returns:
-            Filtered DataFrame
-        """
-        filtered_df = df.copy()
-        
-        # Apply include filters
-        if filter_config.sample_contains:
-            include_terms = [term.strip() for term in filter_config.sample_contains.split(";")]
-            filtered_df = filtered_df[
-                filtered_df[column].apply(
-                    lambda x: any(term in str(x) for term in include_terms)
-                )
-            ]
-        
-        # Apply exclude filters
-        if filter_config.sample_not_contains:
-            exclude_terms = [term.strip() for term in filter_config.sample_not_contains.split(";")]
-            filtered_df = filtered_df[
-                ~filtered_df[column].apply(
-                    lambda x: any(term in str(x) for term in exclude_terms)
-                )
-            ]
-        
-        return filtered_df
 
 
 class DataFitter:
@@ -224,6 +177,7 @@ class PlotGenerator:
             color="Sample",
             symbol="Sample",
             symbol_sequence=self.symbols,
+            category_orders={"Sample": sorted(df["Sample"].unique())},
         )
         
         return self._customize_plot(fig)
@@ -292,31 +246,17 @@ class PlotGenerator:
         return fig
 
 
-class DiscoverResultsPage:
+class DiscoverResultsPage(BasePage):
     """Main class for the Discover Results page."""
+    
+    PAGE_NUMBER = 7
+    PAGE_TITLE = "Discover Results"
     
     def __init__(self):
         """Initialize the DiscoverResultsPage."""
-        self.sss = st.session_state
-        self.data_filter = DataFilter()
         self.data_fitter = DataFitter()
         self.plot_generator = PlotGenerator()
-        self._setup_page()
-    
-    def _setup_page(self) -> None:
-        """Set up page configuration, logo, and authentication."""
-        st.title("Discover Results")
-        
-        page_config_manager = PageConfigManager()
-        page_config_manager.configure_page(page_number=7)
-        
-        logo_manager = SidebarLogoManager()
-        logo_manager.add_logo()
-        
-        if "PYTEST_CURRENT_TEST" not in os.environ:
-            authenticator = Authenticator()
-            if not authenticator.require_authentication():
-                st.stop()
+        super().__init__()
     
     def run(self) -> None:
         """Run the main application page."""
@@ -402,19 +342,7 @@ class DiscoverResultsPage:
     
     def _render_filter_controls(self) -> None:
         """Render filter control widgets in the sidebar."""
-        st.sidebar.text_input(
-            "Sample name contains (KEEP):",
-            help="Set multiple keywords by separating them through semicolons ;",
-            key="07_sample_contains",
-            value="",
-        )
-        
-        st.sidebar.text_input(
-            "Sample name contains (DROP):",
-            help="Set multiple keywords by separating them through semicolons ;",
-            key="07_sample_not_contains",
-            value="",
-        )
+        render_sample_filter_sidebar("07")
     
     def _get_filtered_data_and_columns(self) -> Tuple[Optional[pd.DataFrame], Optional[List[str]]]:
         """Get filtered data and available columns.
@@ -428,12 +356,12 @@ class DiscoverResultsPage:
         # Get the appropriate dataset
         df = self._select_dataset()
         
-        # Apply filters
-        filter_config = FilterConfig(
-            sample_contains=self.sss.get("07_sample_contains", ""),
-            sample_not_contains=self.sss.get("07_sample_not_contains", "")
+        # Apply filters using shared utility
+        df = filter_dataframe(
+            df,
+            include_str=self.sss.get("07_sample_contains", ""),
+            exclude_str=self.sss.get("07_sample_not_contains", ""),
         )
-        df = self.data_filter.apply_filters(df, "Sample", filter_config)
         
         if len(df) == 0:
             st.info('Please apply filters to see data. No data to display.')

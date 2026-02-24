@@ -35,7 +35,7 @@ sys.path.insert(0, str(Path(__file__).parent.resolve()))
 project = 'D4Xgui'
 copyright = '2025, Miguel Bernecker'
 author = 'Miguel Bernecker'
-release = 'v1.0.0'
+release = 'v1.0.3'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

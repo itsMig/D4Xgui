@@ -1,31 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
 import sqlite3
 from typing import Dict, List, Tuple, Optional, Any
 
 import streamlit as st
 
+from tools.base_page import BasePage
 from tools.commons import SessionStateManager
-from tools.authenticator import Authenticator
 
 
-class SaveReloadPage:
+class SaveReloadPage(BasePage):
     """Manages the Save & Reload page of the D4Xgui application."""
+
+    SHOW_LOGO = False
 
     def __init__(self):
         """Initialize the SaveReloadPage."""
-        self.sss = st.session_state
         self.state_manager = SessionStateManager()
-        self._setup_page()
-
-    def _setup_page(self) -> None:
-        """Set up authentication for the page."""
-        if "PYTEST_CURRENT_TEST" not in os.environ:
-            authenticator = Authenticator()
-            if not authenticator.require_authentication():
-                st.stop()
+        super().__init__()
 
     def run(self) -> None:
         """Run the main application page."""

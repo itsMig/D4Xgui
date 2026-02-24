@@ -1,38 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
+import base64
 import io
+import os
 from typing import Optional, List, Tuple, Any
 
 import pandas as pd
 import streamlit as st
 
-from tools.authenticator import Authenticator
-from tools.page_config import PageConfigManager
+from tools.base_page import BasePage
+from tools.constants import SAMPLE_DB_PATH, STATIC_DIR
 from tools.database import DatabaseManager
+from tools.filters import filter_dataframe
 
 
-class DatabaseManagementPage:
+class DatabaseManagementPage(BasePage):
     """Manages the Database Management page of the D4Xgui application."""
 
-    SAMPLE_DB_PATH = "static/SampleDatabase.xlsx"
+    PAGE_NUMBER = 97
+    SHOW_LOGO = False
+
+    SAMPLE_DB_PATH = SAMPLE_DB_PATH
     
     def __init__(self):
         """Initialize the DatabaseManagementPage."""
-        self.sss = st.session_state
         self.db_manager = DatabaseManager()
-        self._setup_page()
-
-    def _setup_page(self) -> None:
-        """Set up page configuration and authentication."""
-        page_config_manager = PageConfigManager()
-        page_config_manager.configure_page(page_number=97)
-        
-        if "PYTEST_CURRENT_TEST" not in os.environ:
-            authenticator = Authenticator()
-            if not authenticator.require_authentication():
-                st.stop()
+        super().__init__()
 
     def run(self) -> None:
         """Run the main database management page."""
@@ -183,31 +177,18 @@ class DatabaseManagementPage:
 
     def _apply_simple_filters(self, df: pd.DataFrame) -> pd.DataFrame:
         """Apply simple text-based filters."""
+        help_text = "Set multiple keywords by separating them through semicolons ;"
         with st.sidebar:
             sample_contains = st.text_input(
                 "Sample name contains (KEEP):",
-                help="Set multiple keywords by separating them through semicolons ;"
+                help=help_text,
             )
             sample_not_contains = st.text_input(
                 "Sample name contains (DROP):",
-                help="Set multiple keywords by separating them through semicolons ;"
+                help=help_text,
             )
         
-        filtered_df = df.copy()
-        
-        if sample_contains:
-            pattern = "|".join(sample_contains.split(";"))
-            filtered_df = filtered_df[
-                filtered_df["Sample"].str.contains(pattern, case=False, na=False)
-            ]
-        
-        if sample_not_contains:
-            pattern = "|".join(sample_not_contains.split(";"))
-            filtered_df = filtered_df[
-                ~filtered_df["Sample"].str.contains(pattern, case=False, na=False)
-            ]
-        
-        return filtered_df
+        return filter_dataframe(df, include_str=sample_contains, exclude_str=sample_not_contains)
 
     def _filter_by_sample_metadata(
         self, df: pd.DataFrame, sample_db: pd.DataFrame,
@@ -268,12 +249,28 @@ class DatabaseManagementPage:
             )
 
     def _create_excel_download(self, df: pd.DataFrame, filename: str) -> bytes:
-        """Create Excel file data for download."""
+        """Create Excel file data for download with FAIR metadata."""
+        from tools.commons import build_fair_metadata
+
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            df.to_excel(writer, index=False, sheet_name='Sheet1')
+            build_fair_metadata().to_excel(
+                writer, index=False, sheet_name='FAIR_metadata',
+            )
+            df.to_excel(writer, index=False, sheet_name='data')
         output.seek(0)
         return output.getvalue()
+
+    def _create_excel_download_link(self, df: pd.DataFrame, filename: str) -> str:
+        """Generate an HTML download link for an Excel file."""
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='metadata')
+        b64 = base64.b64encode(output.getvalue()).decode()
+        return (
+            f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;'
+            f'base64,{b64}" download="{filename}">📥 Download Current Sample Database</a>'
+        )
 
     def _render_data_manipulation(self, df: pd.DataFrame) -> None:
         """Render the data manipulation section."""
@@ -492,7 +489,8 @@ class DatabaseManagementPage:
             if hasattr(self.db_manager, '_connection'):
                 self.db_manager._connection.close()
             
-            db_path = 'pre_replicates.db'
+            from tools.constants import REPLICATES_DB_PATH
+            db_path = REPLICATES_DB_PATH
             if os.path.exists(db_path):
                 os.remove(db_path)
                 st.success("Database successfully deleted.")
@@ -524,6 +522,8 @@ class DatabaseManagementPage:
             sample_db = pd.read_excel(self.SAMPLE_DB_PATH, engine="openpyxl")
             
             st.subheader("Current Sample Database")
+            download_link = self._create_excel_download_link(sample_db, "SampleDatabase.xlsx")
+            st.markdown(download_link, unsafe_allow_html=True)
             st.dataframe(sample_db)
             
             self._render_sample_database_upload("Update Sample Database", "Replace Current Sample Database")
@@ -558,7 +558,7 @@ class DatabaseManagementPage:
     def _save_sample_database(self, sample_db: pd.DataFrame) -> None:
         """Save the sample database to file."""
         try:
-            os.makedirs("static", exist_ok=True)
+            STATIC_DIR.mkdir(parents=True, exist_ok=True)
             sample_db.to_excel(self.SAMPLE_DB_PATH, index=False, engine="openpyxl")
             st.success("Sample database updated successfully!")
             st.rerun()

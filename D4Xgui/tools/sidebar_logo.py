@@ -1,15 +1,14 @@
-from pathlib import Path
 from typing import Optional
 
 import streamlit as st
-#from streamlit_extras.app_logo import add_logo as streamlit_add_logo
 
+from tools.constants import LOGO_PATH
 
 
 class SidebarLogoManager:
     """Manages the sidebar logo for the Streamlit application."""
     
-    DEFAULT_LOGO_PATH = "static/D4Xgui_logo_master_red08.png"
+    DEFAULT_LOGO_PATH = LOGO_PATH
     DEFAULT_HEIGHT = 130
     
     def __init__(self, logo_path: Optional[str] = None, height: int = DEFAULT_HEIGHT):
@@ -19,6 +18,7 @@ class SidebarLogoManager:
             logo_path: Path to the logo image. Uses default if None.
             height: Height of the logo in pixels.
         """
+        from pathlib import Path
         self.logo_path = Path(logo_path or self.DEFAULT_LOGO_PATH)
         self.height = height
     

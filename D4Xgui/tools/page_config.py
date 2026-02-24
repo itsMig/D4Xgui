@@ -10,12 +10,13 @@ from typing import Dict, Any, Optional
 import streamlit as st
 from PIL import Image
 
+from tools.constants import STATIC_DIR, LOGO_PATH
+
 
 class PageConfigManager:
     """Manages page configuration for the Streamlit application."""
     
-    # Default icon path
-    DEFAULT_ICON_PATH = "static/D4Xgui_logo_master_red08.png"
+    DEFAULT_ICON_PATH = LOGO_PATH
     
     def __init__(self, icon_path: Optional[str] = None):
         """Initialize the page configuration manager.
@@ -77,8 +78,8 @@ class PageConfigManager:
             5: {"page_title": "D4Xgui - 📊 Standardization Results", **self._shared_config},
             6: {"page_title": "D4Xgui - 🪄 Dual Clumped Space", **self._shared_config},
             7: {"page_title": "D4Xgui - 🔮 Discover Results", **self._shared_config},
-            8: {"page_title": "D4Xgui - 🧩 D47crunch plots", **self._shared_config},
             97: {"page_title": "D4Xgui - 🗃️ Database management", **self._shared_config},
+            98: {"page_title": "D4Xgui - ⚙️ Settings", **self._shared_config},
             99: {"page_title": "D4Xgui - 🧠 Session state", **self._shared_config},
             100: {"page_title": "D4Xgui - 💾 Save & Reload", **self._shared_config},
         }
@@ -127,7 +128,7 @@ def set_page_config(page_number: int) -> None:
 
 # Legacy configuration dictionaries for backward compatibility
 try:
-    icon = Image.open("static/D4Xgui_logo_master_red08.png")
+    icon = Image.open(LOGO_PATH)
 except Exception:
     icon = None
 
@@ -154,7 +155,7 @@ PAGE_CONFIG = {
     5: {"page_title": "D4Xgui - 📊 Standardization Results", **_SHARED},
     6: {"page_title": "D4Xgui - 🪄 Dual Clumped Space", **_SHARED},
     7: {"page_title": "D4Xgui - 🔮 Discover Results", **_SHARED},
-    8: {"page_title": "D4Xgui - 🧩 D47crunch plots", **_SHARED},
     97: {"page_title": "D4Xgui - 🗃️ Database management", **_SHARED},
+    98: {"page_title": "D4Xgui - ⚙️ Settings", **_SHARED},
     99: {"page_title": "D4Xgui - 🧠 Session state", **_SHARED},
 }

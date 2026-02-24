@@ -16,41 +16,24 @@ import streamlit as st
 from scipy import optimize as so
 
 import tools.Pysotope_fork as tP
-from tools import sidebar_logo
+from tools.base_page import BasePage
 from tools.commons import PLOT_PARAMS, PlotlyConfig
-from tools.page_config import set_page_config
-from tools.sidebar_logo import SidebarLogoManager
-from tools.authenticator import Authenticator
+from tools.constants import KELVIN_OFFSET, SAMPLE_DB_PATH
+from tools.filters import filter_dataframe, render_sample_filter_sidebar
 
 
-class DualClumpedSpacePage:
+class DualClumpedSpacePage(BasePage):
     """Manages the Dual Clumped Space visualization page."""
+
+    PAGE_NUMBER = 6
+    PAGE_TITLE = "Dual Clumped Space"
 
     def __init__(self):
         """Initialize the DualClumpedSpacePage."""
-        self.sss = st.session_state
         self.symbols = PLOT_PARAMS.SYMBOLS
-        self._setup_page()
-        self._validate_data_requirements()
-
-    def _setup_page(self) -> None:
-        """Set up page configuration, logo, and authentication."""
-        st.title("Dual Clumped Space")
-        
-        set_page_config(6)
-        
-        logo_manager = SidebarLogoManager()
-        logo_manager.add_logo()
-        
-        if "PYTEST_CURRENT_TEST" not in os.environ:
-            authenticator = Authenticator()
-            if not authenticator.require_authentication():
-                st.stop()
-
-
-        
-        # Add custom CSS
+        super().__init__()
         self._add_custom_css()
+        self._validate_data_requirements()
 
     def _add_custom_css(self) -> None:
         """Add custom CSS styling to the page."""
@@ -87,7 +70,6 @@ class DualClumpedSpacePage:
             }
             .main {
                 align-content: center;
-                overflow: hidden;
                 height: auto;
                 margin: -80px auto 0px auto;
             }
@@ -138,7 +120,7 @@ class DualClumpedSpacePage:
     def _setup_filtering_options(self) -> None:
         """Set up filtering options in the sidebar."""
         # Check if sample database exists
-        has_sample_db = os.path.exists("static/SampleDatabase.xlsx")
+        has_sample_db = os.path.exists(SAMPLE_DB_PATH)
         
         if has_sample_db:
             st.sidebar.toggle(
@@ -158,7 +140,7 @@ class DualClumpedSpacePage:
         """Set up database-based filtering options."""
         col01, col02, col03, col04 = st.sidebar.columns(4)
         
-        df_filter = pd.read_excel("static/SampleDatabase.xlsx", engine="openpyxl")
+        df_filter = pd.read_excel(SAMPLE_DB_PATH, engine="openpyxl")
         
         # Normalize filter data
         for col in ["Type", "Project", "Mineralogy", "Publication"]:
@@ -194,23 +176,7 @@ class DualClumpedSpacePage:
 
     def _setup_text_filters(self) -> None:
         """Set up text-based filtering options."""
-        col1, col2 = st.sidebar.columns(2)
-        
-        with col1:
-            st.sidebar.text_input(
-                "Sample name contains (KEEP):",
-                help="Set multiple keywords by separating them through semicolons ;",
-                key="06_sample_contains",
-                value="",
-            )
-        
-        with col2:
-            st.sidebar.text_input(
-                "Sample name contains (DROP):",
-                help="Set multiple keywords by separating them through semicolons ;",
-                key="06_sample_not_contains",
-                value="",
-            )
+        render_sample_filter_sidebar("06", use_columns=True)
 
     def _setup_plot_controls(self) -> None:
         """Set up plot control options in the sidebar."""
@@ -220,8 +186,6 @@ class DualClumpedSpacePage:
             ("Sample mean ±err", "Overview replicates"), 
             key="level_plot"
         )
-        
-        self.sss._05_level_plot = "rep" if "replicates" in level_plot else "mean"
         
         # Error determination for mean plots
         if "mean" in level_plot:
@@ -237,6 +201,7 @@ class DualClumpedSpacePage:
             self.sss.error_dualClumped = error_mapping[error_dualClumped]
         
         # Additional options
+        st.sidebar.checkbox("Hide legend", key="06_hide_legend")
         st.sidebar.checkbox("Lock x/y ratio", key="fix_ratio")
         
         st.sidebar.checkbox(
@@ -301,23 +266,12 @@ class DualClumpedSpacePage:
 
     def _apply_text_filters(self, df: pd.DataFrame, column: str) -> pd.DataFrame:
         """Apply text-based filters to DataFrame."""
-        # Include filter
-        if (self.sss.get("06_sample_contains") and 
-            self.sss["06_sample_contains"].strip()):
-            include_terms = self.sss["06_sample_contains"].split(";")
-            df = df[df[column].apply(
-                lambda x: any(term.strip() in x for term in include_terms)
-            )]
-        
-        # Exclude filter
-        if (self.sss.get("06_sample_not_contains") and 
-            self.sss["06_sample_not_contains"].strip()):
-            exclude_terms = self.sss["06_sample_not_contains"].split(";")
-            df = df[~df[column].apply(
-                lambda x: any(term.strip() in x for term in exclude_terms)
-            )]
-        
-        return df
+        return filter_dataframe(
+            df,
+            include_str=self.sss.get("06_sample_contains", ""),
+            exclude_str=self.sss.get("06_sample_not_contains", ""),
+            column=column,
+        )
 
     def _apply_database_filters(self, df: pd.DataFrame, column: str) -> pd.DataFrame:
         """Apply database-based filters to DataFrame."""
@@ -354,6 +308,7 @@ class DualClumpedSpacePage:
         st.plotly_chart(
             fig,
             config=PlotlyConfig.CONFIG,
+            use_container_width=True,
         )
         
         # Provide download link
@@ -400,7 +355,6 @@ class DualClumpedSpacePage:
         
         # Prepare hover data
         hover_data = self._prepare_hover_data()
-        #st.write(summary)
         fig = px.scatter(
             summary,
             x=self.sss.x_axis,
@@ -412,6 +366,7 @@ class DualClumpedSpacePage:
             hover_data=hover_data,
             symbol="Sample",
             symbol_sequence=self.symbols,
+            category_orders={"Sample": sorted(summary["Sample"].unique())},
         ).update_traces(mode="lines+markers")
         
         # Update marker properties
@@ -449,7 +404,8 @@ class DualClumpedSpacePage:
             color="Sample",
             symbol="Sample",
             symbol_sequence=self.symbols,
-            hover_data=hover_data
+            hover_data=hover_data,
+            category_orders={"Sample": sorted(df["Sample"].unique())},
         )
         
         return fig
@@ -463,14 +419,12 @@ class DualClumpedSpacePage:
             return hover_data
         
         for calib in self.sss["04_used_calibs"]:
-            #st.write(calib)
             error_type = "2SE" if "2" in self.sss.error_dualClumped.format(mz="D47") else "1SE"
             hover_data.extend([
                 f"T(min, {error_type}), {calib}",
                 f"T(mean), {calib}",
                 f"T(max, {error_type}), {calib}"
             ])
-        #st.write(hover_data)
         return hover_data
 
     def _add_calibration_curves(self, fig: go.Figure, reprocessed: bool = False) -> None:
@@ -509,7 +463,7 @@ class DualClumpedSpacePage:
         # Temperature points for calibration
         temps_c = [8, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 
                    250, 300, 350, 400, 450, 500, 700, 900, 1100]
-        temps_k = np.array([1 / (t + 273.15) for t in temps_c])
+        temps_k = np.array([1 / (t + KELVIN_OFFSET) for t in temps_c])
         
         temps_y = y_func(temps_k, scaling_y, offset_y)
         temps_x = x_func(temps_k, scaling_x, offset_x)
@@ -540,7 +494,7 @@ class DualClumpedSpacePage:
         ))
         
         # Add calibration curve
-        calib_range = np.array([1 / (t + 273.15) for t in range(0, 1100, 1)])
+        calib_range = np.array([1 / (t + KELVIN_OFFSET) for t in range(0, 1100, 1)])
         calib_y = y_func(calib_range, scaling_y, offset_y)
         calib_x = x_func(calib_range, scaling_x, offset_x)
         
@@ -585,7 +539,7 @@ class DualClumpedSpacePage:
             #return 24952 / (t_kelvin ** 2) + 325.6 / t_kelvin - 0.365
             #return 0.003 * (1000. / t_kelvin)** 4 - 0.0438 * (1000. / t_kelvin)** 3 + 0.2443 * (1000. / t_kelvin)** 2 - 0.2195 * (
             #             1000. / t_kelvin) + 0.06161
-            x = 1000 / (t_celsius+ 273.15)
+            x = 1000 / (t_celsius + KELVIN_OFFSET)
             return (
                     0.003 * x ** 4
                     - 0.0438 * x ** 3
@@ -600,7 +554,7 @@ class DualClumpedSpacePage:
             Input: t_celsius (temperature in degrees Celsius)
             Output: Δ48 (per mil, ‰)
             """
-            t_kelvin = t_celsius + 273.15
+            t_kelvin = t_celsius + KELVIN_OFFSET
             # factor = 1e6 / (t_kelvin ** 2)
             # return (
             #     -1.0316e-4 * (factor ** 3)
@@ -681,11 +635,13 @@ class DualClumpedSpacePage:
         
         fig.update_layout(
             height=750,
+            margin=dict(r=40, t=40),
             xaxis=dict(title=x_title),
             yaxis=dict(title=y_title),
             hoverlabel=dict(font_size=20),
             legend=dict(font_size=15),
-            legend_title=dict(font_size=25)
+            legend_title=dict(font_size=25),
+            showlegend=not self.sss.get("06_hide_legend", False),
         )
         
         # Update trace and axis styling
@@ -729,7 +685,7 @@ class DualClumpedSpacePage:
         # Add temperature data
         calib_df = calib_df.copy()
         calib_df["T_C"] = calib_df["Sample"].map(preset_temperatures)
-        calib_df["T_1K"] = 1 / (calib_df["T_C"] + 273.15)
+        calib_df["T_1K"] = 1 / (calib_df["T_C"] + KELVIN_OFFSET)
         
         info_msg = 'The following calibration samples are included in the results:<br>'
         used_temps = {sample: preset_temperatures[sample] 
@@ -818,7 +774,7 @@ class DualClumpedSpacePage:
     @staticmethod
     def find_d47_temperature(temp: float, args: Dict[str, float]) -> float:
         """Find D47 temperature using optimization."""
-        return abs(args["D47 CDES"] - DualClumpedSpacePage.k47_temperature_function(1 / (temp + 273.15)))
+        return abs(args["D47 CDES"] - DualClumpedSpacePage.k47_temperature_function(1 / (temp + KELVIN_OFFSET)))
 
 
 if __name__ == "__main__":

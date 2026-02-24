@@ -12,17 +12,37 @@ from typing import List, Optional, Tuple, Union
 import pandas as pd
 import streamlit as st
 
+from tools.constants import REPLICATES_DB_PATH
+
 
 class DatabaseError(Exception):
     """Raised when database operations fail."""
     pass
 
 
+@contextmanager
+def db_connection(db_path):
+    """Shared SQLite connection context manager with automatic cleanup.
+
+    Yields a ``sqlite3.Connection``, rolls back on error, and always closes.
+    """
+    conn = None
+    try:
+        conn = sqlite3.connect(str(db_path))
+        yield conn
+    except sqlite3.Error as e:
+        if conn:
+            conn.rollback()
+        raise DatabaseError(f"Database error: {e}") from e
+    finally:
+        if conn:
+            conn.close()
+
+
 class DatabaseManager:
     """Manages SQLite database operations for replicate data."""
     
-    # Database configuration
-    DEFAULT_DB_NAME = 'pre_replicates.db'
+    DEFAULT_DB_PATH = REPLICATES_DB_PATH
     TABLE_NAME = 'replicates'
     
     # Required columns for the replicates table
@@ -47,7 +67,7 @@ class DatabaseManager:
         )
     '''
     
-    def __init__(self, db_path: Union[str, Path] = DEFAULT_DB_NAME):
+    def __init__(self, db_path: Union[str, Path] = DEFAULT_DB_PATH):
         """Initialize the database manager.
         
         Args:
@@ -63,17 +83,8 @@ class DatabaseManager:
         Yields:
             sqlite3.Connection: Database connection.
         """
-        conn = None
-        try:
-            conn = sqlite3.connect(str(self.db_path))
+        with db_connection(self.db_path) as conn:
             yield conn
-        except sqlite3.Error as e:
-            if conn:
-                conn.rollback()
-            raise DatabaseError(f"Database error: {e}") from e
-        finally:
-            if conn:
-                conn.close()
     
     def _ensure_initialized(self) -> None:
         """Ensure the database is initialized with required tables."""
@@ -267,9 +278,8 @@ class DatabaseManager:
             else:
                 df = pd.read_sql_query(f"SELECT * FROM {self.TABLE_NAME}", conn)
         
-        # Handle 'Temp' column if present
         if 'Temp' in df.columns:
-            df['Temp'] = pd.to_numeric(df['Temp'], errors='coerce')
+            df['Temp'] = df['Temp'].astype(str)
         
         return df
     

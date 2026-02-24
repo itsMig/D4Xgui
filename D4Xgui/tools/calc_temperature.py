@@ -1,4 +1,3 @@
-from scipy.optimize import  minimize_scalar
 """Temperature calculation module for clumped isotope analysis.
 
 This module provides functions to calculate clumped isotope values (D47, D48, D63, D64, D65)
@@ -7,7 +6,9 @@ as a function of temperature using polynomial equations from published calibrati
 """
 
 from typing import Union, Tuple
+
 import numpy as np
+from scipy.optimize import minimize_scalar
 
 
 
@@ -192,4 +193,33 @@ class TemperatureCalculator:
         inverse_temp_k = 1 / (temp_celsius + 273.15)
         calculated_d48 = cls.calculate_d48_fiebig2024(inverse_temp_k)
         return abs(target_d48 - calculated_d48)
+
+    @classmethod
+    def get_temperature_difference_d47_anderson2021(cls, temp_celsius: float, target_d47: float) -> float:
+        """Calculate absolute difference between target D47 and Anderson (2021) D47.
+
+        Args:
+            temp_celsius: Temperature in Celsius.
+            target_d47: Target D47 value.
+
+        Returns:
+            Absolute difference.
+        """
+        return abs(target_d47 - ((0.0391 * 1e6 / temp_celsius ** 2) + 0.154))
+
+    @classmethod
+    def direct_temperature_swart2021(cls, d47: float) -> float:
+        """Calculate temperature using Swart (2021): D47(CDES90) = 0.039 * 10^6/T^2 + 0.158.
+
+        Args:
+            d47: The D47 value.
+
+        Returns:
+            Temperature in degrees Celsius.
+        """
+        try:
+            temp_k = np.sqrt(1e6 * 0.039 / (d47 - 0.158))
+            return temp_k - 273.15
+        except (ValueError, ZeroDivisionError):
+            return np.nan
 
