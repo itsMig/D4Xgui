@@ -7,11 +7,8 @@ import numpy as np
 import io
 import base64
 import os
-import re
-from datetime import datetime
-from typing import Dict, List, Optional, Any, Union, Tuple
+from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass
-from dateutil import parser as dateutil_parser
 
 import D47crunch as D47c
 from scipy.stats import t
@@ -24,6 +21,7 @@ from tools.constants import (
 from tools.init_params import IsotopeStandards
 from tools.commons import clear_session_cache
 from tools.calc_temperature import TemperatureCalculator as _BaseTemperatureCalculator
+from tools.datetime_parsing import normalize_datetime_series
 from scipy import optimize as so
 
 @dataclass
@@ -312,13 +310,6 @@ class DataProcessor:
     
     def __init__(self, session_state: st.session_state):
         self.sss = session_state
-        self.DATETIME_FORMATS = [
-        "%Y-%m-%d %H:%M:%S",
-        "%Y-%m-%dT%H:%M:%S",
-        "%Y-%m-%d %H:%M",
-        "%Y-%m-%dT%H:%M",
-        "%Y-%m-%d",
-    ]
     
     @staticmethod
     def smart_numeric_conversion(series):
@@ -467,163 +458,17 @@ class DataProcessor:
     
 
     
-    def _is_datetime_column(dtype) -> bool:
-        """Check if column is already datetime type."""
-        return np.issubdtype(dtype, np.datetime64)
-    
-    def _try_standard_formats(self, timestamp_str: str) -> Optional[datetime]:
-        """Try parsing with standard datetime formats."""
-        for fmt in self.DATETIME_FORMATS:
-            try:
-                return datetime.strptime(timestamp_str, fmt)
-            except ValueError:
-                continue
-        return None
-    
-    def _clean_timestamp(timestamp_str: str) -> str:
-        """
-        Clean timestamp string by removing problematic characters.
-
-        Preserves: digits, spaces, colons, hyphens, periods, T separator
-        Removes: timezone abbreviations (PDT, EST, etc.), extra symbols
-
-        Args:
-            timestamp_str: Raw timestamp string
-
-        Returns:
-            Cleaned timestamp string
-        """
-        # Remove timezone abbreviations (3-4 letter codes at end)
-        # e.g., "2020-07-29 01:00 PDT" -> "2020-07-29 01:00"
-        cleaned = re.sub(r'\s+[A-Z]{2,4}$', '', timestamp_str)
-        
-        # Keep only useful characters: digits, space, :, -, ., T, +, Z
-        cleaned = "".join(
-            char for char in cleaned
-            if char.isdigit() or char in (" ", ":", "-", ".", "T", "+", "Z")
-        )
-        
-        return cleaned.rstrip()
-    
-    def _parse_single_timestamp(self, timestamp_str: str) -> Optional[datetime]:
-        """
-        Parse a single timestamp string with multiple fallback strategies.
-
-        Strategies in order:
-        1. Standard datetime formats (fastest)
-        2. ISO format parsing
-        3. dateutil flexible parser (handles timezone abbreviations like PDT, EST)
-        4. Last resort: attempt to clean and reparse
-
-        Args:
-            timestamp_str: Timestamp string to parse
-
-        Returns:
-            Parsed datetime object or None if parsing fails
-        """
-        if pd.isna(timestamp_str) or timestamp_str == "":
-            return None
-        
-        timestamp_str = str(timestamp_str).strip()
-        
-        # Strategy 1: Try standard formats (fast)
-        result = self._try_standard_formats(timestamp_str)
-        if result is not None:
-            return result
-        
-        # Strategy 2: Try ISO format (handles T separator)
-        try:
-            return datetime.fromisoformat(timestamp_str)
-        except ValueError:
-            pass
-        
-        # Strategy 3: Use dateutil parser for flexibility
-        # Handles timezone abbreviations (PDT, EST, etc.), various formats
-        try:
-            return dateutil_parser.parse(timestamp_str, fuzzy=False)
-        except (ValueError, TypeError):
-            pass
-        
-        # Strategy 4: Clean special characters and retry
-        try:
-            cleaned = self._clean_timestamp(timestamp_str)
-            # Try standard formats on cleaned string
-            result = self._try_standard_formats(cleaned)
-            if result is not None:
-                return result
-            # Final attempt with dateutil
-            return dateutil_parser.parse(cleaned, fuzzy=False)
-        except (ValueError, TypeError):
-            return None
-    
     def _process_timestamps(
             self,
             dataset: pd.DataFrame,
             column: str = "Timetag",
-            errors: str = "coerce",
-            infer_datetime_format: bool = True,
+            **_kwargs,
     ) -> pd.DataFrame:
-        """
-        Process and standardize timestamp column in dataframe.
-
-        Args:
-            dataset: Input dataframe
-            column: Name of timestamp column (default: "Timetag")
-            errors: How to handle parsing errors
-                - "coerce": Convert unparseable values to NaT (default)
-                - "raise": Raise exception on first error
-                - "warn": Log warnings but continue
-            infer_datetime_format: Let pandas infer datetime format
-
-        Returns:
-            Dataframe with standardized datetime column
-
-        Raises:
-            ValueError: If column not found or errors='raise'
-            KeyError: If column doesn't exist
-        """
+        """Normalize *column* to datetime64 using the shared helper."""
         if column not in dataset.columns:
             raise KeyError(f"Column '{column}' not found in dataframe")
-        
-        if isinstance(dataset[column].dtype, np.datetime64):
-            return dataset
-        
         dataset = dataset.copy()
-        
-        # Try pandas to_datetime first (fastest for standard formats)
-        try:
-            dataset[column] = pd.to_datetime(
-                dataset[column],
-                errors="coerce" if errors != "raise" else "raise",
-                infer_datetime_format=infer_datetime_format,
-            )
-            # Check if all values parsed successfully
-            if dataset[column].isna().sum() == 0:
-                return dataset
-        except Exception as e:
-            if errors == "raise":
-                raise ValueError(
-                    f"Failed to parse timestamps in column '{column}': {e}"
-                )
-
-
-        parsed_timestamps = []
-        failed_rows = []
-        
-        for idx, ts in enumerate(dataset[column]):
-            parsed_ts = self._parse_single_timestamp(ts)
-            
-            if parsed_ts is None:
-                failed_rows.append((idx, ts))
-                if errors == "raise":
-                    raise ValueError(
-                        f"Cannot parse timestamp at row {idx}: {ts!r}"
-                    )
-            
-            parsed_timestamps.append(parsed_ts)
-        
-        dataset[column] = pd.to_datetime(parsed_timestamps, errors="coerce")
-        
+        dataset[column] = normalize_datetime_series(dataset[column])
         return dataset
     
     def _create_summary_dataset(self, isotope_objects: List[Any], 

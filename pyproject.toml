@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "D4Xgui"
-version = "1.0.3"
+version = "1.0.4"
 description = "Processing app for mass-spectrometric CO₂ clumped isotope (∆₄₇, ∆₄₈, ∆₄₉) data"
 readme = "README.md"
 license = {text = "MIT"}
@@ -55,7 +55,7 @@ packages = ["D4Xgui", "D4Xgui.tools", "D4Xgui.pages"]
 D4Xgui = ["static/**", ]
 
 [tool.setuptools.exclude-package-data]
-"*" = ["*.db"]
+"*" = ["*.db", "*.pyc", "*.pyo", ".DS_Store", "~$*"]
 
 [tool.black]
 line-length = 120

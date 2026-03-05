@@ -13,6 +13,7 @@ import plotly.express as px
 from tools.base_page import BasePage
 from tools.constants import SAMPLE_DB_PATH, STATIC_DIR
 from tools.database import DatabaseManager
+from tools.datetime_parsing import normalize_datetime_series
 from tools.init_params import IsotopeStandards
 
 
@@ -283,36 +284,72 @@ class DataIOPage(BasePage):
             df.drop_duplicates(inplace=True)
             if "Sample" not in df.columns:
                 df["Sample"] = ""
-            df["Sample"] = df["Sample"].astype(str)
 
-            # Sanitize sample names
-            for char in ("+", ":", "(", ")", "&", ',', ';'):
-                for col in 'Sample', 'Session':
+            for key in ("Sample", "Session"):
+                if key in df.columns:
+                    df[key] = df[key].astype(str)
+
+            # Sanitize sample/session names
+            for char in ("+", ":", "(", ")", "&", ",", ";"):
+                for col in ("Sample", "Session"):
+                    if col not in df.columns:
+                        continue
                     if df[col].str.contains(char, regex=False).any():
                         st.info(f"{col} must not contain `{char}` --> removed!")
                         df[col] = df[col].str.replace(char, "", regex=False)
-                
+
             # Standardize sample names
             rename_dict = {
                 **{f"ETH {i}": f"ETH-{i}" for i in range(1, 5)},
                 **{f"ETH{i}": f"ETH-{i}" for i in range(1, 5)},
-                "25G": "25C", "EG": "25C", "HG": "1000C", 
-                "Heated": "1000C", "GU-1": "GU1"
+                "25G": "25C", "EG": "25C", "HG": "1000C",
+                "Heated": "1000C", "GU-1": "GU1",
             }
             df["Sample"].replace(rename_dict, inplace=True)
 
-            for key in ('Session', 'Sample'):
+            for key in ("Session", "Sample"):
                 if key in df.columns:
-                    df[key] = df[key].astype('string')
+                    df[key] = df[key].astype("string")
 
-            if "Timetag" not in df.columns:
-                datetime_columns = [key for key in df.columns if key.lower() in ("date", "time", "datetime")]
+            # --- Timetag resolution -----------------------------------------
+            has_timetag_col = "Timetag" in df.columns
+            if not has_timetag_col:
+                datetime_columns = [
+                    key for key in df.columns
+                    if key.lower() in ("date", "time", "datetime")
+                ]
                 if datetime_columns:
                     df.rename(columns={datetime_columns[0]: "Timetag"}, inplace=True)
-                else:
-                    st.error("No Timetag column provided! An artificial Timetag is created.")
-                    d0 = pd.to_datetime('1900-01-01 00:00:00')
-                    df['Timetag'] = [d0 + pd.Timedelta(days=i) for i in range(len(df))]
+                    has_timetag_col = True
+
+            use_artificial = False
+            if has_timetag_col:
+                df["Timetag"] = normalize_datetime_series(df["Timetag"])
+                n_nat = df["Timetag"].isna().sum()
+                if n_nat == len(df):
+                    st.warning(
+                        "Timetag column found but none of the values could be "
+                        "interpreted as datetime. Please use ISO format "
+                        "(e.g. `2024-03-15T10:30:00`). Using artificial Timetag."
+                    )
+                    use_artificial = True
+                elif n_nat:
+                    st.info(
+                        f"{n_nat} Timetag value(s) could not be parsed, consider "
+                        "using ISO format (e.g. `2024-03-15T10:30:00`). "
+                        "Using artificial Timetag. "
+                    )
+                    use_artificial = True
+            else:
+                st.warning(
+                    "No Timetag / date / time column found. "
+                    "An artificial Timetag is created."
+                )
+                use_artificial = True
+
+            if use_artificial:
+                d0 = pd.to_datetime("1900-01-01 00:00:00")
+                df["Timetag"] = [d0 + pd.Timedelta(days=i) for i in range(len(df))]
 
             for col in ("Outlier", "Project", "Type"):
                 if col not in df.columns:

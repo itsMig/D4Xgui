@@ -7,5 +7,8 @@ recursive-include D4Xgui/commons *
 recursive-include D4Xgui/tools *
 recursive-include D4Xgui/pages *
 include requirements.txt
-
-
+recursive-exclude D4Xgui *.db
+recursive-exclude D4Xgui __pycache__ *.pyc *.pyo
+recursive-exclude D4Xgui .DS_Store
+recursive-exclude D4Xgui ~$*
+exclude .DS_Store .gitignore
