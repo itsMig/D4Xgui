@@ -6,6 +6,7 @@ import base64
 import io
 import itertools
 import os
+import re
 from typing import Dict, List, Optional, Tuple, Any
 
 import numpy as np
@@ -14,12 +15,32 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 from scipy import optimize as so
+from scipy.stats import chi2
 
 import tools.Pysotope_fork as tP
 from tools.base_page import BasePage
 from tools.commons import PLOT_PARAMS, PlotlyConfig
 from tools.constants import KELVIN_OFFSET, SAMPLE_DB_PATH
+from tools.ellipse import ellipse_boundary_points, ellipse_params_from_uncertainty
 from tools.filters import filter_dataframe, render_sample_filter_sidebar
+
+
+def _rgba_with_alpha(color_str: str, alpha: float) -> str:
+    """Best-effort conversion of a Plotly colour string to rgba with *alpha*."""
+    rgb_match = re.match(r"rgb\((\d+),\s*(\d+),\s*(\d+)\)", color_str)
+    if rgb_match:
+        r, g, b = rgb_match.groups()
+        return f"rgba({r},{g},{b},{alpha})"
+    rgba_match = re.match(r"rgba\((\d+),\s*(\d+),\s*(\d+),\s*[\d.]+\)", color_str)
+    if rgba_match:
+        r, g, b = rgba_match.groups()
+        return f"rgba({r},{g},{b},{alpha})"
+    hex_match = re.match(r"^#([0-9a-fA-F]{6})$", color_str)
+    if hex_match:
+        h = hex_match.group(1)
+        r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+        return f"rgba({r},{g},{b},{alpha})"
+    return f"rgba(128,128,128,{alpha})"
 
 
 class DualClumpedSpacePage(BasePage):
@@ -183,12 +204,12 @@ class DualClumpedSpacePage(BasePage):
         # Plot level selection
         level_plot = st.sidebar.radio(
             "Choose plot level:", 
-            ("Sample mean ±err", "Overview replicates"), 
+            ("Sample mean", "All replicates", "Together"), 
             key="level_plot"
         )
         
-        # Error determination for mean plots
-        if "mean" in level_plot:
+        # Error determination for mean plots (and "Both" mode)
+        if level_plot in ("Sample mean", "Together"):
             error_dualClumped = st.sidebar.radio(
                 "Error determination:",
                 ("fully propagated 2SE", "fully propagated 1SE", "via long-term repeatability"),
@@ -199,7 +220,27 @@ class DualClumpedSpacePage(BasePage):
                 "via long-term repeatability": "{mz} 2SE (longterm)",
             }
             self.sss.error_dualClumped = error_mapping[error_dualClumped]
-        
+
+            st.sidebar.radio(
+                "Uncertainty display:",
+                ("Error ellipses", "Error bars", "Both"),
+                key="uncertainty_style",
+            )
+
+            if self.sss.get("uncertainty_style") in ("Error ellipses", "Both"):
+                st.sidebar.radio(
+                    "Covariance source:",
+                    ("From replicates", "Zero (axis-aligned)"),
+                    key="covariance_source",
+                    help=(
+                        "**From replicates** estimates the Δx–Δy correlation per sample "
+                        "from paired replicate measurements (hybrid: ρ from replicates, "
+                        "marginal SEs from D47crunch propagation). "
+                        "**Zero** assumes no cross-isotope covariance, giving axis-aligned ellipses. "
+                        "Samples with fewer than 3 replicates are excluded from ellipse rendering."
+                    ),
+                )
+
         # Additional options
         st.sidebar.checkbox("Hide legend", key="06_hide_legend")
         st.sidebar.checkbox("Lock x/y ratio", key="fix_ratio")
@@ -242,11 +283,11 @@ class DualClumpedSpacePage(BasePage):
     def _get_unique_split_values(self, df: pd.DataFrame, column: str) -> List[str]:
         """Get unique values from a column that may contain comma-separated values."""
         return sorted(set(
-            strip.strip(" ")
-            for strip in itertools.chain(*[
+            part.strip()
+            for part in itertools.chain.from_iterable(
                 str(value).lower().split(", ")
                 for value in df[column].dropna().unique()
-            ])
+            )
         ))
 
     def _apply_filters(self) -> None:
@@ -261,8 +302,7 @@ class DualClumpedSpacePage(BasePage):
         """Apply filtering logic to a DataFrame."""
         if not self.sss["filter_mode"]:
             return self._apply_text_filters(df, column)
-        else:
-            return self._apply_database_filters(df, column)
+        return self._apply_database_filters(df, column)
 
     def _apply_text_filters(self, df: pd.DataFrame, column: str) -> pd.DataFrame:
         """Apply text-based filters to DataFrame."""
@@ -279,19 +319,15 @@ class DualClumpedSpacePage(BasePage):
         if df_filter is None:
             return df
         
-        filter_mask = pd.Series([False] * len(df))
+        filter_mask = pd.Series(False, index=df.index)
         
         for filter_type in ["Project", "Type", "Mineralogy", "Publication"]:
             selected_values = self.sss.get(filter_type, [])
             if selected_values:
                 for value in selected_values:
-                    # Create regex pattern for safe matching
-                    value_regex = value.replace('.', r'\.').replace('(', r'\(').replace(')', r'\)')
-                    
-                    # Find matching samples in filter database
                     matching_samples = df_filter.loc[
                         df_filter[filter_type].str.contains(
-                            f"(?i){value_regex}", regex=True, na=False
+                            re.escape(value), case=False, regex=True, na=False
                         ), 'Sample'
                     ]
                     
@@ -319,7 +355,10 @@ class DualClumpedSpacePage(BasePage):
         """Create the main dual clumped space plot."""
         level_plot = self.sss.level_plot
         
-        if "mean" in level_plot:
+        if level_plot == "Together":
+            fig = self._create_replicate_plot()
+            self._overlay_mean_traces(fig)
+        elif level_plot == "Sample mean":
             fig = self._create_mean_plot()
         else:
             fig = self._create_replicate_plot()
@@ -341,8 +380,25 @@ class DualClumpedSpacePage(BasePage):
         
         return fig
 
+    def _compute_replicate_covariance(self, x_col: str, y_col: str) -> Dict[str, Optional[float]]:
+        """Compute per-sample Pearson rho from paired replicate measurements.
+
+        Returns a dict mapping sample name to rho (or None when N < 3 or
+        the correlation is undefined).
+        """
+        reps = self.sss.correction_output_full_dataset
+        rho_map: Dict[str, Optional[float]] = {}
+        for sample, grp in reps.groupby("Sample"):
+            sub = grp[[x_col, y_col]].dropna()
+            if len(sub) < 3:
+                rho_map[sample] = None
+            else:
+                r = sub[[x_col, y_col]].corr().iloc[0, 1]
+                rho_map[sample] = None if np.isnan(r) else float(r)
+        return rho_map
+
     def _create_mean_plot(self) -> go.Figure:
-        """Create a plot showing sample means with error bars."""
+        """Create a plot showing sample means with error bars or ellipses."""
         summary = self.sss._06_filtered_summary
         
         if len(summary) == 0:
@@ -352,38 +408,148 @@ class DualClumpedSpacePage(BasePage):
             )
             st.markdown("  \n  ".join(available_samples))
             st.stop()
-        
+
+        uncertainty_style = self.sss.get("uncertainty_style", "Error bars")
+        use_ellipses = uncertainty_style in ("Error ellipses", "Both")
+        use_error_bars = uncertainty_style in ("Error bars", "Both")
+
+        x_axis, y_axis = self.sss.x_axis, self.sss.y_axis
+        err_template = self.sss.error_dualClumped
+        x_err_col = err_template.format(mz=x_axis)
+        y_err_col = err_template.format(mz=y_axis)
+
+        # In ellipse mode, compute rho and attach to the summary for hover
+        rho_map: Dict[str, Optional[float]] = {}
+        if use_ellipses:
+            covariance_source = self.sss.get("covariance_source", "Zero (axis-aligned)")
+            if covariance_source == "From replicates":
+                rho_map = self._compute_replicate_covariance(x_axis, y_axis)
+            summary = summary.copy()
+            summary["ρ (rho)"] = summary["Sample"].map(
+                lambda s: round(rho_map[s], 3) if rho_map.get(s) is not None else None
+            )
+
         # Prepare hover data
-        hover_data = self._prepare_hover_data()
-        fig = px.scatter(
-            summary,
-            x=self.sss.x_axis,
-            y=self.sss.y_axis,
-            error_x=self.sss.error_dualClumped.format(mz=self.sss.x_axis),
-            error_y=self.sss.error_dualClumped.format(mz=self.sss.y_axis),
+        hover_data = self._prepare_hover_data(ellipse_mode=use_ellipses)
+
+        scatter_kwargs: Dict[str, Any] = dict(
+            data_frame=summary,
+            x=x_axis,
+            y=y_axis,
             text="Sample",
             color="Sample",
             hover_data=hover_data,
             symbol="Sample",
             symbol_sequence=self.symbols,
             category_orders={"Sample": sorted(summary["Sample"].unique())},
-        ).update_traces(mode="lines+markers")
-        
-        # Update marker properties
+        )
+
+        if use_error_bars:
+            scatter_kwargs["error_x"] = x_err_col
+            scatter_kwargs["error_y"] = y_err_col
+
+        fig = px.scatter(**scatter_kwargs).update_traces(mode="lines+markers")
         fig.update_traces(marker=dict(size=11))
-        
-        # Reduce error bar thickness
+
         for trace in fig.data:
-            if hasattr(trace, 'error_y'):
-                trace.error_y.thickness = 0.75
-        
+            trace.legendgroup = trace.name
+
+        if use_error_bars:
+            for trace in fig.data:
+                if hasattr(trace, "error_y"):
+                    trace.error_y.thickness = 0.75
+
+        if not use_ellipses:
+            return fig
+
+        # --- Ellipse rendering ---
+        # 95 % confidence ellipse: scale = sqrt(chi2_ppf(0.95, df=2)) ≈ 2.4477
+        n_sigma = float(np.sqrt(chi2.ppf(0.95, 2)))
+        col_is_2se = err_template != "SE_{mz}"
+
+        trace_color_map: Dict[str, str] = {}
+        for trace in fig.data:
+            if trace.name:
+                trace_color_map[trace.name] = trace.marker.color
+
+        ellipse_traces = []
+        for _, row in summary.iterrows():
+            sample = row["Sample"]
+
+            sx = row.get(x_err_col, np.nan)
+            sy = row.get(y_err_col, np.nan)
+            if np.isnan(sx) or np.isnan(sy) or sx <= 0 or sy <= 0:
+                continue
+
+            # For 2SE / longterm columns the value is already 2*SE; normalise
+            # back to 1-SE for the covariance matrix, then apply n_sigma.
+            if col_is_2se:
+                sx_1se, sy_1se = sx / 2.0, sy / 2.0
+            else:
+                sx_1se, sy_1se = sx, sy
+
+            # Use replicate rho when available (N >= 3); fall back to rho=0
+            rho = rho_map.get(sample)
+            cov_xy = rho * sx_1se * sy_1se if rho is not None else 0.0
+
+            semi_major, semi_minor, angle = ellipse_params_from_uncertainty(
+                sx_1se, sy_1se, cov_xy=cov_xy, n_sigma=n_sigma,
+            )
+            xs, ys = ellipse_boundary_points(
+                row[x_axis], row[y_axis], semi_major, semi_minor, angle,
+            )
+
+            base_color = trace_color_map.get(sample, "grey")
+            fill_color = _rgba_with_alpha(base_color, 0.05)
+
+            ellipse_traces.append(go.Scatter(
+                x=xs,
+                y=ys,
+                mode="lines",
+                line=dict(color=base_color, width=1),
+                fill="toself",
+                fillcolor=fill_color,
+                legendgroup=sample,
+                showlegend=False,
+                hoverinfo="skip",
+            ))
+
+        # Add ellipse traces then reorder so they render behind the points
+        n_existing = len(fig.data)
+        for trace in ellipse_traces:
+            fig.add_trace(trace)
+        n_total = len(fig.data)
+        new_order = list(range(n_existing, n_total)) + list(range(n_existing))
+        fig.data = tuple(fig.data[i] for i in new_order)
+
         return fig
+
+    def _overlay_mean_traces(self, fig: go.Figure) -> None:
+        """Add mean ± uncertainty traces (error bars or ellipses) onto *fig*.
+
+        Used in "Both" mode: replicates are already plotted, and this method
+        layers the sample-mean markers with their uncertainty on top.
+        """
+        mean_fig = self._create_mean_plot()
+
+        # Collect existing legend groups from the replicate figure so we
+        # can suppress duplicate legend entries for the mean traces.
+        existing_groups = {t.legendgroup or t.name for t in fig.data}
+
+        for trace in mean_fig.data:
+            if trace.name:
+                trace.legendgroup = trace.name
+                if trace.name in existing_groups:
+                    trace.showlegend = False
+            # Increase marker size slightly so means stand out over replicates
+            if hasattr(trace, "marker") and trace.marker is not None:
+                trace.marker.size = 14
+                trace.marker.line = dict(width=1.5, color="black")
+            fig.add_trace(trace)
 
     def _create_replicate_plot(self) -> go.Figure:
         """Create a plot showing individual replicates."""
-        level_plot = self.sss.level_plot
-        df = (self.sss._06_filtered_summary if "mean" in level_plot 
-              else self.sss._06_filtered_reps)
+        df = self.sss._06_filtered_reps.copy()
         
         # Ensure numeric data types
         try:
@@ -407,14 +573,23 @@ class DualClumpedSpacePage(BasePage):
             hover_data=hover_data,
             category_orders={"Sample": sorted(df["Sample"].unique())},
         )
-        
+
+        for trace in fig.data:
+            trace.legendgroup = trace.name
+
         return fig
 
-    def _prepare_hover_data(self) -> List[str]:
+    def _prepare_hover_data(self, ellipse_mode: bool = False) -> List[str]:
         """Prepare hover data for mean plots."""
         
         hover_data = ["N", "d13C_VPDB", "d18O_CO2_VSMOW"]
-        
+
+        if ellipse_mode:
+            err_template = self.sss.error_dualClumped
+            hover_data.append(err_template.format(mz=self.sss.x_axis))
+            hover_data.append(err_template.format(mz=self.sss.y_axis))
+            hover_data.append("ρ (rho)")
+
         if not self.sss.params_last_run["process_D47"]:
             return hover_data
         
@@ -523,22 +698,7 @@ class DualClumpedSpacePage(BasePage):
     def _add_co2_equilibrium(self, fig: go.Figure) -> None:
         """Add CO2 equilibrium curve to the plot."""
         def delta_47_equilibrium(t_celsius: np.ndarray) -> np.ndarray:
-            """
-            Calculate CO2 equilibrium Δ47 (in ‰) using Cao & Liu (2012).
-            Input: t_celsius (temperature in degrees Celsius)
-            Output: Δ47 (per mil, ‰)
-            """
-            # t_kelvin = t_celsius + 273.15
-            # return 25932 / (t_kelvin ** 2) + 266.6 / t_kelvin - 0.2446
-            _="""
-            Calculate CO2 equilibrium Δ47 (in ‰) using Wang et al. (2004).
-            Input: t_celsius (temperature in degrees Celsius)
-            Output: Δ47 (per mil, ‰)
-            """
-            # t_kelvin = t_celsius + 273.15
-            #return 24952 / (t_kelvin ** 2) + 325.6 / t_kelvin - 0.365
-            #return 0.003 * (1000. / t_kelvin)** 4 - 0.0438 * (1000. / t_kelvin)** 3 + 0.2443 * (1000. / t_kelvin)** 2 - 0.2195 * (
-            #             1000. / t_kelvin) + 0.06161
+            """CO2 equilibrium Δ47 (‰) after Wang et al. (2004)."""
             x = 1000 / (t_celsius + KELVIN_OFFSET)
             return (
                     0.003 * x ** 4
@@ -549,37 +709,13 @@ class DualClumpedSpacePage(BasePage):
             )
 
         def delta_48_equilibrium(t_celsius: np.ndarray) -> np.ndarray:
-            """
-            Calculate CO2 equilibrium Δ48 (in ‰) using Cao & Liu (2012).
-            Input: t_celsius (temperature in degrees Celsius)
-            Output: Δ48 (per mil, ‰)
-            """
-            t_kelvin = t_celsius + KELVIN_OFFSET
-            # factor = 1e6 / (t_kelvin ** 2)
-            # return (
-            #     -1.0316e-4 * (factor ** 3)
-            #     + 4.2175e-3 * (factor ** 2)
-            #     - 3.7502e-3 * factor
-            # )
-            _="""
-            Calculate CO2 equilibrium Δ48 (in ‰) using Wang et al. (2004).
-            Input: t_celsius (temperature in degrees Celsius)
-            Output: Δ48 (per mil, ‰)
-            """
-            #t_kelvin = t_celsius + 273.15
-            factor = 1e6 / (t_kelvin ** 2)
-            # return (
-            #    -9.154e-5 * (factor ** 3)
-            #    + 3.707e-3 * (factor ** 2)
-            #    - 3.522e-3 * factor
-            # )
-            term1 = -1.0345e-4 * (1e6 / t_kelvin ** 2) ** 3
-            term2 = 4.22629e-3 * (1e6 / t_kelvin ** 2) ** 2
-            term3 = -3.76112e-3 * (1e6 / t_kelvin ** 2)
-            return term1 + term2 + term3
-            # return -1.0345 * 10 ** -4 * (10 ** 6. / (t_kelvin ** 2))** 3 + 4.22629 * 10 ** -3 * (
-            #             10 ** 6. / (t_kelvin ** 2))** 2 - 3.76112 * 10 ** -3 * (10 ** 6. / (t_kelvin ** 2))
-            #
+            """CO2 equilibrium Δ48 (‰) after Wang et al. (2004)."""
+            factor = 1e6 / (t_celsius + KELVIN_OFFSET) ** 2
+            return (
+                -1.0345e-4 * factor ** 3
+                + 4.22629e-3 * factor ** 2
+                - 3.76112e-3 * factor
+            )
         temp_range = np.arange(0, 1200, 1)
         d47_values = delta_47_equilibrium(temp_range)
         d48_values = delta_48_equilibrium(temp_range)
@@ -744,9 +880,6 @@ class DualClumpedSpacePage(BasePage):
 
     def _create_html_download_link(self, fig: go.Figure) -> str:
         """Create a download link for the plot as HTML."""
-        import plotly.io as pio
-        
-        #pio.templates.default = "plotly"
         html_buffer = io.StringIO()
         fig.write_html(html_buffer)
         
@@ -755,26 +888,6 @@ class DualClumpedSpacePage(BasePage):
         
         return (f'<a href="data:text/html;charset=utf-8;base64,{b64}" '
                 f'download="dual_clumped_plot.html">Download plot</a>')
-
-    @staticmethod
-    def k47_temperature_function(d47: float) -> float:
-        """Calculate temperature from D47 values using calibration function."""
-        scaling_47, offset_47 = 1.0383389103254164, 0.18482382659656857
-        
-        def polynomial_4th_order(coeffs: Tuple[float, ...], x: float) -> float:
-            """Calculate 4th order polynomial."""
-            return (coeffs[0] * x + coeffs[1] * x**2 + 
-                   coeffs[2] * x**3 + coeffs[3] * x**4)
-        
-        poly_63 = (-5.896755e00, -3.520888e03, 2.391274e07, -3.540693e09)
-        poly_vals = polynomial_4th_order(poly_63, d47)
-        
-        return (poly_vals * scaling_47) + offset_47
-
-    @staticmethod
-    def find_d47_temperature(temp: float, args: Dict[str, float]) -> float:
-        """Find D47 temperature using optimization."""
-        return abs(args["D47 CDES"] - DualClumpedSpacePage.k47_temperature_function(1 / (temp + KELVIN_OFFSET)))
 
 
 if __name__ == "__main__":
