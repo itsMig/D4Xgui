@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.5] - 2026-04-08
+
++ Uncertainty ellipses option in Dual Clumped Space plot (bars/ellipses toggle)
++ Replicate-based cross-isotope covariance estimation for ellipse orientation
++ New `tools/ellipse.py` helper module
++ Samples with N < 3 excluded from ellipse display
++ First test suite (`tests/test_ellipse.py`)
+
 ## [1.0.4] - 2026-03-05
 
 + force `Sessions` col to string

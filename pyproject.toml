@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "D4Xgui"
-version = "1.0.4"
+version = "1.0.5"
 description = "Processing app for mass-spectrometric CO₂ clumped isotope (∆₄₇, ∆₄₈, ∆₄₉) data"
 readme = "README.md"
 license = {text = "MIT"}
@@ -33,6 +33,9 @@ requires-python = ">=3.12"
 
 
 dynamic = ["dependencies"]
+
+[project.optional-dependencies]
+test = ["pytest"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
