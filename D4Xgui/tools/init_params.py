@@ -64,18 +64,14 @@ class IsotopeStandards:
 
     STANDARDS_BULK = {18:
          {
-        "ETH-1": -2.19, "ETH-2": -18.69, "ETH-3": -1.78,
-             "ETH3oxi": -1.78,
-        # "ETH-1-110C": -2.19, "ETH-2-110C": -18.69,
+        "ETH-1": -2.19, "ETH-2": -18.69,
         "ETH-1_110C": -2.19, "ETH-2_110C": -18.69,
              "IAEA-C1": (-2.31-2.32)/2, "IAEA-C2" : (-8.94-9.00)/2, #Bernasconi2018, mixed MIT+ETH
              
     },
     
     13:{
-        "ETH-1": 2.02, "ETH-2": -10.17, "ETH-3": 1.71,
-        'ETH3oxi': 1.71,
-        # "ETH-1-110C": 2.02, "ETH-2-110C": -10.17,
+        "ETH-1": 2.02, "ETH-2": -10.17,
         "ETH-1_110C": 2.02, "ETH-2_110C": -10.17,
         "IAEA-C1": (2.43 +2.47) / 2, "IAEA-C2": (-8.26 - 8.25) / 2,  # Bernasconi2018, mixed MIT+ETH
     }}

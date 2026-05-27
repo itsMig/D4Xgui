@@ -5,8 +5,13 @@
 All changes are written to ``user_settings.json`` and survive app restarts.
 """
 
+import importlib.metadata
 import json
 import re
+import ssl
+import subprocess
+import sys
+import urllib.request
 from typing import Any, Dict
 
 import pandas as pd
@@ -163,6 +168,51 @@ def _flatten_config_from_display(config: dict) -> dict:
         out["custom_reference_frames"] = custom_frames
 
     return out
+
+
+# ── Update helpers ────────────────────────────────────────────────────
+
+def _make_ssl_context() -> ssl.SSLContext:
+    """Build an SSL context using certifi's CA bundle when available."""
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        return ssl.create_default_context()
+
+
+@st.cache_data(ttl=300, show_spinner=False)
+def _fetch_pypi_version() -> str | None:
+    """Fetch the latest D4Xgui version from PyPI (cached 5 min)."""
+    try:
+        req = urllib.request.Request(
+            "https://pypi.org/pypi/D4Xgui/json",
+            headers={"Accept": "application/json"},
+        )
+        ctx = _make_ssl_context()
+        with urllib.request.urlopen(req, timeout=10, context=ctx) as resp:
+            data = json.loads(resp.read())
+        return data["info"]["version"]
+    except Exception:
+        return None
+
+
+def _version_tuple(v: str) -> tuple:
+    return tuple(int(x) for x in v.split("."))
+
+
+def _run_pip_upgrade() -> tuple[bool, str]:
+    """Install the latest D4Xgui from PyPI."""
+    try:
+        result = subprocess.run(
+            [sys.executable, "-m", "pip", "install", "--upgrade", "D4Xgui"],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        return result.returncode == 0, result.stdout + result.stderr
+    except Exception as exc:
+        return False, str(exc)
 
 
 class SettingsPage(BasePage):
@@ -841,6 +891,10 @@ class SettingsPage(BasePage):
             time.sleep(0.6)
             st.rerun()
 
+        # ── Updates ────────────────────────────────────────────────
+        st.markdown("---")
+        self._render_update_checker()
+
         # ── Database paths ────────────────────────────────────────
         st.markdown("---")
         st.subheader("Databases")
@@ -875,6 +929,61 @@ class SettingsPage(BasePage):
                 saved = True
 
         return saved
+
+    # ── Update checker ────────────────────────────────────────────────
+
+    def _render_update_checker(self) -> None:
+        """Show installed version and offer one-click upgrade from PyPI."""
+        st.subheader("Updates")
+
+        try:
+            current = importlib.metadata.version("D4Xgui")
+        except importlib.metadata.PackageNotFoundError:
+            st.caption("Version information unavailable (development install).")
+            return
+
+        latest = _fetch_pypi_version()
+
+        if latest is None:
+            col_ver, col_btn = st.columns([3, 1])
+            with col_ver:
+                st.text(f"Installed version: {current}")
+            with col_btn:
+                if st.button("Retry", key="btn_retry_update_check"):
+                    _fetch_pypi_version.clear()
+                    st.rerun()
+            st.caption("Could not reach PyPI to check for updates.")
+            return
+
+        update_available = _version_tuple(latest) > _version_tuple(current)
+
+        if update_available:
+            st.warning(
+                f"A newer version is available: **{current}** → **{latest}**",
+                icon="⬆️",
+            )
+            if st.button("Update now", key="btn_update_app", type="primary"):
+                with st.spinner(f"Updating D4Xgui to {latest}…"):
+                    success, output = _run_pip_upgrade()
+                if success:
+                    _fetch_pypi_version.clear()
+                    st.success(
+                        f"Updated to **{latest}**! "
+                        "Please restart the application to apply changes."
+                    )
+                    st.balloons()
+                else:
+                    st.error(
+                        "Update failed. Try running manually:\n\n"
+                        "```\npip install --upgrade D4Xgui\n```"
+                    )
+                    with st.expander("Error details"):
+                        st.code(output)
+        else:
+            st.success(
+                f"You are running the latest version (**{current}**).",
+                icon="✅",
+            )
 
     # ── Tab 5: Raw JSON view / editor ─────────────────────────────────
 
