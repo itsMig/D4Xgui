@@ -448,7 +448,14 @@ def build_fair_metadata(
     -------
     pd.DataFrame with columns ``Parameter`` and ``Value``.
     """
-    from D4Xgui import __version__ as app_version
+    try:
+        import importlib.metadata
+        app_version = importlib.metadata.version("D4Xgui")
+    except Exception:
+        try:
+            from D4Xgui import __version__ as app_version
+        except ImportError:
+            app_version = "unknown"
     from tools import config as _cfg
 
     try:

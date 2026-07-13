@@ -50,16 +50,17 @@ class WelcomePageManager:
             Formatted markdown string with welcome information.
         """
        
-        return rf"""## Welcome to D4Xgui v1.0.4!
+        return rf"""## Welcome to D4Xgui v1.0.5!
 
-[D4Xgui](https://github.com/itsMig/D4Xgui) is developed to enable easy access to state-of-the-art CO₂ clumped isotope (∆₄₇, ∆₄₈ and ∆₄₉) data processing.
+[D4Xgui](https://doi.org/10.1016/j.softx.2025.102492) is developed to enable easy access to state-of-the-art CO₂ clumped isotope (∆₄₇, ∆₄₈ and ∆₄₉) data processing.
 A recently developed optimizer algorithm allows pre-processing of mass spectrometric raw intensities utilizing a m/z47.5 half-mass Faraday cup correction to account for the effect of a negative pressure baseline, which is essential for accurate and highest precision clumped isotope analysis of CO₂ ([Bernecker et al., 2023](https://doi.org/10.1016/j.chemgeo.2023.121803)).
 It is backed with the recently published processing tool [D47crunch (v{D47crunch.__version__})](https://github.com/mdaeron/D47crunch) (following the methodology outlined in [Daeron, 2021](https://doi.org/10.1029/2020GC009592)), which allows standardization under consideration of full error propagation and has been used for the InterCarb community effort ([Bernasconi et al., 2021](https://doi.org/10.1029/2020GC009588)).
-This web-app allows users to discover replicate- or sample-based processing results in interactive spreadsheets and plots.
+This web-app allows users to discover replicate- or sample-based processing results in interactive spreadsheets and plots. The Dual Clumped Space page supports Δ₉₅ thermometry ([D95eq](https://github.com/mdaeron/D95eq)) for Δ₄₇–Δ₄₈ pairs, including 95% confidence ellipses and equilibrium overlays.
 
 <br>
 
 Example data is accessible from the Data-IO page, or can be downloaded from [GitHub](https://github.com/itsMig/D4Xgui/tree/main/D4Xgui/static).
+Please check `INSTALLATION.md` to find help setting up D4Xgui.
 
 <br>
 

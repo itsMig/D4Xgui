@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.5] - 2026-07-13
+
++ PyPI update checker in Settings (one-click upgrade)
++ Removed ETH-3 and ETH3oxi from bulk isotope standards
++ Version resolution via `importlib.metadata` (entrypoint-independent)
++ Optional `test` dependency group with pytest
++ switched default Streamlit theme from dark to light
++ D95eq integration on Dual Clumped Space page: 95% confidence ellipses, equilibrium curve/band, and Δ₉₅ thermometry (Teq, p-values) for D47+D48 axes
++ new `tools/d95eq_plotly.py` geometry/bridge module for D95eq Plotly rendering
++ new **"Together"** plot level combining sample means and replicate overview
++ per-sample Pearson ρ(Δ₄₇, Δ₄₈) estimated from replicates (significance-tested) to tilt confidence ellipses, with a per-sample ρ expander table
++ uncertainty-display toggle (error bars / ellipses / both), disequilibrium-slope input, equilibrium p-cutoff, and per-sample equilibrium projection arrows
++ per-isotope uncertainty columns in Processing (`SD`/`SE`/`95% CL` → `*_D47`/`*_D48`/`*_D49`) preserving joint Δ₄₇–Δ₄₈ covariance
++ Fiebig (2024) calibration constants and curve rendering consolidated in `TemperatureCalculator` (added reprocessed full-precision values and a Hill×affine coefficient helper)
++ new dependencies: `D95eq>=1.2.4`, `correldata`
+
 ## [1.0.4] - 2026-03-05
 
 + force `Sessions` col to string
