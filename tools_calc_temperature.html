@@ -128,7 +128,17 @@ as a function of temperature using polynomial equations from published calibrati
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D47_OFFSET_REPROCESSED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.18477481336587162</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">FIEBIG2024_D47_SCALING</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.038</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D47_SCALING_REPROCESSED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0383343176557291</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -138,7 +148,17 @@ as a function of temperature using polynomial equations from published calibrati
 
 <dl class="py attribute">
 <dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D48_OFFSET_REPROCESSED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.12135157920099604</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">FIEBIG2024_D48_SCALING</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.038</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FIEBIG2024_D48_SCALING_REPROCESSED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0379702801201238</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -328,6 +348,15 @@ target_d48: Target D48 value.</p>
 <dt>Returns:</dt><dd><p>Absolute difference between target and calculated D48.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">hill_affine_to_d4x_coefs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hill_coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/D4Xgui/tools/calc_temperature.html#TemperatureCalculator.hill_affine_to_d4x_coefs"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Convert Hill(2014) × scaling + offset to D95eq <code class="docutils literal notranslate"><span class="pre">D4x_calib_function</span></code> coefficients.</p>
+<p>D95eq evaluates Δ4x = c₀ + c₁/T + c₂/T² + c₃/T³ + c₄/T⁴ (T in °C).
+Hill uses Δ6x = a₁/T + a₂/T² + a₃/T³ + a₄/T⁴, so
+Δ4x = offset + scaling × Hill(1/T).</p>
 </dd></dl>
 
 </dd></dl>

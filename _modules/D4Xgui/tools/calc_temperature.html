@@ -118,12 +118,39 @@
     <span class="n">FIEBIG2021_D48_SCALING</span> <span class="o">=</span> <span class="mf">1.0280693</span>
     <span class="n">FIEBIG2021_D48_OFFSET</span> <span class="o">=</span> <span class="mf">0.1244564</span>
     
-    <span class="c1"># Scaling and offset parameters for Fiebig et al. (2024)</span>
+
+    <span class="c1"># Fiebig et al. (2024) — published rounded Hill×affine parameters (CDES90).</span>
     <span class="n">FIEBIG2024_D47_SCALING</span> <span class="o">=</span> <span class="mf">1.038</span>
     <span class="n">FIEBIG2024_D47_OFFSET</span> <span class="o">=</span> <span class="mf">0.1848</span>
     <span class="n">FIEBIG2024_D48_SCALING</span> <span class="o">=</span> <span class="mf">1.038</span>
     <span class="n">FIEBIG2024_D48_OFFSET</span> <span class="o">=</span> <span class="mf">0.1214</span>
-    
+
+    <span class="c1"># Lab-reprocessed full-precision values (optional comparison overlay).</span>
+    <span class="n">FIEBIG2024_D47_SCALING_REPROCESSED</span> <span class="o">=</span> <span class="mf">1.0383343176557291</span>
+    <span class="n">FIEBIG2024_D47_OFFSET_REPROCESSED</span> <span class="o">=</span> <span class="mf">0.18477481336587162</span>
+    <span class="n">FIEBIG2024_D48_SCALING_REPROCESSED</span> <span class="o">=</span> <span class="mf">1.0379702801201238</span>
+    <span class="n">FIEBIG2024_D48_OFFSET_REPROCESSED</span> <span class="o">=</span> <span class="mf">0.12135157920099604</span>
+
+<div class="viewcode-block" id="TemperatureCalculator.hill_affine_to_d4x_coefs">
+<a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.hill_affine_to_d4x_coefs">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hill_affine_to_d4x_coefs</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">hill_coeffs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+        <span class="n">scaling</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert Hill(2014) × scaling + offset to D95eq ``D4x_calib_function`` coefficients.</span>
+
+<span class="sd">        D95eq evaluates Δ4x = c₀ + c₁/T + c₂/T² + c₃/T³ + c₄/T⁴ (T in °C).</span>
+<span class="sd">        Hill uses Δ6x = a₁/T + a₂/T² + a₃/T³ + a₄/T⁴, so</span>
+<span class="sd">        Δ4x = offset + scaling × Hill(1/T).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="n">hill_coeffs</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">a2</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">a3</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">a4</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="TemperatureCalculator._evaluate_polynomial_4th_order">
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator._evaluate_polynomial_4th_order">[docs]</a>
     <span class="nd">@staticmethod</span>
