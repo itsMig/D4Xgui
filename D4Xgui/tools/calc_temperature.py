@@ -26,12 +26,36 @@ class TemperatureCalculator:
     FIEBIG2021_D48_SCALING = 1.0280693
     FIEBIG2021_D48_OFFSET = 0.1244564
     
-    # Scaling and offset parameters for Fiebig et al. (2024)
+
+    # Fiebig et al. (2024) — published rounded Hill×affine parameters (CDES90).
     FIEBIG2024_D47_SCALING = 1.038
     FIEBIG2024_D47_OFFSET = 0.1848
     FIEBIG2024_D48_SCALING = 1.038
     FIEBIG2024_D48_OFFSET = 0.1214
-    
+
+    # Lab-reprocessed full-precision values (optional comparison overlay).
+    FIEBIG2024_D47_SCALING_REPROCESSED = 1.0383343176557291
+    FIEBIG2024_D47_OFFSET_REPROCESSED = 0.18477481336587162
+    FIEBIG2024_D48_SCALING_REPROCESSED = 1.0379702801201238
+    FIEBIG2024_D48_OFFSET_REPROCESSED = 0.12135157920099604
+
+    @classmethod
+    def hill_affine_to_d4x_coefs(
+        cls,
+        hill_coeffs: Tuple[float, ...],
+        scaling: float,
+        offset: float,
+    ) -> Tuple[float, float, float, float, float]:
+        """
+        Convert Hill(2014) × scaling + offset to D95eq ``D4x_calib_function`` coefficients.
+
+        D95eq evaluates Δ4x = c₀ + c₁/T + c₂/T² + c₃/T³ + c₄/T⁴ (T in °C).
+        Hill uses Δ6x = a₁/T + a₂/T² + a₃/T³ + a₄/T⁴, so
+        Δ4x = offset + scaling × Hill(1/T).
+        """
+        a1, a2, a3, a4 = hill_coeffs
+        return (offset, a1 * scaling, a2 * scaling, a3 * scaling, a4 * scaling)
+
     @staticmethod
     def _evaluate_polynomial_4th_order(coeffs: Tuple[float, ...], x: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
         """Evaluate a 4th-degree polynomial.

@@ -44,6 +44,8 @@ scipy
 
 # project specific dependencies
 D47crunch>=2.4.3
+D95eq>=1.2.4
+correldata
 D47calib
 ogls
 lmfit

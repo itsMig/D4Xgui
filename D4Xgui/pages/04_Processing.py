@@ -376,7 +376,10 @@ class DataProcessor:
             if obj is None:
                 continue
                 
-            temp_full = self._extract_analysis_table(obj)
+            isotope_num = ["47", "48", "49"][i]
+            temp_full = self._rename_analysis_columns(
+                self._extract_analysis_table(obj), isotope_num
+            )
             if full_dataset is None:
                 # First dataset - take all columns
                 full_dataset = temp_full.copy()
@@ -425,6 +428,16 @@ class DataProcessor:
         df = pd.DataFrame(temp_full[1:], columns=temp_full[0])
         df = self.apply_smart_numeric_conversion(df)
         return df.sort_values("Sample")
+
+    def _rename_analysis_columns(self, df: pd.DataFrame, isotope_num: str) -> pd.DataFrame:
+        """Prefix isotope-specific uncertainty columns before multi-isotope merge."""
+        rename_dict = {}
+        for col in ("SD", "SE", "95% CL"):
+            if col in df.columns:
+                rename_dict[col] = f"{col}_D{isotope_num}"
+        if not rename_dict:
+            return df
+        return df.rename(columns=rename_dict)
     
     def _add_metadata_to_dataset(self, dataset: pd.DataFrame) -> pd.DataFrame:
         """Add metadata from input replicates to the dataset."""

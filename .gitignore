@@ -30,6 +30,8 @@ __pycache__/
 .VolumeIcon.icns
 
 *.db
+*.dbc
+D4Xgui/session_states.db*
 user_settings.json
 
 *~
