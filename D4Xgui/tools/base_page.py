@@ -8,6 +8,7 @@ import streamlit as st
 from tools.page_config import PageConfigManager
 from tools.sidebar_logo import SidebarLogoManager
 from tools.authenticator import Authenticator
+from tools.report_bug import render_report_bug_button
 from tools import config as cfg
 
 
@@ -40,6 +41,7 @@ class BasePage:
         if self.REQUIRES_AUTH and "PYTEST_CURRENT_TEST" not in os.environ:
             if not Authenticator().require_authentication():
                 st.stop()
+        render_report_bug_button(self.PAGE_TITLE)
 
     def _initialize_session_state(self) -> None:
         """Override in subclasses to set up defaults."""

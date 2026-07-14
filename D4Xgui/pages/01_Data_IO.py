@@ -305,7 +305,7 @@ class DataIOPage(BasePage):
                 "25G": "25C", "EG": "25C", "HG": "1000C",
                 "Heated": "1000C", "GU-1": "GU1",
             }
-            df["Sample"].replace(rename_dict, inplace=True)
+            df["Sample"] = df["Sample"].replace(rename_dict)
 
             for key in ("Session", "Sample"):
                 if key in df.columns:

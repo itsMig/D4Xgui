@@ -64,6 +64,9 @@ _DEFAULTS: Dict[str, Any] = {
 
     # Appearance
     "theme": "Dark",
+
+    # Bug reporting
+    "bug_report_email": "mbernecker@posteo.de",
 }
 
 # ── Isotopic constant presets (not persisted) ────────────────────────

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.6] - 2026-07-14
+
++ floating **"Report a bug"** button on every page — captures a screenshot of the current tab (Screen Capture API), copies it to the clipboard, and opens a prefilled `mailto:` with the D4Xgui / D47crunch / Python / OS versions and the current page label
++ configurable `bug_report_email` in Settings (defaults to maintainer address)
++ single source-of-truth versioning: `D4Xgui/__init__.py` is the only place the version string lives; `pyproject.toml` reads it via `[tool.setuptools.dynamic]`, Sphinx `docs/source/conf.py` picks it up from `D4Xgui.__version__`, and `Welcome.py` renders it dynamically
++ new `tools/version.py` helper that resolves the version regardless of how the app is launched (`streamlit run`, `pip install`, Sphinx, pytest)
++ `datetime_parsing`: use `pd.api.types.is_numeric_dtype` so pandas extension dtypes (StringDtype, Int64, …) no longer break Excel-serial detection; drop deprecated `infer_datetime_format=True`
++ `01_Data_IO`: fix pandas FutureWarning by replacing chained `Series.replace(..., inplace=True)` with assignment
+
 ## [1.0.5] - 2026-07-13
 
 + PyPI update checker in Settings (one-click upgrade)

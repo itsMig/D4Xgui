@@ -13,7 +13,6 @@ import re
 from datetime import datetime
 from typing import List, Optional
 
-import numpy as np
 import pandas as pd
 from dateutil import parser as dateutil_parser
 
@@ -90,10 +89,12 @@ def _is_excel_serial(series: pd.Series) -> bool:
     non_null = series.dropna()
     if non_null.empty:
         return False
-    if not np.issubdtype(non_null.dtype, np.number):
+    # Use pandas' dtype check so extension dtypes (e.g. StringDtype, Int64)
+    # don't trip up numpy's issubdtype, which cannot interpret them.
+    if not pd.api.types.is_numeric_dtype(non_null):
         try:
             non_null = pd.to_numeric(non_null, errors="coerce").dropna()
-        except Exception:
+        except (TypeError, ValueError):
             return False
         if non_null.empty:
             return False
@@ -116,7 +117,7 @@ def normalize_datetime_series(series: pd.Series) -> pd.Series:
         numeric = pd.to_numeric(series, errors="coerce")
         return EXCEL_EPOCH + pd.to_timedelta(numeric, unit="D")
 
-    coerced = pd.to_datetime(series, errors="coerce", infer_datetime_format=True)
+    coerced = pd.to_datetime(series, errors="coerce")
     if coerced.notna().all():
         return coerced
 

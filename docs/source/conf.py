@@ -35,7 +35,10 @@ sys.path.insert(0, str(Path(__file__).parent.resolve()))
 project = 'D4Xgui'
 copyright = '2025, Miguel Bernecker'
 author = 'Miguel Bernecker'
-release = 'v1.0.3'
+
+# Single source-of-truth: D4Xgui/__init__.py
+import D4Xgui  # noqa: E402
+release = f'v{D4Xgui.__version__}'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
