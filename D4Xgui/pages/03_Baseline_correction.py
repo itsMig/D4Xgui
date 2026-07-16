@@ -55,6 +55,16 @@ class BaselineCorrectionPage(BasePage):
         if "bg_success" not in self.sss:
             self.sss.bg_success = False
 
+        # Which masses receive baseline correction (per-mass opt-in).
+        # Defaults: 47 on, 48/49 off, since 48/49 baseline optimization is
+        # frequently unstable and can fail to converge on real data.
+        _bg_defaults = {"bg_correct_47": True,
+                        "bg_correct_48": False,
+                        "bg_correct_49": False}
+        for k, v in _bg_defaults.items():
+            if k not in self.sss:
+                self.sss[k] = v
+
     def run(self) -> None:
         """Run the main application page."""
         st.title("Baseline Correction")
@@ -96,10 +106,36 @@ class BaselineCorrectionPage(BasePage):
             st.checkbox('Overwrite database with new d45-d49', key='03_overwrite_data', value=True)
             
             self._render_method_selection()
+            self._render_mass_selection()
             self._render_standard_selection()
             
             if st.button("Run...", key="BUTTON1"):
                 self._execute_baseline_correction()
+
+    def _render_mass_selection(self) -> None:
+        """Render checkboxes to enable/disable baseline correction per m/z.
+
+        For masses that are unchecked, no scaling-factor optimization is run
+        and `bg_x{mz}` is set equal to `raw_x{mz}` (i.e. no correction).
+        This lets users skip the correction for 48/49 when the data quality
+        is not sufficient for a stable optimization.
+        """
+        if self.sss.get("bg_method", self.METHOD_NONE) == self.METHOD_NONE:
+            return
+        st.caption("Apply baseline correction to:")
+        cols = st.columns(3)
+        for col, mz in zip(cols, ("47", "48", "49")):
+            with col:
+                st.checkbox(
+                    rf"$\Delta_{{{mz}}}$",
+                    key=f"bg_correct_{mz}",
+                    help=(
+                        f"Uncheck to skip baseline correction for m/z {mz}. "
+                        f"The Δ{mz} scaling factor is forced to 0 (bg = raw). "
+                        "Recommended when the m/z 47.5 half-mass signal is "
+                        "too noisy for a stable optimization."
+                    ),
+                )
 
     def _render_method_selection(self) -> None:
         """Render the baseline correction method selection."""
@@ -495,13 +531,22 @@ class BaselineCorrectionPage(BasePage):
                     pass
         return result
 
+    def _is_mass_enabled(self, mz: str) -> bool:
+        """Whether baseline correction is enabled for m/z (defaults to True)."""
+        return bool(self.sss.get(f"bg_correct_{mz}", True))
+
     def _configure_pysotope_standards(self, pysotope: Pysotope) -> None:
-        """Configure standards for pysotope based on the selected method."""
+        """Configure standards for pysotope based on the selected method.
+
+        Masses that the user disabled via `bg_correct_{mz}` receive an empty
+        standards dict so that `Pysotope.correctBaseline` skips their
+        optimizer and sets the scaling factor to 0 (no correction applied).
+        """
         method = self.sss.get("bg_method", self.METHOD_NONE)
         
         if method == self.METHOD_CUSTOM:
             for mz in ("47", "48", "49"):
-                if self.sss.get(f"bg_custom_{mz}", False):
+                if self.sss.get(f"bg_custom_{mz}", False) and self._is_mass_enabled(mz):
                     stds = self._extract_custom_standards(mz)
                 else:
                     stds = {}
@@ -515,11 +560,15 @@ class BaselineCorrectionPage(BasePage):
             else:
                 std_keys = ["25C", "1000C"]
     
-            # Get standards for each system
+            # Get standards for each system; empty dict when the mass is disabled.
             for system, standard_dict in [("D47", self.sss.STANDARD_D47),
                                          ("D48", self.sss.STANDARD_D48),
                                          ("D49", self.sss.STANDARD_D49)]:
-                standards = {key: standard_dict[key] for key in std_keys if key in standard_dict}
+                mz = system[-2:]
+                if self._is_mass_enabled(mz):
+                    standards = {key: standard_dict[key] for key in std_keys if key in standard_dict}
+                else:
+                    standards = {}
                 pysotope.set_standards(system=system, standards=standards)
 
     def _process_session(self, pysotope: Pysotope, session: str) -> Pysotope:
@@ -551,7 +600,12 @@ class BaselineCorrectionPage(BasePage):
             d47std = {"25C": self.sss.STANDARD_D47["25C"], "1000C": self.sss.STANDARD_D47["1000C"]}
             d48std = {"25C": self.sss.STANDARD_D48["25C"], "1000C": self.sss.STANDARD_D48["1000C"]}
             d49std = {"25C": self.sss.STANDARD_D49["25C"], "1000C": self.sss.STANDARD_D49["1000C"]}
-        
+
+        # Empty standards dict -> Pysotope skips optimization and forces scale=0
+        if not self._is_mass_enabled("47"): d47std = {}
+        if not self._is_mass_enabled("48"): d48std = {}
+        if not self._is_mass_enabled("49"): d49std = {}
+
         pysotope.correctBaseline(
             scaling_mode="scale",
             session=session,
@@ -566,13 +620,19 @@ class BaselineCorrectionPage(BasePage):
     def _apply_eth_method(self, pysotope: Pysotope, session: str) -> None:
         """Apply the ETH standards method."""
         pysotope.optimize = "ETH"
+        d47std = {"ETH-1": self.sss.STANDARD_D47["ETH-1"], "ETH-2": self.sss.STANDARD_D47["ETH-2"]}
+        d48std = {"ETH-1": self.sss.STANDARD_D48["ETH-1"], "ETH-2": self.sss.STANDARD_D48["ETH-2"]}
+        d49std = {"ETH-1": self.sss.STANDARD_D49["ETH-1"], "ETH-2": self.sss.STANDARD_D49["ETH-2"]}
+        if not self._is_mass_enabled("47"): d47std = {}
+        if not self._is_mass_enabled("48"): d48std = {}
+        if not self._is_mass_enabled("49"): d49std = {}
         pysotope.correctBaseline(
             scaling_mode="scale",
             session=session,
             scaling_factors=None,
-            D47std={"ETH-1": self.sss.STANDARD_D47["ETH-1"], "ETH-2": self.sss.STANDARD_D47["ETH-2"]},
-            D48std={"ETH-1": self.sss.STANDARD_D48["ETH-1"], "ETH-2": self.sss.STANDARD_D48["ETH-2"]},
-            D49std={"ETH-1": self.sss.STANDARD_D49["ETH-1"], "ETH-2": self.sss.STANDARD_D49["ETH-2"]},
+            D47std=d47std,
+            D48std=d48std,
+            D49std=d49std,
         )
         self.sss["scaling_factors"] = dict(pysotope.scaling_factors)
         pysotope.calc_sample_ratios_2(mode="bg", session=session)
@@ -580,13 +640,16 @@ class BaselineCorrectionPage(BasePage):
     def _apply_custom_method(self, pysotope: Pysotope, session: str) -> None:
         """Apply the custom carbonate standards method."""
         pysotope.optimize = "customStds"
+        d47std = self._extract_custom_standards("47") if self._is_mass_enabled("47") else {}
+        d48std = self._extract_custom_standards("48") if self._is_mass_enabled("48") else {}
+        d49std = self._extract_custom_standards("49") if self._is_mass_enabled("49") else {}
         pysotope.correctBaseline(
             scaling_mode="scale",
             session=session,
             scaling_factors=None,
-            D47std=self._extract_custom_standards("47"),
-            D48std=self._extract_custom_standards("48"),
-            D49std=self._extract_custom_standards("49"),
+            D47std=d47std,
+            D48std=d48std,
+            D49std=d49std,
         )
         self.sss["scaling_factors"] = dict(pysotope.scaling_factors)
         pysotope.calc_sample_ratios_2(mode="bg", session=session)

@@ -1,13 +1,21 @@
 # Changelog
 
-## [1.0.6] - 2026-07-14
+## [1.0.6] - 2026-07-16
 
-+ floating **"Report a bug"** button on every page — captures a screenshot of the current tab (Screen Capture API), copies it to the clipboard, and opens a prefilled `mailto:` with the D4Xgui / D47crunch / Python / OS versions and the current page label
-+ configurable `bug_report_email` in Settings (defaults to maintainer address)
-+ single source-of-truth versioning: `D4Xgui/__init__.py` is the only place the version string lives; `pyproject.toml` reads it via `[tool.setuptools.dynamic]`, Sphinx `docs/source/conf.py` picks it up from `D4Xgui.__version__`, and `Welcome.py` renders it dynamically
-+ new `tools/version.py` helper that resolves the version regardless of how the app is launched (`streamlit run`, `pip install`, Sphinx, pytest)
-+ `datetime_parsing`: use `pd.api.types.is_numeric_dtype` so pandas extension dtypes (StringDtype, Int64, …) no longer break Excel-serial detection; drop deprecated `infer_datetime_format=True`
-+ `01_Data_IO`: fix pandas FutureWarning by replacing chained `Series.replace(..., inplace=True)` with assignment
++ `03_Baseline_correction`: per-mass opt-in checkboxes (Δ₄₇/Δ₄₈/Δ₄₉); unchecked masses skip the PBL optimizer (`bg = raw`)
++ `Pysotope_fork.correctBaseline`: empty `D{mz}std` short-circuits the optimizer and zeros the scaling factor
++ `04_Processing`: `Baseline correction 47/48/49` rows in `proc_params` derived from `sss.scaling_factors` instead of widget state
++ `04_Processing`: dropped duplicated `D47/D48/D49 processed` rows from `proc_params`
++ `04_Processing`: FAIR metadata merged into `proc_params`; separate `Metadata` sheet removed from Excel export
++ `tools/commons.build_fair_metadata`: removed `Δ₄₇/Δ₄₈/Δ₄₉ standards` rows (duplicated `proc_params`)
++ `06_Dual_Clumped_Space`: D95eq ellipses and Teq / T_kinetic hover bounds now follow the "Error determination" toggle (1SE → 68% CI ±1σ, 2SE → 95% CI ±2σ)
++ floating **"Report a bug"** button on every page (screenshot to clipboard + prefilled `mailto:` with version/OS context)
++ configurable `bug_report_email` in Settings
++ single source-of-truth versioning via `D4Xgui/__init__.py` (`pyproject.toml`, Sphinx, `Welcome.py` all read from it)
++ new `tools/version.py` helper for launch-agnostic version resolution
++ `datetime_parsing`: use `pd.api.types.is_numeric_dtype`; drop deprecated `infer_datetime_format=True`
++ `01_Data_IO`: fix pandas FutureWarning from chained `Series.replace(..., inplace=True)`
++ reverted default Streamlit theme back to dark
 
 ## [1.0.5] - 2026-07-13
 

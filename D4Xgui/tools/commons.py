@@ -479,11 +479,11 @@ def build_fair_metadata(
         ["R¹⁷_VSMOW", all_cfg.get("isotopic_constants", {}).get("R17_VSMOW")],
         ["R¹⁸_VSMOW", all_cfg.get("isotopic_constants", {}).get("R18_VSMOW")],
         ["λ₁₇", all_cfg.get("isotopic_constants", {}).get("lambda_17")],
-        # ── Baseline-correction standards ─────────────────────────
-        ["Δ₄₇ standards", json.dumps(all_cfg.get("standard_d47", {}))],
-        ["Δ₄₈ standards", json.dumps(all_cfg.get("standard_d48", {}))],
-        ["Δ₄₉ standards", json.dumps(all_cfg.get("standard_d49", {}))],
         # ── Processing configuration ─────────────────────────────
+        # (Note: the Δ₄₇/Δ₄₈/Δ₄₉ standards actually used in the run are
+        # reported in ``proc_params`` as "Standards D47/D48/D49"; the full
+        # nominal dictionaries from settings are intentionally not duplicated
+        # here to avoid confusion between "defined" and "used" anchors.)
         ["CO₂ standards", all_cfg.get("co2_standards")],
         ["Baseline correction method", all_cfg.get("baseline_correction_method")],
         # ── Database paths ────────────────────────────────────────

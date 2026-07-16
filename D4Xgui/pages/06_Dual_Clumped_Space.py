@@ -240,12 +240,16 @@ class DualClumpedSpacePage(BasePage):
                 "Error determination:",
                 ("fully propagated 2SE", "fully propagated 1SE", "via long-term repeatability"),
                 help=(
-                    "Affects error-bar length and hover values. "
-                    "**Confidence ellipses** always take a 1σ input (2SE columns "
-                    "are divided by 2) and are drawn at p = 0.95, so toggling "
-                    "1SE ↔ 2SE does **not** change the ellipse size. "
-                    "Switching to *long-term repeatability* reads a different "
-                    "uncertainty column and will change the ellipse size."
+                    "Affects error-bar length, hover values, and the D95eq "
+                    "confidence-ellipse coverage in a coordinated way: "
+                    "**1SE** → ±1σ error bars + 68 % CI ellipses + Teq/T_kinetic "
+                    "reported at ±1σ. "
+                    "**2SE** (fully propagated or long-term) → ±2σ error bars "
+                    "+ 95 % CI ellipses + Teq/T_kinetic reported at ±2σ. "
+                    "The ellipse always receives a 1σ input (2SE columns are "
+                    "divided by 2); only the coverage `p` changes. "
+                    "Switching to *long-term repeatability* additionally reads "
+                    "a different uncertainty column."
                 ),
             )
             error_mapping = {
@@ -639,6 +643,33 @@ class DualClumpedSpacePage(BasePage):
         se_d47, se_d48 = d95p.replicate_se_columns()
         return se_d47, se_d48, 1.0, 1.0
 
+    def _teq_conf_level(self) -> str:
+        """Return "2SE" when the user selected a 2SE/longterm error mode, else "1SE"."""
+        # Replicate-level ellipses always take raw replicate 1σ SEs, so the
+        # natural Teq uncertainty is 1σ; we only broaden to 2σ when the user
+        # explicitly picks a 2SE mode on sample means.
+        if not self._uses_sample_means():
+            return "1SE"
+        pattern = str(self.sss.get("error_dualClumped", ""))
+        if "2SE" in pattern or "longterm" in pattern.lower():
+            return "2SE"
+        return "1SE"
+
+    def _teq_p_levels(self) -> Tuple[float, float, float]:
+        """Quantile triple for :func:`d95p.teq_asymmetric_from_pdf`."""
+        if self._teq_conf_level() == "2SE":
+            return (0.025, 0.5, 0.975)
+        return (0.16, 0.5, 0.84)
+
+    def _ellipse_p_level(self) -> float:
+        """Confidence-ellipse coverage that matches the current SE toggle."""
+        # 2SE → 95 % CI (≈ ±2σ visual match), 1SE → 68 % CI (≈ ±1σ).
+        return 0.95 if self._teq_conf_level() == "2SE" else 0.68
+
+    def _ellipse_legend_label(self) -> str:
+        """Legend / hover label reflecting the current ellipse coverage."""
+        return "95% confidence" if self._teq_conf_level() == "2SE" else "68% confidence"
+
     def _validate_d95eq_columns(self, df: pd.DataFrame) -> bool:
         se_d47, se_d48, _, _ = self._resolve_d95eq_se_columns()
         required = ["D47", "D48", se_d47, se_d48]
@@ -661,6 +692,7 @@ class DualClumpedSpacePage(BasePage):
             str(self.sss.get("d95eq_diseq_slope_se", 0.1)),
             str(self.sss.get("d95eq_p_cutoff", 0.05)),
             str(self.sss.get("d95eq_rho_alpha", 0.05)),
+            str(self._teq_conf_level()),
             str(sorted((s, round(r, 6)) for s, r in used_rho.items())),
             str(self.sss.get("x_axis")),
             str(self.sss.get("y_axis")),
@@ -734,8 +766,9 @@ class DualClumpedSpacePage(BasePage):
         d47p, d48p = engine.projected_D47eq(d47_u, d48_u, slope)
         teq = engine.T_as_function_of_D47(d47eq)
         tkp = engine.T_as_function_of_D47(d47p)
-        teq_asym = d95p.teq_asymmetric_from_pdf(engine, d47eq)
-        tkp_asym = d95p.teq_asymmetric_from_pdf(engine, d47p)
+        p_levels = self._teq_p_levels()
+        teq_asym = d95p.teq_asymmetric_from_pdf(engine, d47eq, p_levels=p_levels)
+        tkp_asym = d95p.teq_asymmetric_from_pdf(engine, d47p, p_levels=p_levels)
         return {
             "engine": engine,
             "d47_u": d47_u,
@@ -819,7 +852,8 @@ class DualClumpedSpacePage(BasePage):
         if d47_u.size == 0:
             return
 
-        ellipses = d95p.compute_conf_ellipses(d47_u, d48_u)
+        p_level = self._ellipse_p_level()
+        ellipses = d95p.compute_conf_ellipses(d47_u, d48_u, p=p_level)
         sample_names = df.loc[row_index, "Sample"].tolist()
         colors = d95p.sample_color_map(fig)
         d95p.add_conf_ellipses(
@@ -827,6 +861,7 @@ class DualClumpedSpacePage(BasePage):
             ellipses,
             color=colors,
             sample_names=sample_names,
+            name=self._ellipse_legend_label(),
             x_axis=self.sss.x_axis,
             y_axis=self.sss.y_axis,
         )
@@ -866,6 +901,8 @@ class DualClumpedSpacePage(BasePage):
     ) -> None:
         if not np.any(mask):
             return
+        p_level = self._ellipse_p_level()
+        legend_label = self._ellipse_legend_label()
         for i in np.where(mask)[0]:
             point_mask = np.zeros(len(sample_names), dtype=bool)
             point_mask[i] = True
@@ -873,12 +910,13 @@ class DualClumpedSpacePage(BasePage):
             subset_d48 = d95p.subset_uarray(d48_u, point_mask)
             if subset_d47.size == 0:
                 continue
-            ellipses = d95p.compute_conf_ellipses(subset_d47, subset_d48)
+            ellipses = d95p.compute_conf_ellipses(subset_d47, subset_d48, p=p_level)
             d95p.add_conf_ellipses(
                 fig,
                 ellipses,
                 color=colors,
                 sample_names=[sample_names[i]],
+                name=legend_label,
                 opacity=0.65,
                 line_width=1.25,
                 x_axis=self.sss.x_axis,
@@ -897,6 +935,7 @@ class DualClumpedSpacePage(BasePage):
         tkp_asym = result.get("tkp_asym", [])
         p_values = result["p_values"]
         rho_map = self.sss.get("_d95eq_sample_rho_map") or {}
+        conf_tag = "±2σ" if self._teq_conf_level() == "2SE" else "±1σ"
         mapping: Dict[Any, str] = {}
         for i, p_val in enumerate(p_values):
             sample = samples[i] if i < len(samples) else None
@@ -904,14 +943,14 @@ class DualClumpedSpacePage(BasePage):
             if p_val >= p_cutoff:
                 label = d95p.format_asym_temperature(*teq_asym[i])
                 mapping[row_index[i]] = (
-                    f"Teq = {label}<br>"
+                    f"Teq ({conf_tag}) = {label}<br>"
                     f"p_equ = {p_val:.3f}"
                     f"{corr_line}"
                 )
             else:
                 label = d95p.format_asym_temperature(*tkp_asym[i])
                 mapping[row_index[i]] = (
-                    f"T_kinetic = {label}<br>"
+                    f"T_kinetic ({conf_tag}) = {label}<br>"
                     f"p_equ = {p_val:.2e}"
                     f"{corr_line}"
                 )

@@ -736,15 +736,32 @@ class ExcelExporter:
         dataframes: Dict[str, pd.DataFrame],
         extra_meta: Optional[Dict[str, Any]] = None,
     ) -> str:
-        """Create base64 encoded Excel file with a leading FAIR metadata sheet."""
+        """Create base64 encoded Excel file.
+
+        No separate ``Metadata`` sheet is written; FAIR metadata rows are
+        prepended into ``proc_params`` when that sheet is present, so all
+        parameters live in a single sheet. If ``proc_params`` is absent the
+        FAIR metadata is written as its own ``proc_params`` sheet.
+        """
         from tools.commons import build_fair_metadata
+
+        fair_df = build_fair_metadata(extra=extra_meta)
+
+        merged: Dict[str, pd.DataFrame] = {}
+        if "proc_params" in dataframes:
+            merged["proc_params"] = pd.concat(
+                [fair_df, dataframes["proc_params"]], ignore_index=True,
+            )
+            for name, df in dataframes.items():
+                if name != "proc_params":
+                    merged[name] = df
+        else:
+            merged["proc_params"] = fair_df
+            merged.update(dataframes)
 
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
-            build_fair_metadata(extra=extra_meta).to_excel(
-                writer, index=False, sheet_name="Metadata",
-            )
-            for sheet_name, df in dataframes.items():
+            for sheet_name, df in merged.items():
                 df.to_excel(
                     writer,
                     index="Value" in df.columns,
@@ -1059,7 +1076,30 @@ class ProcessingPage(BasePage):
                     STDS[mz] = 'N/A'
             else:
                 STDS[mz] = 'N/A'
-                
+
+        # Per-mass "was baseline correction actually applied?" — derived from
+        # the Pysotope scaling factors (the ground truth of what ran during
+        # page-03 baseline correction). Widget-state fallbacks (`bg_method`,
+        # `bg_correct_{mz}`) are unreliable across reruns / saved-state
+        # reloads, so we ignore them here and read what Pysotope actually did.
+        #
+        # `sss.scaling_factors` layout (per session):
+        #   {"<session>": {"47b_47.5": <array|float>, "48b_47.5": ..., ...}}
+        # A non-zero scaling factor for `{mz}b_47.5` means the optimizer ran
+        # and produced a real correction for that mass in that session.
+        bg_correct: Dict[str, bool] = {"47": False, "48": False, "49": False}
+        scaling_factors = self.sss.get("scaling_factors") or {}
+        for session_sf in scaling_factors.values():
+            if not isinstance(session_sf, dict):
+                continue
+            for mz in ("47", "48", "49"):
+                val = session_sf.get(f"{mz}b_47.5", 0.0)
+                try:
+                    if bool(np.any(np.asarray(val, dtype=float) != 0)):
+                        bg_correct[mz] = True
+                except (TypeError, ValueError):
+                    continue
+
         params = {
             "Parameter": [
                 "Processing sessions",
@@ -1068,9 +1108,9 @@ class ProcessingPage(BasePage):
                 "Standards D47",
                 "Standards D48",
                 "Standards D49",
-                "D47 processed",
-                "D48 processed", 
-                "D49 processed",
+                "Baseline correction 47",
+                "Baseline correction 48",
+                "Baseline correction 49",
                 "D47 long-term repeatability (1sd)",
                 "D48 long-term repeatability (1sd)",
                 "D49 long-term repeatability (1sd)",
@@ -1090,9 +1130,9 @@ class ProcessingPage(BasePage):
                 STDS['47'],
                 STDS['48'],
                 STDS['49'],
-                "Yes" if self.sss.params_last_run.get("process_D47", False) else "No",
-                "Yes" if self.sss.params_last_run.get("process_D48", False) else "No", 
-                "Yes" if self.sss.params_last_run.get("process_D49", False) else "No",
+                bg_correct["47"],
+                bg_correct["48"],
+                bg_correct["49"],
                 str(self.sss.get("correction_output_r47All", "N/A")) if self.sss.params_last_run.get("process_D47", False) else "N/A",
                 str(self.sss.get("correction_output_r48All", "N/A")) if self.sss.params_last_run.get("process_D48", False) else "N/A",
                 str(self.sss.get("correction_output_r49All", "N/A")) if self.sss.params_last_run.get("process_D49", False) else "N/A",

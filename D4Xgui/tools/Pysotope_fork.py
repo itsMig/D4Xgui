@@ -515,9 +515,18 @@ class Pysotope:
                 
                 return slopes
             
-            # Optimize scaling factors for each mass
+            # Optimize scaling factors for each mass.
+            # An empty standards dict for a given mass means the caller
+            # opted out of baseline correction for that m/z: skip the
+            # optimizer entirely and force the scaling factor to 0 so that
+            # `bg_x{mz} = raw_x{mz}` (no correction applied).
             for mz in 47, 48, 49:
                 if len(MAPPING_MZ[mz]) == 0:
+                    self.scaling_factors[session][f"{mz}b_{self.half_mass_cup}"] = 0.0
+                    sss['03_pbl_log'] = sss.get('03_pbl_log', '') + (
+                        f"\n ## Mass {mz}: baseline correction disabled by user "
+                        f"(scaling factor forced to 0)."
+                    )
                     continue
                 if self.optimize == 'customStds':
                     # result = least_squares(customStds_targetValues,
