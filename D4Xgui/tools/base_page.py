@@ -31,7 +31,7 @@ class BasePage:
         self._initialize_session_state()
 
     def _setup_page(self) -> None:
-        cfg.ensure_theme()
+        cfg.ensure_runtime()
         if self.PAGE_NUMBER >= 0:
             PageConfigManager().configure_page(self.PAGE_NUMBER)
         if self.SHOW_LOGO:

@@ -17,6 +17,8 @@ import subprocess
 import platform
 from pathlib import Path
 
+from tools import config as cfg
+
 
 class D4XguiRunner:
 	"""Handles the execution of the D4Xgui application."""
@@ -84,6 +86,7 @@ class D4XguiRunner:
 		try:
 			# Change to the app directory
 			os.chdir(self.app_dir)
+			cfg.ensure_runtime()
 			
 			# Run streamlit with the current Python interpreter
 			subprocess.run([

@@ -16,7 +16,14 @@ from tools.base_page import BasePage
 from tools import config as user_cfg
 from tools.constants import ISOTOPIC_CONSTANTS
 from tools.database import DatabaseManager
-from tools.commons import PlotParameters, modify_plot_text_sizes, PlotlyConfig
+from tools.commons import (
+    PlotParameters,
+    modify_plot_text_sizes,
+    PlotlyConfig,
+    discover_baseline_signal_suffixes,
+    baseline_signal_column_label,
+    default_pbl_suffix_for_mass,
+)
 
 
 class BaselineCorrectionPage(BasePage):
@@ -106,40 +113,79 @@ class BaselineCorrectionPage(BasePage):
             st.checkbox('Overwrite database with new d45-d49', key='03_overwrite_data', value=True)
             
             self._render_method_selection()
-            self._render_mass_selection()
+            self._render_per_scale_baseline_settings()
             self._render_standard_selection()
             
             if st.button("Run...", key="BUTTON1"):
                 self._execute_baseline_correction()
 
-    def _render_mass_selection(self) -> None:
-        """Render checkboxes to enable/disable baseline correction per m/z.
+    def _get_baseline_signal_suffixes(self) -> List[str]:
+        """Return available negative baseline signal column suffixes."""
+        return discover_baseline_signal_suffixes(self.sss.input_intensities.columns)
 
-        For masses that are unchecked, no scaling-factor optimization is run
-        and `bg_x{mz}` is set equal to `raw_x{mz}` (i.e. no correction).
-        This lets users skip the correction for 48/49 when the data quality
-        is not sufficient for a stable optimization.
-        """
+    def _get_pbl_column_map(self) -> Dict[int, str]:
+        """Return per-mass PBL column suffixes for Pysotope."""
+        suffixes = self._get_baseline_signal_suffixes()
+        legacy = self.sss.get("bg_baseline_signal")
+        return {
+            int(mz): self.sss.get(
+                f"bg_pbl_column_{mz}",
+                legacy if legacy in suffixes else default_pbl_suffix_for_mass(mz, suffixes),
+            )
+            for mz in ("47", "48", "49")
+        }
+
+    def _render_per_scale_baseline_settings(self) -> None:
+        """Render per-Δ mass enable toggles and PBL column assignments."""
         if self.sss.get("bg_method", self.METHOD_NONE) == self.METHOD_NONE:
             return
-        st.caption("Apply baseline correction to:")
-        cols = st.columns(3)
-        for col, mz in zip(cols, ("47", "48", "49")):
-            with col:
+
+        suffixes = self._get_baseline_signal_suffixes()
+        st.markdown("**Per-scale baseline correction**")
+        st.caption(
+            "Enable correction per clumped mass and assign the negative "
+            "baseline (PBL) signal column used for each scale."
+        )
+
+        if not suffixes:
+            st.warning(
+                "No PBL columns found. Upload paired `raw_s…` / `raw_r…` "
+                "columns (e.g. `raw_s47.5` / `raw_r47.5`)."
+            )
+            return
+
+        header = st.columns([1, 2])
+        header[0].caption("Scale")
+        header[1].caption("PBL column")
+
+        for mz in ("47", "48", "49"):
+            cols = st.columns([1, 2])
+            with cols[0]:
                 st.checkbox(
                     rf"$\Delta_{{{mz}}}$",
                     key=f"bg_correct_{mz}",
                     help=(
-                        f"Uncheck to skip baseline correction for m/z {mz}. "
-                        f"The Δ{mz} scaling factor is forced to 0 (bg = raw). "
-                        "Recommended when the m/z 47.5 half-mass signal is "
-                        "too noisy for a stable optimization."
+                        f"Uncheck to skip baseline correction for Δ{mz}. "
+                        f"The scaling factor is forced to 0 (bg = raw)."
                     ),
+                )
+            with cols[1]:
+                pbl_key = f"bg_pbl_column_{mz}"
+                if pbl_key not in self.sss or self.sss[pbl_key] not in suffixes:
+                    self.sss[pbl_key] = default_pbl_suffix_for_mass(mz, suffixes)
+                st.selectbox(
+                    label=f"PBL column for Δ{mz}",
+                    options=suffixes,
+                    key=pbl_key,
+                    format_func=baseline_signal_column_label,
+                    label_visibility="collapsed",
+                    disabled=not self.sss.get(f"bg_correct_{mz}", mz == "47"),
                 )
 
     def _render_method_selection(self) -> None:
         """Render the baseline correction method selection."""
-        has_half_mass = f"raw_r47.5" in self.sss.input_intensities
+        baseline_suffixes = self._get_baseline_signal_suffixes()
+        has_half_mass = len(baseline_suffixes) > 0
         
         if has_half_mass:
             methods = [self.METHOD_MINIMIZE, self.METHOD_ETH, self.METHOD_NONE, self.METHOD_CUSTOM]
@@ -152,8 +198,8 @@ class BaselineCorrectionPage(BasePage):
             methods = [self.METHOD_NONE]
             default_idx = 0
             help_text = (
-                "No half-mass cup data provided (`raw_s47.5` and `raw_r47.5`) within the intensity input. "
-                "Therefore, the baseline correction method via optimized scaling factors is not available."
+                "No negative baseline signal columns found in the intensity input. "
+                "Upload paired `raw_s…` and `raw_r…` columns (e.g. `raw_s47.5` / `raw_r47.5`)."
             )
         
         st.radio(
@@ -469,6 +515,8 @@ class BaselineCorrectionPage(BasePage):
     def _process_dataset(self) -> pd.DataFrame:
         """Process all sessions and return concatenated results."""
         pysotope = Pysotope(isotopic_constants=ISOTOPIC_CONSTANTS)
+        pysotope.half_mass_cups = self._get_pbl_column_map()
+        pysotope.half_mass_cup = pysotope.half_mass_cup_for(47)
 
         # Add data for all sessions
         for session, df_session in self.sss.input_intensities.groupby("Session", as_index=False):
@@ -697,13 +745,12 @@ class BaselineCorrectionPage(BasePage):
             "D49": "mean",
         }
 
-        # Add half-mass columns if present
-        for mz in (47, 48):
-            if f"raw_r{mz}.5" in self.sss.input_intensities:
-                agg_dict.update({
-                    f"raw_s{mz}.5": "mean",
-                    f"raw_r{mz}.5": "mean",
-                })
+        # Add negative-baseline columns if present
+        for suffix in self._get_baseline_signal_suffixes():
+            agg_dict.update({
+                f"raw_s{suffix}": "mean",
+                f"raw_r{suffix}": "mean",
+            })
 
         # Add baseline-corrected columns if present
         if "bg_s47" in df:
@@ -955,10 +1002,9 @@ class BaselineCorrectionPage(BasePage):
         if "bg_s47" in filtered:
             cols.extend(["bg_s47", "bg_s48", "bg_s49", "bg_r47", "bg_r48", "bg_r49"])
         
-        # Add half-mass columns if available
-        for mz in (47, 48):
-            if f"raw_r{mz}.5" in self.sss.input_intensities:
-                cols.extend([f"raw_s{mz}.5", f"raw_r{mz}.5"])
+        # Add negative-baseline columns if available
+        for suffix in self._get_baseline_signal_suffixes():
+            cols.extend([f"raw_s{suffix}", f"raw_r{suffix}"])
 
         # Create traces for each column
         for idx, col in enumerate(cols):

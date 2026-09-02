@@ -1,6 +1,7 @@
 include LICENSE
 include README.md
-include D4Xgui/.streamlit *
+include D4Xgui/.streamlit/config.toml
+include D4Xgui/.streamlit/secrets.toml.example
 recursive-include D4Xgui *
 recursive-include D4Xgui/static *
 recursive-include D4Xgui/commons *
@@ -8,7 +9,9 @@ recursive-include D4Xgui/tools *
 recursive-include D4Xgui/pages *
 include requirements.txt
 recursive-exclude D4Xgui *.db *.dbc
+recursive-exclude D4Xgui user_settings.json
 recursive-exclude D4Xgui __pycache__ *.pyc *.pyo
 recursive-exclude D4Xgui .DS_Store
 recursive-exclude D4Xgui ~$*
+exclude D4Xgui/.streamlit/secrets.toml
 exclude .DS_Store .gitignore

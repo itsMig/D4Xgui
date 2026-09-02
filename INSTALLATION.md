@@ -98,7 +98,16 @@ If you prefer to install D4Xgui permanently in your Python environment, follow t
    ```
 
 ## Optional password
-If you want to protect D4Xgui with a password, please open `.streamlit/secrets.toml` within the project folder (you can find the project folder by prompting `uv cache dir`) and add a line `password=YOURPW`.
+D4Xgui creates `.streamlit/secrets.toml` automatically on first run (from the shipped `secrets.toml.example`). Streamlit does **not** require this file; when it is missing or has no `password` key, the app runs without authentication.
+
+To enable password protection, edit `.streamlit/secrets.toml` in the D4Xgui package folder (find it via `uv cache dir` after a `uvx` install) and add:
+
+```toml
+password = "YOURPW"
+```
+
+## User settings
+Personal settings are stored in `user_settings.json` next to the app. This file is **not** shipped with releases. On a fresh install, built-in defaults from `tools/config.py` are used automatically; `user_settings.json` is created the first time you save changes on the **Settings** page.
 
 ## Optional port
 If you want to change the preset port (1337), please open `.streamlit/config.toml` within the project folder (you can find the project folder by prompting `uv cache dir`) and modify the `server.port` parameter.

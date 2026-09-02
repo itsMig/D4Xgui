@@ -30,7 +30,7 @@ class WelcomePageManager:
     
     def _setup_page(self) -> None:
         """Set up the page configuration and sidebar."""
-        cfg.ensure_theme()
+        cfg.ensure_runtime()
         set_page_config(0)
         sidebar_logo.add_logo()
     

@@ -88,7 +88,12 @@ ISOTOPIC_PRESETS = {
 
 
 def _load_raw() -> Dict[str, Any]:
-    """Read the JSON file, returning {} on any error."""
+    """Read the JSON file, returning {} on any error.
+
+    When the file is missing, all ``get()`` calls fall back to ``_DEFAULTS``.
+    The file is created automatically the first time a setting is saved from
+    the Settings page — it should never be shipped in releases.
+    """
     if not _CONFIG_PATH.exists():
         return {}
     try:
@@ -159,9 +164,10 @@ def config_path() -> Path:
 
 # ── Theme management ─────────────────────────────────────────────────
 
-_STREAMLIT_CONFIG_PATH = (
-    Path(__file__).resolve().parent.parent / ".streamlit" / "config.toml"
-)
+_STREAMLIT_DIR = Path(__file__).resolve().parent.parent / ".streamlit"
+_STREAMLIT_CONFIG_PATH = _STREAMLIT_DIR / "config.toml"
+_STREAMLIT_SECRETS_PATH = _STREAMLIT_DIR / "secrets.toml"
+_STREAMLIT_SECRETS_EXAMPLE = _STREAMLIT_DIR / "secrets.toml.example"
 
 THEMES: Dict[str, Dict[str, str]] = {
     "Dark": {
@@ -208,6 +214,34 @@ def apply_theme(theme_name: str) -> None:
 
     _STREAMLIT_CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
     _STREAMLIT_CONFIG_PATH.write_text(config_text, encoding="utf-8")
+
+
+def ensure_streamlit_secrets() -> None:
+    """Create secrets.toml from the shipped example when missing.
+
+    Streamlit does not require this file at startup. When absent, or when no
+    ``password`` key is set, D4Xgui runs without password protection.
+    """
+    if _STREAMLIT_SECRETS_PATH.exists():
+        return
+    _STREAMLIT_DIR.mkdir(parents=True, exist_ok=True)
+    if _STREAMLIT_SECRETS_EXAMPLE.exists():
+        _STREAMLIT_SECRETS_PATH.write_text(
+            _STREAMLIT_SECRETS_EXAMPLE.read_text(encoding="utf-8"),
+            encoding="utf-8",
+        )
+    else:
+        _STREAMLIT_SECRETS_PATH.write_text(
+            "# Optional app password (uncomment to enable authentication):\n"
+            '# password = "your_password"\n',
+            encoding="utf-8",
+        )
+
+
+def ensure_runtime() -> None:
+    """Prepare local runtime files (theme, optional secrets)."""
+    ensure_theme()
+    ensure_streamlit_secrets()
 
 
 def ensure_theme() -> None:

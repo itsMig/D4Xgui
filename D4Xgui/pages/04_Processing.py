@@ -19,7 +19,7 @@ from tools.constants import (
     DEFAULT_WG_VIA_STANDARDS, DEFAULT_CO2_STANDARDS,
 )
 from tools.init_params import IsotopeStandards
-from tools.commons import clear_session_cache
+from tools.commons import clear_session_cache, baseline_correction_applied
 from tools.calc_temperature import TemperatureCalculator as _BaseTemperatureCalculator
 from tools.datetime_parsing import normalize_datetime_series
 from scipy import optimize as so
@@ -1084,21 +1084,17 @@ class ProcessingPage(BasePage):
         # reloads, so we ignore them here and read what Pysotope actually did.
         #
         # `sss.scaling_factors` layout (per session):
-        #   {"<session>": {"47b_47.5": <array|float>, "48b_47.5": ..., ...}}
-        # A non-zero scaling factor for `{mz}b_47.5` means the optimizer ran
-        # and produced a real correction for that mass in that session.
+        #   {"<session>": {"47b_47.5": <array|float>, "48b_48.5": ..., ...}}
+        # A non-zero scaling factor for any `{mz}b_*` key means the optimizer
+        # ran and produced a real correction for that mass in that session.
         bg_correct: Dict[str, bool] = {"47": False, "48": False, "49": False}
         scaling_factors = self.sss.get("scaling_factors") or {}
         for session_sf in scaling_factors.values():
             if not isinstance(session_sf, dict):
                 continue
             for mz in ("47", "48", "49"):
-                val = session_sf.get(f"{mz}b_47.5", 0.0)
-                try:
-                    if bool(np.any(np.asarray(val, dtype=float) != 0)):
-                        bg_correct[mz] = True
-                except (TypeError, ValueError):
-                    continue
+                if baseline_correction_applied(session_sf, mz):
+                    bg_correct[mz] = True
 
         params = {
             "Parameter": [

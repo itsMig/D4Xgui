@@ -55,10 +55,10 @@ d4xgui = "D4Xgui.run:main"
 packages = ["D4Xgui", "D4Xgui.tools", "D4Xgui.pages"]
 
 [tool.setuptools.package-data]
-D4Xgui = ["static/**", ]
+D4Xgui = ["static/**", ".streamlit/config.toml", ".streamlit/secrets.toml.example"]
 
 [tool.setuptools.exclude-package-data]
-"*" = ["*.db", "*.dbc", "*.pyc", "*.pyo", ".DS_Store", "~$*"]
+"*" = ["*.db", "*.dbc", "*.pyc", "*.pyo", ".DS_Store", "~$*", "user_settings.json", ".streamlit/secrets.toml"]
 
 [tool.black]
 line-length = 120

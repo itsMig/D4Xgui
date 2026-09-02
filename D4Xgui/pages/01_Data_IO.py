@@ -14,6 +14,7 @@ from tools.base_page import BasePage
 from tools.constants import SAMPLE_DB_PATH, STATIC_DIR
 from tools.database import DatabaseManager
 from tools.datetime_parsing import normalize_datetime_series
+from tools.commons import discover_baseline_signal_suffixes
 from tools.init_params import IsotopeStandards
 
 
@@ -399,11 +400,8 @@ class DataIOPage(BasePage):
             "raw_r44", "raw_r45", "raw_r46", "raw_r47", "raw_r48", "raw_r49"
         ]
         
-        for mz in (47, 48):
-            if f"raw_s{mz}.5" in df.columns:
-                columns_to_keep.extend([f"raw_s{mz}.5", f"raw_r{mz}.5"])
-            else:
-                self.sss[f"half-mass-cup{mz}"] = False
+        for suffix in discover_baseline_signal_suffixes(df.columns):
+            columns_to_keep.extend([f"raw_s{suffix}", f"raw_r{suffix}"])
 
         df = self._modify_uploaded_df([df])[0]
         existing_cols = [c for c in columns_to_keep if c in df.columns]

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.7] - 2026-09-02
+
++ `03_Baseline_correction`: per-scale PBL column assignment — enable Δ₄₇/Δ₄₈/Δ₄₉ correction independently and map each scale to its own negative-baseline signal (e.g. m/z 47.5 → Δ₄₇, 48.5 → Δ₄₈)
++ `01_Data_IO`: preserve all paired `raw_s…` / `raw_r…` PBL columns from uploads (not limited to 47.5 / 48.5)
++ `Pysotope_fork`: per-mass `half_mass_cups` mapping for scaling-factor keys and baseline correction math
++ `04_Processing`: derive per-mass baseline-correction status from non-zero `{mz}b_*` scaling-factor keys
++ `tools/commons`: `discover_baseline_signal_suffixes`, `baseline_signal_column_label`, `default_pbl_suffix_for_mass` helpers
++ auto-create `.streamlit/secrets.toml` from shipped `secrets.toml.example` on first run; exclude personal `user_settings.json` from releases
+
 ## [1.0.6] - 2026-07-16
 
 + `03_Baseline_correction`: per-mass opt-in checkboxes (Δ₄₇/Δ₄₈/Δ₄₉); unchecked masses skip the PBL optimizer (`bg = raw`)

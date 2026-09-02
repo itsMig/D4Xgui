@@ -115,11 +115,27 @@ class Pysotope:
         }
         
         self.half_mass_cup = '47.5'
+        self.half_mass_cups = {47: '47.5', 48: '47.5', 49: '47.5'}
         self.scaling_factors = dict()
         self.etf = dict()
         
         # Calculate working gas ratios
         self.calc_wg_ratios()
+
+    def half_mass_cup_for(self, mz: int) -> str:
+        """Return the negative-baseline column suffix for a clumped mass."""
+        return self.half_mass_cups.get(mz, self.half_mass_cup)
+
+    def _default_scaling_factors(self) -> dict:
+        """Initial scaling-factor dict for the configured half-mass cups."""
+        return {f"{mz}b_{self.half_mass_cup_for(mz)}": -1 for mz in (47, 48, 49)}
+
+    def _child_instance(self) -> "Pysotope":
+        """Create a child Pysotope sharing isotopic constants and cup config."""
+        child = Pysotope(isotopic_constants=self.isotopic_constants)
+        child.half_mass_cup = self.half_mass_cup
+        child.half_mass_cups = dict(self.half_mass_cups)
+        return child
 
     def set_wg_ratios(self, wg_ratios: dict):
         """Set working gas ratios."""
@@ -157,9 +173,7 @@ class Pysotope:
             }
         })
         
-        self.scaling_factors.update(
-            {S: {"47b_47.5": -1, "48b_47.5": -1, "49b_47.5": -1}}
-        )
+        self.scaling_factors.update({S: self._default_scaling_factors()})
 
     def set_standards(self, system, standards: dict):
         """Set standards for a given system."""
@@ -419,12 +433,8 @@ class Pysotope:
 
             def optimize_ETH12_leastSquares(scale, mz):
                 """Optimize scaling factor for ETH-1 and ETH-2 standards using least squares."""
-                stdP = Pysotope(isotopic_constants=self.isotopic_constants)
-                stdP.scaling_factors["std"] = {
-                    "47b_47.5": -1,
-                    "48b_47.5": -1,
-                    "49b_47.5": -1,
-                }
+                stdP = self._child_instance()
+                stdP.scaling_factors["std"] = self._default_scaling_factors()
 
                 std_df = self.analyses.get('std', pd.DataFrame())
                 if std_df.empty:
@@ -432,7 +442,7 @@ class Pysotope:
 
                 std_in = std_df[std_df["Sample"].isin(["ETH-1", "ETH-2"])]
                 stdP.add_data("std", std_in)
-                stdP.scaling_factors["std"][f"{mz}b_47.5"] = scale
+                stdP.scaling_factors["std"][f"{mz}b_{self.half_mass_cup_for(mz)}"] = scale
                 stdP.calc_sample_ratios_1(session="std")
 
                 stdP.correctBaseline(scaling_mode="std")
@@ -447,17 +457,13 @@ class Pysotope:
             def customStds_targetValues(scale, mz, stds=None):
                 if stds is None:
                     stds = {}
-                stdP = Pysotope(isotopic_constants=self.isotopic_constants)
-                stdP.scaling_factors["std"] = {
-                    "47b_47.5": -1,
-                    "48b_47.5": -1,
-                    "49b_47.5": -1,
-                }
+                stdP = self._child_instance()
+                stdP.scaling_factors["std"] = self._default_scaling_factors()
                 
                 stds = {_:stds[_] for _ in stds if _ in self.analyses[session]["Sample"].values}
                 df = self.analyses[session].loc[self.analyses[session]["Sample"].isin(stds)]
                 stdP.add_data("std", df.copy())
-                stdP.scaling_factors["std"][f"{mz}b_47.5"] = scale
+                stdP.scaling_factors["std"][f"{mz}b_{self.half_mass_cup_for(mz)}"] = scale
                 stdP.calc_sample_ratios_1(session="std")
                 
                 stdP.correctBaseline(scaling_mode="std", D47std=stds if mz==47 else None,
@@ -491,15 +497,11 @@ class Pysotope:
                         ])
                     )
                 std_df = df[df["Sample"].isin(standards)]
-                stdP = Pysotope(isotopic_constants=self.isotopic_constants)
-                stdP.scaling_factors["std"] = {
-                    "47b_47.5": -1,
-                    "48b_47.5": -1,
-                    "49b_47.5": -1,
-                }
+                stdP = self._child_instance()
+                stdP.scaling_factors["std"] = self._default_scaling_factors()
                 
                 stdP.add_data("std", std_df)
-                stdP.scaling_factors["std"][f"{mz}b_47.5"] = scale
+                stdP.scaling_factors["std"][f"{mz}b_{self.half_mass_cup_for(mz)}"] = scale
                 stdP.calc_sample_ratios_1(session="std")
                 stdP.correctBaseline(scaling_mode="std")
                 stdP.calc_sample_ratios_2(mode="bg")
@@ -522,7 +524,7 @@ class Pysotope:
             # `bg_x{mz} = raw_x{mz}` (no correction applied).
             for mz in 47, 48, 49:
                 if len(MAPPING_MZ[mz]) == 0:
-                    self.scaling_factors[session][f"{mz}b_{self.half_mass_cup}"] = 0.0
+                    self.scaling_factors[session][f"{mz}b_{self.half_mass_cup_for(mz)}"] = 0.0
                     sss['03_pbl_log'] = sss.get('03_pbl_log', '') + (
                         f"\n ## Mass {mz}: baseline correction disabled by user "
                         f"(scaling factor forced to 0)."
@@ -544,7 +546,7 @@ class Pysotope:
                                            verbose=0,
                                            )
                     sss['03_pbl_log'] = sss['03_pbl_log'] + f"\n ## Mass {mz} optimization results\n {result}"
-                    self.scaling_factors[session].update({f"{mz}b_47.5": result.x})
+                    self.scaling_factors[session].update({f"{mz}b_{self.half_mass_cup_for(mz)}": result.x})
                     continue
                 elif self.optimize == "leastSquares":
                     result = least_squares(
@@ -556,7 +558,7 @@ class Pysotope:
                         gtol=1e-12,
                     )
                     sss['03_pbl_log'] = sss['03_pbl_log'] + f"\n ## Mass {mz} optimization results\n {result}"
-                    self.scaling_factors[session].update({f"{mz}b_47.5": result.x})
+                    self.scaling_factors[session].update({f"{mz}b_{self.half_mass_cup_for(mz)}": result.x})
                     continue
                 elif self.optimize == "ETH":
                     # Simplified ETH optimization
@@ -566,7 +568,7 @@ class Pysotope:
                         args=(mz,),
                     )
                     sss['03_pbl_log'] = sss['03_pbl_log'] + f"\n ## Mass {mz} optimization results\n {result}"
-                    self.scaling_factors[session].update({f"{mz}b_47.5": result.x})
+                    self.scaling_factors[session].update({f"{mz}b_{self.half_mass_cup_for(mz)}": result.x})
                     continue
                 else:
                     result = least_squares(
@@ -578,7 +580,7 @@ class Pysotope:
                         gtol=1e-12,
                     )
                     sss['03_pbl_log'] = sss['03_pbl_log'] + f"\n ## Mass {mz} optimization results\n {result}"
-                    self.scaling_factors[session].update({f"{mz}b_47.5": result.x})
+                    self.scaling_factors[session].update({f"{mz}b_{self.half_mass_cup_for(mz)}": result.x})
                     continue
                 
                 
@@ -589,10 +591,13 @@ class Pysotope:
             
             if "scale" in scaling_mode:
                 for s_r in ("s", "r"):
-                    for _c in ("7", "8", "9"):
-                        df[f"bg_{s_r}4{_c}"] = (
-                            df[f"raw_{s_r}4{_c}"]
-                            + df[f"raw_{s_r}{self.half_mass_cup}"] * scaling_functions[f"4{_c}b_{self.half_mass_cup}"]
+                    for mz in (47, 48, 49):
+                        cup = self.half_mass_cup_for(mz)
+                        sf_key = f"{mz}b_{cup}"
+                        scale = scaling_functions.get(sf_key, 0.0)
+                        df[f"bg_{s_r}{mz}"] = (
+                            df[f"raw_{s_r}{mz}"]
+                            + df[f"raw_{s_r}{cup}"] * scale
                         )
             
             return df

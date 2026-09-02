@@ -499,6 +499,58 @@ def build_fair_metadata(
     return pd.DataFrame(rows, columns=["Parameter", "Value"])
 
 
+_STANDARD_INTENSITY_SUFFIXES = frozenset(str(m) for m in range(44, 50))
+
+
+def discover_baseline_signal_suffixes(columns) -> List[str]:
+    """Return suffixes where both raw_s{suffix} and raw_r{suffix} columns exist."""
+    s_suffixes = {
+        col[5:] for col in columns
+        if col.startswith("raw_s") and len(col) > 5
+        and col[5:] not in _STANDARD_INTENSITY_SUFFIXES
+    }
+    r_suffixes = {
+        col[5:] for col in columns
+        if col.startswith("raw_r") and len(col) > 5
+        and col[5:] not in _STANDARD_INTENSITY_SUFFIXES
+    }
+    return sorted(s_suffixes & r_suffixes)
+
+
+def baseline_signal_column_label(suffix: str) -> str:
+    """Human-readable label for a negative baseline signal column pair."""
+    return f"{suffix}  (raw_r{suffix}, raw_s{suffix})"
+
+
+def default_pbl_suffix_for_mass(mz: str, available: List[str]) -> str:
+    """Pick a sensible default PBL column suffix for Δ47/Δ48/Δ49."""
+    preferred = {"47": "47.5", "48": "48.5", "49": "47.5"}
+    pref = preferred.get(mz, "47.5")
+    if pref in available:
+        return pref
+    if "47.5" in available:
+        return "47.5"
+    return available[0] if available else "47.5"
+
+
+def baseline_correction_applied(session_sf: dict, mz: str) -> bool:
+    """Return whether Pysotope applied baseline correction for *mz*.
+
+    Scans ``session_sf`` for any non-zero ``{mz}b_*`` scaling-factor key
+    (e.g. ``47b_47.5``, ``48b_48.5``), independent of session-state widgets.
+    """
+    prefix = f"{mz}b_"
+    for key, val in session_sf.items():
+        if not str(key).startswith(prefix):
+            continue
+        try:
+            if bool(np.any(np.asarray(val, dtype=float) != 0)):
+                return True
+        except (TypeError, ValueError):
+            continue
+    return False
+
+
 #backward compatibility
 check_folder = ensure_directory_exists
 delete_data = delete_all_session_data
