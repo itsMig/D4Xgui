@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>D4Xgui.tools.authenticator &mdash; D4Xgui v1.0.6 documentation</title>
+  <title>D4Xgui.tools.authenticator &mdash; D4Xgui v1.0.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1913ccc3"></script>
+      <script src="../../../_static/documentation_options.js?v=bd6b48da"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -88,11 +88,11 @@
            <div itemprop="articleBody">
              
   <h1>Source code for D4Xgui.tools.authenticator</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Authentication module for D4Xgui Streamlit application.</span>
+<span></span><span class="sd">"""Authentication module for D4Xgui Streamlit application.</span>
 
 <span class="sd">This module provides (optional) password-based authentication functionality for the D4Xgui</span>
-<span class="sd">application using Streamlit&#39;s session state and secrets management.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">application using Streamlit's session state and secrets management.</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">hmac</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
@@ -104,7 +104,7 @@
 <div class="viewcode-block" id="AuthenticationError">
 <a class="viewcode-back" href="../../../tools_authenticator.html#D4Xgui.tools.authenticator.AuthenticationError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AuthenticationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when authentication fails.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when authentication fails."""</span>
     <span class="k">pass</span></div>
 
 
@@ -112,35 +112,35 @@
 <div class="viewcode-block" id="Authenticator">
 <a class="viewcode-back" href="../../../tools_authenticator.html#D4Xgui.tools.authenticator.Authenticator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Authenticator</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles user authentication for the Streamlit application.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Handles user authentication for the Streamlit application."""</span>
     
     <span class="c1"># Session state keys</span>
-    <span class="n">PASSWORD_KEY</span> <span class="o">=</span> <span class="s2">&quot;password&quot;</span>
-    <span class="n">PASSWORD_CORRECT_KEY</span> <span class="o">=</span> <span class="s2">&quot;password_correct&quot;</span>
+    <span class="n">PASSWORD_KEY</span> <span class="o">=</span> <span class="s2">"password"</span>
+    <span class="n">PASSWORD_CORRECT_KEY</span> <span class="o">=</span> <span class="s2">"password_correct"</span>
     
     <span class="c1"># UI messages</span>
     <span class="n">WELCOME_MESSAGE</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;This is an early version of D4Xgui. Please enter the password to access this app.&quot;</span>
+        <span class="s2">"This is an early version of D4Xgui. Please enter the password to access this app."</span>
     <span class="p">)</span>
     
     <span class="n">CONTACT_MESSAGE</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;Contact &lt;a href=&quot;mailto:bernecker@em.uni-frankfurt.de?&#39;</span>
-        <span class="s1">&#39;subject=D4Xgui - Alpha password request&amp;&#39;</span>
-        <span class="s1">&#39;body=Hi Miguel,%0D%0Awe are interested in testing your app.%0D%0A%0D%0A&#39;</span>
-        <span class="s1">&#39;Institute:%0D%0AMass spectrometer:%0D%0APreparation line:%0D%0A%0D%0A&#39;</span>
-        <span class="s1">&#39;Could you please provide me the password needed to join alpha testing?&quot;&gt;&#39;</span>
-        <span class="s1">&#39;Miguel Bernecker&lt;/a&gt; if you want to join alpha testing.&#39;</span>
+        <span class="s1">'Contact &lt;a href="mailto:bernecker@em.uni-frankfurt.de?'</span>
+        <span class="s1">'subject=D4Xgui - Alpha password request&amp;'</span>
+        <span class="s1">'body=Hi Miguel,%0D%0Awe are interested in testing your app.%0D%0A%0D%0A'</span>
+        <span class="s1">'Institute:%0D%0AMass spectrometer:%0D%0APreparation line:%0D%0A%0D%0A'</span>
+        <span class="s1">'Could you please provide me the password needed to join alpha testing?"&gt;'</span>
+        <span class="s1">'Miguel Bernecker&lt;/a&gt; if you want to join alpha testing.'</span>
     <span class="p">)</span>
     
-    <span class="n">ERROR_MESSAGE</span> <span class="o">=</span> <span class="s2">&quot;😕 Password incorrect&quot;</span>
+    <span class="n">ERROR_MESSAGE</span> <span class="o">=</span> <span class="s2">"😕 Password incorrect"</span>
     
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay_seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the authenticator.</span>
+<span class="w">        </span><span class="sd">"""Initialize the authenticator.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            delay_seconds: Delay after password entry to prevent brute force attacks.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s1">&#39;password&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">secrets</span><span class="p">:</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="s1">'password'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">secrets</span><span class="p">:</span>
             <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">PASSWORD_CORRECT_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">delay_seconds</span> <span class="o">=</span> <span class="n">delay_seconds</span>
@@ -148,22 +148,22 @@
 <div class="viewcode-block" id="Authenticator._get_stored_password">
 <a class="viewcode-back" href="../../../tools_authenticator.html#D4Xgui.tools.authenticator.Authenticator._get_stored_password">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_stored_password</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the stored password from Streamlit secrets.</span>
+<span class="w">        </span><span class="sd">"""Get the stored password from Streamlit secrets.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            The stored password or None if not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">secrets</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">secrets</span><span class="p">[</span><span class="s2">"password"</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Password not configured in secrets. Please contact the administrator.&quot;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Password not configured in secrets. Please contact the administrator."</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
     
 <div class="viewcode-block" id="Authenticator._validate_password">
 <a class="viewcode-back" href="../../../tools_authenticator.html#D4Xgui.tools.authenticator.Authenticator._validate_password">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_validate_password</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entered_password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stored_password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the entered password against the stored password.</span>
+<span class="w">        </span><span class="sd">"""Validate the entered password against the stored password.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            entered_password: Password entered by the user.</span>
@@ -171,18 +171,18 @@
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            True if passwords match, False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">hmac</span><span class="o">.</span><span class="n">compare_digest</span><span class="p">(</span><span class="n">entered_password</span><span class="p">,</span> <span class="n">stored_password</span><span class="p">)</span></div>
 
     
 <div class="viewcode-block" id="Authenticator._handle_password_entry">
 <a class="viewcode-back" href="../../../tools_authenticator.html#D4Xgui.tools.authenticator.Authenticator._handle_password_entry">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_handle_password_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle password entry and validation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Handle password entry and validation."""</span>
         <span class="c1"># Add delay to prevent brute force attacks</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delay_seconds</span><span class="p">)</span>
         
-        <span class="n">entered_password</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PASSWORD_KEY</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">entered_password</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PASSWORD_KEY</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
         <span class="n">stored_password</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stored_password</span><span class="p">()</span>
         
         <span class="k">if</span> <span class="n">stored_password</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -200,13 +200,13 @@
 <div class="viewcode-block" id="Authenticator._show_login_form">
 <a class="viewcode-back" href="../../../tools_authenticator.html#D4Xgui.tools.authenticator.Authenticator._show_login_form">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_show_login_form</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the login form.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Display the login form."""</span>
         <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">WELCOME_MESSAGE</span><span class="p">)</span>
         <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CONTACT_MESSAGE</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         
         <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span>
-            <span class="s2">&quot;Password&quot;</span><span class="p">,</span>
-            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="p">,</span>
+            <span class="s2">"Password"</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s2">"password"</span><span class="p">,</span>
             <span class="n">on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_password_entry</span><span class="p">,</span>
             <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">PASSWORD_KEY</span>
         <span class="p">)</span>
@@ -219,24 +219,24 @@
 <div class="viewcode-block" id="Authenticator.is_authenticated">
 <a class="viewcode-back" href="../../../tools_authenticator.html#D4Xgui.tools.authenticator.Authenticator.is_authenticated">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_authenticated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the user is authenticated.</span>
+<span class="w">        </span><span class="sd">"""Check if the user is authenticated.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            True if user is authenticated, False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PASSWORD_CORRECT_KEY</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
 
     
 <div class="viewcode-block" id="Authenticator.require_authentication">
 <a class="viewcode-back" href="../../../tools_authenticator.html#D4Xgui.tools.authenticator.Authenticator.require_authentication">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">require_authentication</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Require authentication to proceed.</span>
+<span class="w">        </span><span class="sd">"""Require authentication to proceed.</span>
 <span class="sd">        </span>
 <span class="sd">        Shows login form if not authenticated and stops execution.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            True if authenticated, does not return if not authenticated.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">True</span>
         
@@ -253,11 +253,11 @@
 <div class="viewcode-block" id="check_password">
 <a class="viewcode-back" href="../../../tools_authenticator.html#D4Xgui.tools.authenticator.check_password">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_password</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Legacy function for backward compatibility.</span>
+<span class="w">    </span><span class="sd">"""Legacy function for backward compatibility.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns:</span>
 <span class="sd">        True if the user has the correct password.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">_authenticator</span><span class="o">.</span><span class="n">require_authentication</span><span class="p">()</span></div>
 
 
@@ -265,11 +265,11 @@
 <div class="viewcode-block" id="require_authentication">
 <a class="viewcode-back" href="../../../tools_authenticator.html#D4Xgui.tools.authenticator.require_authentication">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">require_authentication</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Require authentication or stop the app.</span>
+<span class="w">    </span><span class="sd">"""Require authentication or stop the app.</span>
 <span class="sd">    </span>
 <span class="sd">    This function will stop the Streamlit app execution if the user</span>
 <span class="sd">    is not authenticated.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_authenticator</span><span class="o">.</span><span class="n">require_authentication</span><span class="p">():</span>
         <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
 

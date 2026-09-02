@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>D4Xgui.tools.calc_temperature &mdash; D4Xgui v1.0.6 documentation</title>
+  <title>D4Xgui.tools.calc_temperature &mdash; D4Xgui v1.0.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1913ccc3"></script>
+      <script src="../../../_static/documentation_options.js?v=bd6b48da"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -88,12 +88,12 @@
            <div itemprop="articleBody">
              
   <h1>Source code for D4Xgui.tools.calc_temperature</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Temperature calculation module for clumped isotope analysis.</span>
+<span></span><span class="sd">"""Temperature calculation module for clumped isotope analysis.</span>
 
 <span class="sd">This module provides functions to calculate clumped isotope values (D47, D48, D63, D64, D65)</span>
 <span class="sd">as a function of temperature using polynomial equations from published calibrations</span>
 <span class="sd">(Hill et al., 2014; Fiebig et al. 2021, 2024).</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
 
@@ -105,7 +105,7 @@
 <div class="viewcode-block" id="TemperatureCalculator">
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TemperatureCalculator</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculator for clumped isotope temperature relationships.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Calculator for clumped isotope temperature relationships."""</span>
     
     <span class="c1"># Polynomial coefficients for Hill et al. (2014)</span>
     <span class="n">POLY_63_COEFFS</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">5.896755e00</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.520888e03</span><span class="p">,</span> <span class="mf">2.391274e07</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.540693e09</span><span class="p">)</span>
@@ -140,13 +140,13 @@
         <span class="n">scaling</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert Hill(2014) × scaling + offset to D95eq ``D4x_calib_function`` coefficients.</span>
 
 <span class="sd">        D95eq evaluates Δ4x = c₀ + c₁/T + c₂/T² + c₃/T³ + c₄/T⁴ (T in °C).</span>
 <span class="sd">        Hill uses Δ6x = a₁/T + a₂/T² + a₃/T³ + a₄/T⁴, so</span>
 <span class="sd">        Δ4x = offset + scaling × Hill(1/T).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span> <span class="o">=</span> <span class="n">hill_coeffs</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">a2</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">a3</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">a4</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">)</span></div>
 
@@ -155,7 +155,7 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator._evaluate_polynomial_4th_order">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate_polynomial_4th_order</span><span class="p">(</span><span class="n">coeffs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate a 4th-degree polynomial.</span>
+<span class="w">        </span><span class="sd">"""Evaluate a 4th-degree polynomial.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            coeffs: Polynomial coefficients (a, b, c, d) for ax + bx² + cx³ + dx⁴.</span>
@@ -163,7 +163,7 @@
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Polynomial evaluation result.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">coeffs</span>
         <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">4</span></div>
 
@@ -172,14 +172,14 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.calculate_d63_hill2014">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_d63_hill2014</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inverse_temp_k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate D63 values using Hill et al. (2014) calibration.</span>
+<span class="w">        </span><span class="sd">"""Calculate D63 values using Hill et al. (2014) calibration.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            inverse_temp_k: 1/T in Kelvin.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            D63 values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_evaluate_polynomial_4th_order</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">POLY_63_COEFFS</span><span class="p">,</span> <span class="n">inverse_temp_k</span><span class="p">)</span></div>
 
     
@@ -187,14 +187,14 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.calculate_d64_hill2014">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_d64_hill2014</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inverse_temp_k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate D64 values using Hill et al. (2014) calibration.</span>
+<span class="w">        </span><span class="sd">"""Calculate D64 values using Hill et al. (2014) calibration.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            inverse_temp_k: 1/T in Kelvin.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            D64 values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_evaluate_polynomial_4th_order</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">POLY_64_COEFFS</span><span class="p">,</span> <span class="n">inverse_temp_k</span><span class="p">)</span></div>
 
     
@@ -202,14 +202,14 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.calculate_d65_hill2014">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_d65_hill2014</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inverse_temp_k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate D65 values using Hill et al. (2014) calibration.</span>
+<span class="w">        </span><span class="sd">"""Calculate D65 values using Hill et al. (2014) calibration.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            inverse_temp_k: 1/T in Kelvin.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            D65 values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_evaluate_polynomial_4th_order</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">POLY_65_COEFFS</span><span class="p">,</span> <span class="n">inverse_temp_k</span><span class="p">)</span></div>
 
     
@@ -217,14 +217,14 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.calculate_d47_fiebig2021">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_d47_fiebig2021</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inverse_temp_k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate D47 values using Fiebig et al. (2021) calibration.</span>
+<span class="w">        </span><span class="sd">"""Calculate D47 values using Fiebig et al. (2021) calibration.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            inverse_temp_k: 1/T in Kelvin.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            D47 values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">d63</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">calculate_d63_hill2014</span><span class="p">(</span><span class="n">inverse_temp_k</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">d63</span> <span class="o">*</span> <span class="bp">cls</span><span class="o">.</span><span class="n">FIEBIG2021_D47_SCALING</span><span class="p">)</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">FIEBIG2021_D47_OFFSET</span></div>
 
@@ -233,14 +233,14 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.calculate_d48_fiebig2021">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_d48_fiebig2021</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inverse_temp_k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate D48 values using Fiebig et al. (2021) calibration.</span>
+<span class="w">        </span><span class="sd">"""Calculate D48 values using Fiebig et al. (2021) calibration.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            inverse_temp_k: 1/T in Kelvin.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            D48 values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">d64</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">calculate_d64_hill2014</span><span class="p">(</span><span class="n">inverse_temp_k</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">d64</span> <span class="o">*</span> <span class="bp">cls</span><span class="o">.</span><span class="n">FIEBIG2021_D48_SCALING</span><span class="p">)</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">FIEBIG2021_D48_OFFSET</span></div>
 
@@ -249,14 +249,14 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.calculate_d47_fiebig2024">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_d47_fiebig2024</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inverse_temp_k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate D47 values using Fiebig et al. (2024) calibration.</span>
+<span class="w">        </span><span class="sd">"""Calculate D47 values using Fiebig et al. (2024) calibration.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            inverse_temp_k: 1/T in Kelvin.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            D47 values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">d63</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">calculate_d63_hill2014</span><span class="p">(</span><span class="n">inverse_temp_k</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">d63</span> <span class="o">*</span> <span class="bp">cls</span><span class="o">.</span><span class="n">FIEBIG2024_D47_SCALING</span><span class="p">)</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">FIEBIG2024_D47_OFFSET</span></div>
 
@@ -265,14 +265,14 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.calculate_d48_fiebig2024">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_d48_fiebig2024</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inverse_temp_k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate D48 values using Fiebig et al. (2024) calibration.</span>
+<span class="w">        </span><span class="sd">"""Calculate D48 values using Fiebig et al. (2024) calibration.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            inverse_temp_k: 1/T in Kelvin.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            D48 values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">d64</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">calculate_d64_hill2014</span><span class="p">(</span><span class="n">inverse_temp_k</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">d64</span> <span class="o">*</span> <span class="bp">cls</span><span class="o">.</span><span class="n">FIEBIG2024_D48_SCALING</span><span class="p">)</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">FIEBIG2024_D48_OFFSET</span></div>
 
@@ -281,7 +281,7 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.get_temperature_difference_d47_fiebig2021">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_temperature_difference_d47_fiebig2021</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">temp_celsius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">target_d47</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate absolute difference between target D47 and calculated D47 (Fiebig 2021).</span>
+<span class="w">        </span><span class="sd">"""Calculate absolute difference between target D47 and calculated D47 (Fiebig 2021).</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            temp_celsius: Temperature in Celsius.</span>
@@ -289,7 +289,7 @@
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Absolute difference between target and calculated D47.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">inverse_temp_k</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">temp_celsius</span> <span class="o">+</span> <span class="mf">273.15</span><span class="p">)</span>
         <span class="n">calculated_d47</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">calculate_d47_fiebig2021</span><span class="p">(</span><span class="n">inverse_temp_k</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">target_d47</span> <span class="o">-</span> <span class="n">calculated_d47</span><span class="p">)</span></div>
@@ -299,7 +299,7 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.get_temperature_difference_d48_fiebig2021">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_temperature_difference_d48_fiebig2021</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">temp_celsius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">target_d48</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate absolute difference between target D48 and calculated D48 (Fiebig 2021).</span>
+<span class="w">        </span><span class="sd">"""Calculate absolute difference between target D48 and calculated D48 (Fiebig 2021).</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            temp_celsius: Temperature in Celsius.</span>
@@ -307,7 +307,7 @@
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Absolute difference between target and calculated D48.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">inverse_temp_k</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">temp_celsius</span> <span class="o">+</span> <span class="mf">273.15</span><span class="p">)</span>
         <span class="n">calculated_d48</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">calculate_d48_fiebig2021</span><span class="p">(</span><span class="n">inverse_temp_k</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">target_d48</span> <span class="o">-</span> <span class="n">calculated_d48</span><span class="p">)</span></div>
@@ -317,7 +317,7 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.get_temperature_difference_d47_fiebig2024">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_temperature_difference_d47_fiebig2024</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">temp_celsius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">target_d47</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate absolute difference between target D47 and calculated D47 (Fiebig 2024).</span>
+<span class="w">        </span><span class="sd">"""Calculate absolute difference between target D47 and calculated D47 (Fiebig 2024).</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            temp_celsius: Temperature in Celsius.</span>
@@ -325,7 +325,7 @@
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Absolute difference between target and calculated D47.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">inverse_temp_k</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">temp_celsius</span> <span class="o">+</span> <span class="mf">273.15</span><span class="p">)</span>
         <span class="n">calculated_d47</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">calculate_d47_fiebig2024</span><span class="p">(</span><span class="n">inverse_temp_k</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">target_d47</span> <span class="o">-</span> <span class="n">calculated_d47</span><span class="p">)</span></div>
@@ -335,7 +335,7 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.get_temperature_difference_d48_fiebig2024">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_temperature_difference_d48_fiebig2024</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">temp_celsius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">target_d48</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate absolute difference between target D48 and calculated D48 (Fiebig 2024).</span>
+<span class="w">        </span><span class="sd">"""Calculate absolute difference between target D48 and calculated D48 (Fiebig 2024).</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            temp_celsius: Temperature in Celsius.</span>
@@ -343,7 +343,7 @@
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Absolute difference between target and calculated D48.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">inverse_temp_k</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">temp_celsius</span> <span class="o">+</span> <span class="mf">273.15</span><span class="p">)</span>
         <span class="n">calculated_d48</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">calculate_d48_fiebig2024</span><span class="p">(</span><span class="n">inverse_temp_k</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">target_d48</span> <span class="o">-</span> <span class="n">calculated_d48</span><span class="p">)</span></div>
@@ -353,7 +353,7 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.get_temperature_difference_d47_anderson2021">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_temperature_difference_d47_anderson2021</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">temp_celsius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">target_d47</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate absolute difference between target D47 and Anderson (2021) D47.</span>
+<span class="w">        </span><span class="sd">"""Calculate absolute difference between target D47 and Anderson (2021) D47.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            temp_celsius: Temperature in Celsius.</span>
@@ -361,7 +361,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Absolute difference.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">target_d47</span> <span class="o">-</span> <span class="p">((</span><span class="mf">0.0391</span> <span class="o">*</span> <span class="mf">1e6</span> <span class="o">/</span> <span class="n">temp_celsius</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.154</span><span class="p">))</span></div>
 
 
@@ -369,14 +369,14 @@
 <a class="viewcode-back" href="../../../tools_calc_temperature.html#D4Xgui.tools.calc_temperature.TemperatureCalculator.direct_temperature_swart2021">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">direct_temperature_swart2021</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d47</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate temperature using Swart (2021): D47(CDES90) = 0.039 * 10^6/T^2 + 0.158.</span>
+<span class="w">        </span><span class="sd">"""Calculate temperature using Swart (2021): D47(CDES90) = 0.039 * 10^6/T^2 + 0.158.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            d47: The D47 value.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Temperature in degrees Celsius.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">temp_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1e6</span> <span class="o">*</span> <span class="mf">0.039</span> <span class="o">/</span> <span class="p">(</span><span class="n">d47</span> <span class="o">-</span> <span class="mf">0.158</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">temp_k</span> <span class="o">-</span> <span class="mf">273.15</span>
