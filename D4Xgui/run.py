@@ -17,6 +17,14 @@ import subprocess
 import platform
 from pathlib import Path
 
+# Streamlit pages import `tools` as a top-level package because
+# `streamlit run Welcome.py` puts this directory on sys.path.
+# The console entry point (`uvx d4xgui` / `d4xgui`) imports D4Xgui.run
+# from site-packages instead, so we must add the same directory first.
+_APP_DIR = Path(__file__).resolve().parent
+if str(_APP_DIR) not in sys.path:
+	sys.path.insert(0, str(_APP_DIR))
+
 from tools import config as cfg
 
 
@@ -24,7 +32,7 @@ class D4XguiRunner:
 	"""Handles the execution of the D4Xgui application."""
 	
 	def __init__(self):
-		self.app_dir = Path(__file__).parent.absolute()
+		self.app_dir = _APP_DIR
 		self.main_app = self.app_dir / "Welcome.py"
 		self.is_installed = self._check_if_installed()
 	

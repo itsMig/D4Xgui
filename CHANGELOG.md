@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.8] - 2026-09-16
+
++ `run.py`: put the package directory on `sys.path` so `uvx d4xgui` / the `d4xgui` console script can import `tools` (fixes `ModuleNotFoundError: No module named 'tools'`)
+
 ## [1.0.7] - 2026-09-02
 
 + `03_Baseline_correction`: per-scale PBL column assignment — enable Δ₄₇/Δ₄₈/Δ₄₉ correction independently and map each scale to its own negative-baseline signal (e.g. m/z 47.5 → Δ₄₇, 48.5 → Δ₄₈)
