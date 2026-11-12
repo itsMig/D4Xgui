@@ -19,6 +19,9 @@ import streamlit as st
 
 from tools.base_page import BasePage
 from tools import config as cfg
+from tools.d18o_acid import (
+    ACID_FRACTIONATIONS, DEFAULT_ACID_FRACTIONATIONS, selected_fractionations,
+)
 from tools.init_params import IsotopeStandards
 
 
@@ -324,17 +327,45 @@ class SettingsPage(BasePage):
         current = cfg.get_all()
         defs = cfg.defaults()
 
+        frac_labels = {item["id"]: item["label"] for item in ACID_FRACTIONATIONS}
+        frac_ids = list(frac_labels)
+        current_frac = selected_fractionations(current.get(
+            "d18o_acid_fractionation",
+            defs.get("d18o_acid_fractionation", DEFAULT_ACID_FRACTIONATIONS),
+        ))
+
         with st.form("bulk_isotopes_form"):
             acid_temp = st.number_input(
                 "Default acid temperature (°C)",
                 value=current.get("acid_temperature", defs["acid_temperature"]),
                 min_value=0, max_value=200, step=1,
             )
-            submitted = st.form_submit_button("Save reaction temperature")
+            acid_frac = st.multiselect(
+                "Mineral δ¹⁸O acid fractionations",
+                options=frac_ids,
+                default=current_frac,
+                format_func=lambda key: frac_labels[key],
+                help=(
+                    "Each selected relationship is written as its own "
+                    "δ¹⁸O columns on the processing summary, using the acid "
+                    "temperature above. Select more than one, for example "
+                    "calcite and dolomite, to combine them for a mixture."
+                ),
+            )
+            submitted = st.form_submit_button("Save acid settings")
 
         if submitted:
-            cfg.set("acid_temperature", int(acid_temp))
-            st.success("Acid temperature saved.")
+            chosen = selected_fractionations(acid_frac)
+            if not acid_frac:
+                st.warning(
+                    "Select at least one acid fractionation. "
+                    "Calcite (Kim, Mucci & Taylor 2007) was kept."
+                )
+            cfg.set_many({
+                "acid_temperature": int(acid_temp),
+                "d18o_acid_fractionation": chosen,
+            })
+            st.success("Acid settings saved.")
             saved = True
 
         st.markdown("---")

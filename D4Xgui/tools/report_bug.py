@@ -22,11 +22,11 @@ a screenshot manually.
 
 Design note
 -----------
-``st.components.v1.html`` renders inside an iframe that is torn down on
-every Streamlit rerun. We therefore only use it as a *bootstrap*: the
-inline JS injects the button (and its click handler, via a ``<script>``
-tag) into ``window.parent.document`` so they live in the app's own
-global context and survive reruns.
+``st.iframe`` renders inside an iframe that is torn down on every
+Streamlit rerun. We therefore only use it as a *bootstrap*: the inline
+JS injects the button (and its click handler, via a ``<script>`` tag)
+into ``window.parent.document`` so they live in the app's own global
+context and survive reruns.
 """
 
 from __future__ import annotations
@@ -38,7 +38,6 @@ import urllib.parse
 from typing import Optional
 
 import streamlit as st
-import streamlit.components.v1 as components
 
 from tools import config as cfg
 from tools.version import __version__ as D4XGUI_VERSION
@@ -115,6 +114,19 @@ def render_report_bug_button(page_label: Optional[str] = None) -> None:
     doc = null;
   }}
   if (!doc || !doc.body) return;
+
+  // Hide this bootstrap host so st.iframe's 1×1 (scrolling) frame does
+  // not leave a "_" / scrollbar speck in the sidebar.
+  try {{
+    const frame = window.frameElement;
+    if (frame) {{
+      frame.style.cssText = 'display:none!important;width:0!important;height:0!important;border:0!important;';
+      const wrap = frame.closest('[data-testid="stIFrame"]') || frame.parentElement;
+      if (wrap && wrap !== doc.body) {{
+        wrap.style.cssText = 'display:none!important;height:0!important;width:0!important;margin:0!important;padding:0!important;overflow:hidden!important;border:0!important;';
+      }}
+    }}
+  }} catch (e) {{ /* cross-origin or missing frameElement — ignore */ }}
 
   // ── Style (injected once) ──────────────────────────────────────────
   if (!doc.getElementById(CFG.styleId)) {{
@@ -304,8 +316,8 @@ def render_report_bug_button(page_label: Optional[str] = None) -> None:
 </script>
 """
 
-    # Height=0 so the bootstrap iframe takes no visual space. Streamlit
-    # still reserves a tiny bit of vertical room; render it at the very
-    # end of the sidebar to keep it out of the way.
+    # Minimal 1×1 iframe so the bootstrap takes almost no visual space
+    # (st.iframe rejects 0). Render at the end of the sidebar to keep it
+    # out of the way.
     with st.sidebar:
-        components.html(bootstrap, height=0, width=0)
+        st.iframe(bootstrap, height=1, width=1)

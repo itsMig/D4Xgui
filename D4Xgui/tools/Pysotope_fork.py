@@ -398,12 +398,13 @@ class Pysotope:
         if D49std is None and f'D49' in self.standards:
             D49std = self.standards.get('D49', {})
         
-        # Now update standards if provided (non-None)
-        if D47std and isinstance(D47std, dict):
+        # Update standards when provided (including empty dict = mass opted out).
+        # Use isinstance only — empty {} must overwrite so the optimizer is skipped.
+        if isinstance(D47std, dict):
             self.standards['D47'] = D47std
-        if D48std and isinstance(D48std, dict):
+        if isinstance(D48std, dict):
             self.standards['D48'] = D48std
-        if D49std and isinstance(D49std, dict):
+        if isinstance(D49std, dict):
             self.standards['D49'] = D49std
         
         if scaling_mode == None or scaling_mode.lower() == "none":

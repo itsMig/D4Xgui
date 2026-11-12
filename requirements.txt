@@ -1,5 +1,5 @@
 # Core Streamlit and web dependencies
-streamlit>=1.28.0
+streamlit>=1.56.0
 altair
 blinker
 cachetools

@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.9] - 2026-11-12
+
++ `98_Settings`: choose one or more mineral δ¹⁸O acid fractionations (calcite and aragonite, Kim, Mucci & Taylor 2007; dolomite and siderite, Rosenbaum & Sheppard 1986; siderite, Fernandez et al. 2016). Default remains calcite (Kim 2007)
++ `04_Processing`: acid factor applied on VPDB, then the mineral value projected to VSMOW. Summary gains `d18O_{mineral}_VPDB` / `d18O_{mineral}_VSMOW` per selection (citation tag added when two equations share a mineral)
++ `04_Processing`: replicate sample SDs for δ₄₇/δ₄₈/δ₄₉ (`SD_d47`/`SD_d48`/`SD_d49`); summary columns written in a fixed export order
++ `04_Processing` / `tools/commons`: FAIR metadata and `proc_params` values stored as strings so Streamlit Arrow and Excel export no longer break on mixed bools; settings path recorded as the filename only; standards δ¹³C and δ¹⁸O no longer swapped in the run-parameters sheet
++ pooled standardization uses vectorized residuals (`tools/d47crunch_fast.py`) with the same drift model as D47crunch. A 32-session, ~9000-replicate run dropped from about 40 min to about 7 min. Reported Δ and 2SE are unchanged. Independent-session correction is still D47crunch
++ standardization-error contours no longer build a matplotlib mesh or an unbounded `np.arange`. Ill-conditioned sessions (typical of noisy Δ₄₉) are skipped instead of SIGKILL-ing the app
++ `Pysotope_fork`: an empty standards dict now really opts that mass out of the baseline optimizer
++ `06_Dual_Clumped_Space`: D95eq results cached as plain arrays instead of full uncertainty graphs; Teq PDF windows are clamped so one bad point cannot abort the overlay; runs above 75 points ask for confirmation before starting
++ floating **Report a bug** button uses `st.iframe` and no longer leaves a speck in the sidebar
++ `streamlit>=1.56.0`
+
 ## [1.0.8] - 2026-09-16
 
 + `run.py`: put the package directory on `sys.path` so `uvx d4xgui` / the `d4xgui` console script can import `tools` (fixes `ModuleNotFoundError: No module named 'tools'`)

@@ -425,7 +425,7 @@ class DualClumpedSpacePage(BasePage):
         st.plotly_chart(
             fig,
             config=PlotlyConfig.CONFIG,
-            use_container_width=True,
+            width="stretch",
         )
 
         if (
@@ -461,7 +461,7 @@ class DualClumpedSpacePage(BasePage):
                 "Samples whose two-sided t-test on r has p ≥ α (or with fewer "
                 "than 3 replicates) are drawn with ρ = 0 (axis-aligned)."
             )
-            st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+            st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
 
     def _create_dual_clumped_plot(self) -> go.Figure:
         """Create the main dual clumped space plot."""
@@ -711,6 +711,14 @@ class DualClumpedSpacePage(BasePage):
         ])
         return hashlib.md5(payload.encode()).hexdigest()
 
+    # Above this many points, require the user to tick an explicit confirmation
+    # before kicking off the full D95eq thermometry pipeline. The engine's
+    # per-sample uc.wrap(lmfit) + per-sample Teq_pdf grid grow linearly, and on
+    # macOS the Streamlit worker gets SIGKILL'd by jetsamd well before any
+    # Python exception can be raised. The guard keeps the "crash" visible as a
+    # sidebar message instead of a dead subprocess.
+    _D95EQ_LARGE_RUN_THRESHOLD: int = 75
+
     def _compute_d95eq_thermometry(self, df: pd.DataFrame) -> Dict[str, Any]:
         """Run Engine thermometry with session-state caching."""
         cache_key = self._d95eq_cache_key(df)
@@ -718,6 +726,7 @@ class DualClumpedSpacePage(BasePage):
         if cached and cached.get("key") == cache_key:
             return cached["result"]
 
+        import gc
         import uncertainties as uc
 
         se_d47, se_d48, div_d47, div_d48 = self._resolve_d95eq_se_columns()
@@ -736,14 +745,61 @@ class DualClumpedSpacePage(BasePage):
         compute = lambda: self._run_d95eq_engine(d47_u, d48_u, uc)
         if n_samples > 20:
             with st.spinner(f"Computing D95eq thermometry for {n_samples} points..."):
-                result = compute()
+                heavy = compute()
         else:
-            result = compute()
+            heavy = compute()
 
-        result["row_index"] = row_index
-        result["samples"] = df.loc[row_index, "Sample"].tolist()
-        self.sss["_d95eq_thermometry_cache"] = {"key": cache_key, "result": result}
-        return result
+        samples = df.loc[row_index, "Sample"].tolist()
+        trimmed = self._trim_d95eq_result(heavy, row_index, samples)
+
+        # Release the heavy uarray / engine references before caching so the
+        # AffineScalarFunc derivative graph can be GC'd between Streamlit
+        # reruns instead of persisting in st.session_state.
+        del heavy
+        gc.collect()
+
+        self.sss["_d95eq_thermometry_cache"] = {"key": cache_key, "result": trimmed}
+        return trimmed
+
+    @staticmethod
+    def _trim_d95eq_result(
+        heavy: Dict[str, Any],
+        row_index: pd.Index,
+        samples: List[str],
+    ) -> Dict[str, Any]:
+        """Collapse engine uarrays to plain numpy arrays + per-sample 2×2 cov.
+
+        Downstream code only needs nominals, standard errors, and the joint
+        (Δ47, Δ48) covariance for each point. Keeping the full uarrays in
+        session state pins every parent ufloat (observations + 10 calibration
+        coefficients + slope) across every Streamlit rerun, which is a primary
+        memory source for the OS-level SIGKILL on this page.
+        """
+        d47_u = heavy["d47_u"]
+        d48_u = heavy["d48_u"]
+        d47eq = heavy["d47eq"]
+        d48eq = heavy["d48eq"]
+        d47p = heavy["d47p"]
+        d48p = heavy["d48p"]
+        return {
+            "samples": samples,
+            "row_index": row_index,
+            "p_values": np.asarray(heavy["p_values"], dtype=float),
+            "d47_u_n": d95p.uarray_nominal(d47_u),
+            "d48_u_n": d95p.uarray_nominal(d48_u),
+            "d47eq_n": d95p.uarray_nominal(d47eq),
+            "d47eq_s": d95p.uarray_std(d47eq),
+            "d48eq_n": d95p.uarray_nominal(d48eq),
+            "d48eq_s": d95p.uarray_std(d48eq),
+            "cov_eq": d95p.pairwise_covariances(d47eq, d48eq),
+            "d47p_n": d95p.uarray_nominal(d47p),
+            "d47p_s": d95p.uarray_std(d47p),
+            "d48p_n": d95p.uarray_nominal(d48p),
+            "d48p_s": d95p.uarray_std(d48p),
+            "cov_p": d95p.pairwise_covariances(d47p, d48p),
+            "teq_asym": list(heavy["teq_asym"]),
+            "tkp_asym": list(heavy["tkp_asym"]),
+        }
 
     @staticmethod
     def _get_d95eq_engine():
@@ -764,13 +820,10 @@ class DualClumpedSpacePage(BasePage):
         )
         slope = uc.ufloat(d95eq_slope, d95eq_slope_se)
         d47p, d48p = engine.projected_D47eq(d47_u, d48_u, slope)
-        teq = engine.T_as_function_of_D47(d47eq)
-        tkp = engine.T_as_function_of_D47(d47p)
         p_levels = self._teq_p_levels()
         teq_asym = d95p.teq_asymmetric_from_pdf(engine, d47eq, p_levels=p_levels)
         tkp_asym = d95p.teq_asymmetric_from_pdf(engine, d47p, p_levels=p_levels)
         return {
-            "engine": engine,
             "d47_u": d47_u,
             "d48_u": d48_u,
             "d47eq": d47eq,
@@ -778,8 +831,6 @@ class DualClumpedSpacePage(BasePage):
             "p_values": p_values,
             "d47p": d47p,
             "d48p": d48p,
-            "teq": teq,
-            "tkp": tkp,
             "teq_asym": teq_asym,
             "tkp_asym": tkp_asym,
         }
@@ -871,6 +922,9 @@ class DualClumpedSpacePage(BasePage):
         if not self._validate_d95eq_columns(df):
             return
 
+        if not self._confirm_large_d95eq_run(df):
+            return
+
         result = self._compute_d95eq_thermometry(df)
         p_cutoff = self.sss.get("d95eq_p_cutoff", 0.05)
         p_values = result["p_values"]
@@ -882,19 +936,64 @@ class DualClumpedSpacePage(BasePage):
         colors = d95p.sample_color_map(fig)
 
         self._add_projection_ellipses(
-            fig, result["d47eq"], result["d48eq"], eq_mask, colors, sample_names
+            fig,
+            result["d47eq_n"],
+            result["d48eq_n"],
+            result["cov_eq"],
+            eq_mask,
+            colors,
+            sample_names,
         )
         self._add_projection_ellipses(
-            fig, result["d47p"], result["d48p"], diseq_mask, colors, sample_names
+            fig,
+            result["d47p_n"],
+            result["d48p_n"],
+            result["cov_p"],
+            diseq_mask,
+            colors,
+            sample_names,
         )
         self._merge_d95eq_hover_into_traces(fig, df, result, p_cutoff)
         self._add_d95eq_projection_arrows(fig, result, p_cutoff, diseq_color)
 
+    def _confirm_large_d95eq_run(self, df: pd.DataFrame) -> bool:
+        """Gate the thermometry pipeline above a sample-count threshold.
+
+        The engine's per-sample lmfit/fsolve and Teq_pdf grid cost linearly
+        inflate the Streamlit worker's RSS. On macOS the kernel kills the
+        process with SIGKILL once it crosses the jetsam threshold, bypassing
+        the ``try/except Exception`` wrapper in ``_create_dual_clumped_plot``.
+        """
+        try:
+            n_points = int(
+                df.dropna(subset=["D47", "D48"]).shape[0]
+            )
+        except Exception:
+            n_points = len(df)
+        if n_points <= self._D95EQ_LARGE_RUN_THRESHOLD:
+            return True
+
+        confirm_key = "d95eq_confirm_large_run"
+        confirmed = bool(self.sss.get(confirm_key, False))
+        st.sidebar.warning(
+            f"D95eq thermometry on {n_points} points can consume several GB of "
+            f"memory (each extra sample runs an lmfit + fsolve + Teq PDF with "
+            f"full uncertainty propagation). On macOS this can trigger a "
+            f"SIGKILL from the OS memory killer. Narrow the sample filter or "
+            f"tick the confirmation below to proceed."
+        )
+        st.sidebar.checkbox(
+            f"Run D95eq thermometry on all {n_points} points",
+            key=confirm_key,
+        )
+        return confirmed
+
     def _add_projection_ellipses(
         self,
         fig: go.Figure,
-        d47_u,
-        d48_u,
+        x_nominals: np.ndarray,
+        y_nominals: np.ndarray,
+        covariances: np.ndarray,
         mask: np.ndarray,
         colors: Dict[str, str],
         sample_names: List[str],
@@ -904,16 +1003,18 @@ class DualClumpedSpacePage(BasePage):
         p_level = self._ellipse_p_level()
         legend_label = self._ellipse_legend_label()
         for i in np.where(mask)[0]:
-            point_mask = np.zeros(len(sample_names), dtype=bool)
-            point_mask[i] = True
-            subset_d47 = d95p.subset_uarray(d47_u, point_mask)
-            subset_d48 = d95p.subset_uarray(d48_u, point_mask)
-            if subset_d47.size == 0:
+            cov_i = covariances[i]
+            if not np.all(np.isfinite(cov_i)):
                 continue
-            ellipses = d95p.compute_conf_ellipses(subset_d47, subset_d48, p=p_level)
+            ellipse = d95p.ellipse_from_cov(
+                float(x_nominals[i]),
+                float(y_nominals[i]),
+                cov_i,
+                p=p_level,
+            )
             d95p.add_conf_ellipses(
                 fig,
-                ellipses,
+                [ellipse],
                 color=colors,
                 sample_names=[sample_names[i]],
                 name=legend_label,
@@ -1029,23 +1130,29 @@ class DualClumpedSpacePage(BasePage):
     ) -> None:
         p_values = result["p_values"]
         sample_names = result["samples"]
+        d47_u_n = result["d47_u_n"]
+        d48_u_n = result["d48_u_n"]
+        d47eq_n = result["d47eq_n"]
+        d48eq_n = result["d48eq_n"]
+        d47p_n = result["d47p_n"]
+        d48p_n = result["d48p_n"]
         for i, p_val in enumerate(p_values):
             if p_val >= p_cutoff:
-                proj_d47 = result["d47eq"][i]
-                proj_d48 = result["d48eq"][i]
+                proj_d47 = float(d47eq_n[i])
+                proj_d48 = float(d48eq_n[i])
             else:
-                proj_d47 = result["d47p"][i]
-                proj_d48 = result["d48p"][i]
+                proj_d47 = float(d47p_n[i])
+                proj_d48 = float(d48p_n[i])
 
             x0, y0 = d95p.map_d47d48_point_to_axes(
-                result["d47_u"][i].n,
-                result["d48_u"][i].n,
+                float(d47_u_n[i]),
+                float(d48_u_n[i]),
                 self.sss.x_axis,
                 self.sss.y_axis,
             )
             x1, y1 = d95p.map_d47d48_point_to_axes(
-                proj_d47.n,
-                proj_d48.n,
+                proj_d47,
+                proj_d48,
                 self.sss.x_axis,
                 self.sss.y_axis,
             )

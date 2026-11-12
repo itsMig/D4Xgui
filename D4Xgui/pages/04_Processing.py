@@ -13,15 +13,21 @@ from dataclasses import dataclass
 import D47crunch as D47c
 from scipy.stats import t
 from tools.base_page import BasePage
+from tools import config as cfg
 from tools.constants import (
     VPDB_FACTOR, VPDB_OFFSET, KELVIN_OFFSET, DEFAULT_ACID_TEMPERATURE,
     ISOTOPIC_CONSTANTS, D18O_VPDB_VSMOW, DEFAULT_WG_RATIOS,
     DEFAULT_WG_VIA_STANDARDS, DEFAULT_CO2_STANDARDS,
 )
+from tools.d18o_acid import (
+    DEFAULT_ACID_FRACTIONATIONS, acid_alpha, column_stems, fractionation_label,
+    mineral_d18o_vpdb, selected_fractionations, vsmow_from_vpdb,
+)
 from tools.init_params import IsotopeStandards
 from tools.commons import clear_session_cache, baseline_correction_applied
 from tools.calc_temperature import TemperatureCalculator as _BaseTemperatureCalculator
 from tools.datetime_parsing import normalize_datetime_series
+from tools.d47crunch_fast import fast_pooled_standardize, fast_session_plot_data
 from scipy import optimize as so
 
 @dataclass
@@ -43,6 +49,14 @@ class ProcessingConfig:
             self.drifting_sessions = []
         if self.selected_calibrations is None:
             self.selected_calibrations = ["Fiebig24 (original)"]
+
+
+def _fractionations_for_run(session_state) -> List[str]:
+    """Acid-fractionation ids stored for this run, else the current setting."""
+    raw = session_state.get("d18o_acid_fractionation_used")
+    if raw is None:
+        raw = cfg.get("d18o_acid_fractionation", DEFAULT_ACID_FRACTIONATIONS)
+    return selected_fractionations(raw)
 
 
 class IsotopeProcessor:
@@ -179,26 +193,52 @@ class IsotopeProcessor:
         
         self._activate_drift_corrections(processor)
         
-        # Standardize data
+        # Standardize data (pooled+drift uses vectorized residuals for speed)
         if self.sss.correction_method == "pooled":
-            processor.standardize(method=self.sss.correction_method, verbose=False)
+            fast_pooled_standardize(
+                processor,
+                consolidate=True,
+                consolidate_tables=False,
+                consolidate_plots=False,
+            )
         else:
             processor.split_samples(grouping="by_session")
             processor.standardize(method="indep_sessions", verbose=False)
             processor.unsplit_samples()
             
-        # Store session results
+        # Store session results (vectorized error mesh; no matplotlib).
+        # Contour levels are capped in fast_session_plot_data so ill-conditioned
+        # Δ49 covariances cannot allocate a multi-GB np.arange and SIGKILL the app.
+        skipped_sessions = []
         for session in self.sss.processing_sessions:
-            results = processor.plot_single_session(session, fig=None)
+            if session not in processor.sessions:
+                skipped_sessions.append(session)
+                continue
+            try:
+                results = fast_session_plot_data(processor, session)
+            except Exception as exc:
+                skipped_sessions.append(session)
+                st.warning(
+                    f"{mz_keyditc[isotope_type]} session '{session}': "
+                    f"skipped standardization-error plot data ({exc})."
+                )
+                continue
             for key, value in results.items():
                 self.sss[f"{isotope_type}_standardization_error_{session}_{key}"] = value
-        
-        
+
+        if skipped_sessions and len(skipped_sessions) == len(self.sss.processing_sessions):
+            st.warning(
+                f"{mz_keyditc[isotope_type]}: could not build standardization-error "
+                f"contours for any session (fit may be ill-conditioned)."
+            )
+
         st.toast(f"{mz_keyditc[isotope_type]} processing finished!")
         return processor
     
     def process_all_isotopes(self, config: ProcessingConfig) -> Dict[str, Any]:
         """Process all selected isotope types."""
+        import gc
+
         clear_session_cache()
         processors = {}
         
@@ -207,13 +247,31 @@ class IsotopeProcessor:
         
         for isotope_type, should_process in zip(isotope_types, process_flags):
             if should_process:
-                processors[isotope_type] = self._process_isotope_data(isotope_type)
+                try:
+                    processors[isotope_type] = self._process_isotope_data(isotope_type)
+                except MemoryError:
+                    setattr(self.sss, f"D47c_{isotope_type[-2:]}", None)
+                    gc.collect()
+                    st.error(
+                        f"Ran out of memory while standardizing {isotope_type}. "
+                        f"Try fewer sessions, or process Δ47/Δ48/Δ49 one at a time."
+                    )
+                    continue
+                except Exception as exc:
+                    setattr(self.sss, f"D47c_{isotope_type[-2:]}", None)
+                    gc.collect()
+                    st.error(f"Failed to standardize {isotope_type}: {exc}")
+                    continue
                 # Store with correct attribute name for merging
                 setattr(self.sss, f"D47c_{isotope_type[-2:]}", processors[isotope_type])
+                # Drop intermediate references so the next isotope does not stack
+                # three full D47crunch objects + covars on top of Streamlit state.
+                gc.collect()
             else:
                 setattr(self.sss, f"D47c_{isotope_type[-2:]}", None)
-        
-        st.success("Standardization finished!", icon="✅")
+
+        if processors:
+            st.success("Standardization finished!", icon="✅")
         return processors
 
 
@@ -669,8 +727,95 @@ class DataProcessor:
                     if not sample_data.empty:
                         std_dev = sample_data[data_col].std()
                         summary.loc[summary["Sample"] == sample, sd_col] = std_dev
+
+        for mz in ("47", "48", "49"):
+            if f"d{mz}" in summary.columns:
+                self._assign_replicate_sd(summary, full_dataset, f"SD_d{mz}", f"d{mz}")
+
+        self._add_mineral_d18o_columns(summary)
         
         return summary
+
+    @staticmethod
+    def _assign_replicate_sd(
+        summary: pd.DataFrame,
+        full_dataset: pd.DataFrame,
+        sd_col: str,
+        data_col: str,
+    ) -> None:
+        """Sample standard deviation (ddof=1) of replicates. N = 1 stays blank."""
+        summary[sd_col] = np.nan
+        if data_col not in full_dataset.columns or "Sample" not in full_dataset.columns:
+            return
+        values = pd.to_numeric(full_dataset[data_col], errors="coerce")
+        sd = values.groupby(full_dataset["Sample"]).std()
+        summary[sd_col] = summary["Sample"].map(sd)
+
+    def _add_mineral_d18o_columns(self, summary: pd.DataFrame) -> None:
+        """Mineral δ18O: acid factor on VPDB, then project the mineral to VSMOW.
+
+        Kim, Coplen & Horita (2015) and the carbonate applications of the
+        dolomite and siderite factors calculate the solid on VPDB. The
+        measured CO2 is on VSMOW, so ``d18O_CO2_VPDB`` is that same gas
+        placed on VPDB before α is applied.
+        """
+        if "d18O_CO2_VPDB" not in summary.columns:
+            return
+        choices = _fractionations_for_run(self.sss)
+        temp_c = self.sss.get("temp_acid", DEFAULT_ACID_TEMPERATURE)
+        co2_vpdb = summary["d18O_CO2_VPDB"]
+        for choice, stem in zip(choices, column_stems(choices)):
+            alpha = acid_alpha(choice, temp_c)
+            vpdb = mineral_d18o_vpdb(co2_vpdb, alpha)
+            summary[f"d18O_{stem}_VPDB"] = vpdb
+            summary[f"d18O_{stem}_VSMOW"] = vsmow_from_vpdb(
+                vpdb, VPDB_FACTOR, VPDB_OFFSET,
+            )
+
+    @staticmethod
+    def reorder_summary_columns(
+        summary: pd.DataFrame, calibs: List[str],
+    ) -> pd.DataFrame:
+        """Put summary columns in the export order. Unknown columns stay at the end."""
+        if summary is None or summary.empty:
+            return summary
+        preferred = [
+            "Sample", "N", "d13C_VPDB", "SD_d13C",
+            "d18O_CO2_VSMOW", "d18O_CO2_VPDB", "SD_d18O",
+        ]
+        for col in summary.columns:
+            if (
+                col.startswith("d18O_")
+                and col.endswith("_VSMOW")
+                and "CO2" not in col
+            ):
+                preferred.append(col)
+                vpdb = col[: -len("_VSMOW")] + "_VPDB"
+                if vpdb in summary.columns:
+                    preferred.append(vpdb)
+        preferred.extend([
+            "d47", "SD_d47", "D47", "SE_D47", "2SE_D47", "SD_D47",
+            "d48", "SD_d48", "D48", "SD_D48", "SE_D48", "2SE_D48",
+            "d49", "SD_d49", "D49", "SD_D49", "SE_D49", "2SE_D49",
+            "p_Levene", "Type", "Project",
+            "D47 2SE (longterm)", "D48 2SE (longterm)", "D49 2SE (longterm)",
+        ])
+        ordered_calibs: List[str] = []
+        if "Fiebig24 (original)" in calibs:
+            ordered_calibs.append("Fiebig24 (original)")
+        ordered_calibs.extend(
+            calib for calib in calibs if calib != "Fiebig24 (original)"
+        )
+        for calib in ordered_calibs:
+            for label in ("min, 2SE", "min, 1SE", "mean", "max, 1SE", "max, 2SE"):
+                preferred.append(f"T({label}), {calib}")
+
+        seen = []
+        for name in preferred:
+            if name in summary.columns and name not in seen:
+                seen.append(name)
+        rest = [col for col in summary.columns if col not in seen]
+        return summary.loc[:, seen + rest]
     
     def _process_session_data(self, isotope_objects: List[Any], 
                              return_dict: Dict[str, Any]) -> None:
@@ -747,16 +892,27 @@ class ExcelExporter:
 
         fair_df = build_fair_metadata(extra=extra_meta)
 
+        def _arrow_safe_params(df: pd.DataFrame) -> pd.DataFrame:
+            """Ensure Parameter/Value sheets use a uniform string Value column."""
+            out = df.copy()
+            if "Value" in out.columns:
+                out["Value"] = out["Value"].map(
+                    lambda v: v if isinstance(v, str)
+                    else ("Yes" if v is True else "No" if v is False
+                          else "" if v is None else str(v))
+                )
+            return out
+
         merged: Dict[str, pd.DataFrame] = {}
         if "proc_params" in dataframes:
-            merged["proc_params"] = pd.concat(
+            merged["proc_params"] = _arrow_safe_params(pd.concat(
                 [fair_df, dataframes["proc_params"]], ignore_index=True,
-            )
+            ))
             for name, df in dataframes.items():
                 if name != "proc_params":
                     merged[name] = df
         else:
-            merged["proc_params"] = fair_df
+            merged["proc_params"] = _arrow_safe_params(fair_df)
             merged.update(dataframes)
 
         buffer = io.BytesIO()
@@ -764,7 +920,7 @@ class ExcelExporter:
             for sheet_name, df in merged.items():
                 df.to_excel(
                     writer,
-                    index="Value" in df.columns,
+                    index=False,
                     header=True,
                     sheet_name=sheet_name,
                 )
@@ -1111,9 +1267,10 @@ class ProcessingPage(BasePage):
                 "D48 long-term repeatability (1sd)",
                 "D49 long-term repeatability (1sd)",
                 "Selected calibrations",
-                "Acid temperature",
-                "Working gas d13C",
-                "Working gas d18O",
+                "Acid temperature (run)",
+                "Mineral δ¹⁸O acid fractionation",
+                "Working gas δ¹³C (run)",
+                "Working gas δ¹⁸O (run)",
                 "Standards d13C",
                 "Standards d18O",
             ],
@@ -1126,18 +1283,23 @@ class ProcessingPage(BasePage):
                 STDS['47'],
                 STDS['48'],
                 STDS['49'],
-                bg_correct["47"],
-                bg_correct["48"],
-                bg_correct["49"],
+                # Keep Value column Arrow-safe (no raw bools mixed with strings).
+                "Yes" if bg_correct["47"] else "No",
+                "Yes" if bg_correct["48"] else "No",
+                "Yes" if bg_correct["49"] else "No",
                 str(self.sss.get("correction_output_r47All", "N/A")) if self.sss.params_last_run.get("process_D47", False) else "N/A",
                 str(self.sss.get("correction_output_r48All", "N/A")) if self.sss.params_last_run.get("process_D48", False) else "N/A",
                 str(self.sss.get("correction_output_r49All", "N/A")) if self.sss.params_last_run.get("process_D49", False) else "N/A",
                 ", ".join(self.sss.get("04_used_calibs", [])),
                 str(self.sss.temp_acid),
+                "; ".join(
+                    fractionation_label(choice)
+                    for choice in _fractionations_for_run(self.sss)
+                ),
                 str(round(self.sss['d13Cwg_VPDB'],3)),
-                str(round(self.sss['d18Owg_VSMOW'],3)),                
+                str(round(self.sss['d18Owg_VSMOW'],3)),
+                str({key:self.sss["standards_bulk"][13][key] for key in self.sss["standards_bulk"][13] if key in self.sss.input_rep['Sample'].values}),
                 str({key:self.sss["standards_bulk"][18][key] for key in self.sss["standards_bulk"][18] if key in self.sss.input_rep['Sample'].values}),
-                str({key:self.sss["standards_bulk"][13][key] for key in self.sss["standards_bulk"][13] if key in self.sss.input_rep['Sample'].values}),                
             ]
         }
         
@@ -1149,8 +1311,6 @@ class ProcessingPage(BasePage):
 
         return pd.DataFrame(params)
 
-    
-    
     def _display_processing_summary(self) -> None:
         """Display processing summary information."""
         col1, col2 = st.columns(2)
@@ -1206,19 +1366,10 @@ class ProcessingPage(BasePage):
         )
         
         run_meta = {
-            "Processing sessions": ", ".join(str(s) for s in sessions),
-            "Reference frame": self.sss.params_last_run.get("scale", ""),
-            "Correction method": self.sss.params_last_run.get("correction_method", ""),
             "Δ47 processed": self.sss.params_last_run.get("process_D47", False),
             "Δ48 processed": self.sss.params_last_run.get("process_D48", False),
             "Δ49 processed": self.sss.params_last_run.get("process_D49", False),
-            "Calibrations used": ", ".join(self.sss.get("04_used_calibs", [])),
-            "Acid temperature (run)": self.sss.get("temp_acid", ""),
-            "Working gas δ¹³C (run)": round(self.sss.get("d13Cwg_VPDB", 0), 5),
-            "Working gas δ¹⁸O (run)": round(self.sss.get("d18Owg_VSMOW", 0), 5),
         }
-        if self.sss.get("scaling_factors"):
-            run_meta["Scaling factors"] = self.sss.scaling_factors
 
         excel_data = self.excel_exporter.create_multi_sheet_excel(
             dataframes, extra_meta=run_meta,
@@ -1335,6 +1486,10 @@ class ProcessingPage(BasePage):
             )
             return
         
+        self.sss["d18o_acid_fractionation_used"] = selected_fractionations(
+            cfg.get("d18o_acid_fractionation", DEFAULT_ACID_FRACTIONATIONS),
+        )
+
         with st.spinner("Processing in progress..."):
             # Prepare data
             self._prepare_processing_data(config)
@@ -1353,6 +1508,9 @@ class ProcessingPage(BasePage):
         
         # Calculate temperatures
         summary = self.temp_calculator.calc_temp(summary)
+        summary = self.data_processor.reorder_summary_columns(
+            summary, list(self.sss.get("04_used_calibs") or []),
+        )
         
         # Store final summary
         self.sss["correction_output_summary"] = summary

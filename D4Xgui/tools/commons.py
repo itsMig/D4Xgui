@@ -472,7 +472,7 @@ def build_fair_metadata(
         ["Software version", app_version],
         ["D47crunch version", d47c_ver],
         ["Export timestamp (UTC)", datetime.utcnow().isoformat(timespec="seconds")],
-        ["Settings file", str(_cfg.config_path())],
+        ["Settings file", _cfg.config_path().name],
         ["δ¹⁸O VPDB-VSMOW (‰)", all_cfg.get("d18O_VPDB_VSMOW")],
         # ── Isotopic constants ────────────────────────────────────
         ["R¹³_VPDB", all_cfg.get("isotopic_constants", {}).get("R13_VPDB")],
@@ -492,11 +492,28 @@ def build_fair_metadata(
         ["Session states DB filename", all_cfg.get("session_states_db_name")],
     ]
 
+    def _fmt_value(v: Any) -> str:
+        """Serialize metadata values as strings (Arrow-safe for Streamlit)."""
+        if v is None:
+            return ""
+        if isinstance(v, bool):
+            return "Yes" if v else "No"
+        if isinstance(v, str):
+            return v
+        if isinstance(v, (int, float)) and not isinstance(v, bool):
+            return str(v)
+        return json.dumps(v, default=str)
+
     if extra:
         for k, v in extra.items():
-            rows.append([str(k), v if isinstance(v, str) else json.dumps(v, default=str)])
+            rows.append([str(k), _fmt_value(v)])
 
-    return pd.DataFrame(rows, columns=["Parameter", "Value"])
+    # Normalize all values up-front so mixed bool/dict/None never break
+    # Streamlit Arrow serialization when this sheet is displayed or merged.
+    return pd.DataFrame(
+        [[p, _fmt_value(v)] for p, v in rows],
+        columns=["Parameter", "Value"],
+    )
 
 
 _STANDARD_INTENSITY_SUFFIXES = frozenset(str(m) for m in range(44, 50))

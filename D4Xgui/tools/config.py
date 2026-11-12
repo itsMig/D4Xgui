@@ -14,6 +14,7 @@ _CONFIG_PATH = Path(__file__).resolve().parent.parent / "user_settings.json"
 # ── Hard-coded defaults ──────────────────────────────────────────────
 _DEFAULTS: Dict[str, Any] = {
     "acid_temperature": 90,
+    "d18o_acid_fractionation": ["calcite_kim2007"],
     "working_gas_ratios": {"d18O": 25.260, "d13C": -4.20},
 
     "sample_db_filename": "SampleDatabase.xlsx",

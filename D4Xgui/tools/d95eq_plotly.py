@@ -584,11 +584,87 @@ def sample_pearson_map(
     return out
 
 
+def _teq_window_c(
+    engine: Any,
+    d47: Any,
+    t_floor_c: float,
+    t_ceil_c: float,
+    half_width_c: float = 2.0,
+) -> Tuple[float, float]:
+    """
+    Build a ``(Tmin, Tmax)`` window for ``Engine.Teq_pdf`` that always satisfies
+    ``Tmin < Tmax`` and lies inside ``[t_floor_c, t_ceil_c]``.
+
+    Replicates the engine's ±4σ default, then clamps the *interval as a whole*
+    (clamping each bound independently can invert the interval when both ±4σ
+    temperatures sit above ``t_ceil_c`` or both below ``t_floor_c`` — which is
+    exactly the ``Tmax must be strictly greater than Tmin`` AssertionError the
+    Dual Clumped page was surfacing).
+    """
+    try:
+        t_at_hi_d47 = float(engine.T_as_function_of_D47(d47.n + 4.0 * d47.s).n)
+        t_at_lo_d47 = float(engine.T_as_function_of_D47(d47.n - 4.0 * d47.s).n)
+    except Exception:
+        t_at_hi_d47 = t_at_lo_d47 = float("nan")
+
+    if np.isfinite(t_at_hi_d47) and np.isfinite(t_at_lo_d47):
+        raw_lo = min(t_at_hi_d47, t_at_lo_d47)
+        raw_hi = max(t_at_hi_d47, t_at_lo_d47)
+        # Clip the interval into [floor, ceil] without inverting it.
+        tmin = max(t_floor_c, math.floor(raw_lo))
+        tmax = min(t_ceil_c, math.ceil(raw_hi))
+        if tmax > tmin:
+            return float(tmin), float(tmax)
+
+    # ±4σ window collapsed or outside the physical range → fall back to a
+    # small window centred on the nominal T, still inside [floor, ceil].
+    try:
+        tnom = float(engine.T_as_function_of_D47(d47.n).n)
+    except Exception:
+        tnom = float("nan")
+    if not np.isfinite(tnom):
+        tnom = 0.5 * (t_floor_c + t_ceil_c)
+    tnom = min(t_ceil_c, max(t_floor_c, tnom))
+
+    tmin = max(t_floor_c, tnom - half_width_c)
+    tmax = min(t_ceil_c, tnom + half_width_c)
+    if tmax <= tmin:
+        # Nominal T sits on a boundary; push the window fully inside.
+        if tnom <= t_floor_c + 1e-9:
+            tmin, tmax = t_floor_c, min(t_ceil_c, t_floor_c + 2.0 * half_width_c)
+        else:
+            tmin, tmax = max(t_floor_c, t_ceil_c - 2.0 * half_width_c), t_ceil_c
+    return float(tmin), float(tmax)
+
+
+def _teq_gaussian_fallback(
+    engine: Any,
+    d47: Any,
+    p_levels: Tuple[float, float, float],
+) -> Tuple[float, float, float]:
+    """Symmetric Gaussian approx when ``Engine.Teq_pdf`` cannot be evaluated."""
+    from scipy.stats import norm
+
+    try:
+        t_u = engine.T_as_function_of_D47(d47)
+        t_med = float(t_u.n)
+        t_s = float(t_u.s) if getattr(t_u, "s", 0.0) and np.isfinite(t_u.s) else 0.0
+    except Exception:
+        t_med, t_s = float("nan"), 0.0
+    if not np.isfinite(t_med):
+        t_med = 0.0
+    z = [float(norm.ppf(p)) for p in p_levels]
+    return (t_med + z[0] * t_s, t_med + z[1] * t_s, t_med + z[2] * t_s)
+
+
 def teq_asymmetric_from_pdf(
     engine: Any,
     d47_u: uarray,
     p_levels: Tuple[float, float, float] = (0.16, 0.50, 0.84),
     tinc: float = 0.2,
+    t_floor_c: float = -20.0,
+    t_ceil_c: float = 1200.0,
+    max_grid_points: int = 2000,
 ) -> List[Tuple[float, float, float]]:
     """
     Return ``[(t_lo, t_med, t_hi), ...]`` for each ufloat in ``d47_u`` using
@@ -597,17 +673,94 @@ def teq_asymmetric_from_pdf(
     ``p_levels`` are cumulative probability targets, e.g. ``(0.16, 0.5, 0.84)``
     for 1σ or ``(0.025, 0.5, 0.975)`` for 2σ. Because T(Δ47) is monotonic but
     non-linear, ``t_hi - t_med`` is generally not equal to ``t_med - t_lo``.
+
+    The temperature grid is clamped to ``[t_floor_c, t_ceil_c]`` and ``Tinc`` is
+    enlarged automatically so the grid never exceeds ``max_grid_points``.
+    Without this cap, a single wide-σ sample (bad analysis, near-asymptotic hot
+    sample) makes ``Engine.Teq_pdf`` default to a ±4σ window that can produce
+    tens of thousands of ufloats, each carrying the 5 calibration-coefficient
+    parents of the engine — a major contributor to the Streamlit worker's
+    memory spike before the OS SIGKILLs it.
+
+    Samples whose ±4σ window collapses (σ≈0) or lies entirely outside the
+    physical range fall back to a small centred window; if ``Teq_pdf`` still
+    fails for a sample, a symmetric Gaussian approximation is used so one bad
+    point cannot abort the whole Dual Clumped overlay.
     """
     results: List[Tuple[float, float, float]] = []
     n = d47_u.size if hasattr(d47_u, "size") else len(d47_u)
     for i in range(n):
         d47 = d47_u[i]
-        ti, pdf = engine.Teq_pdf(d47, Tinc=tinc)
-        cdf = np.cumsum(pdf) * (ti[1] - ti[0])
-        cdf /= cdf[-1]
-        t_lo, t_med, t_hi = np.interp(p_levels, cdf, ti)
-        results.append((float(t_lo), float(t_med), float(t_hi)))
+        tmin, tmax = _teq_window_c(engine, d47, t_floor_c, t_ceil_c)
+        local_tinc = max(float(tinc), (tmax - tmin) / float(max_grid_points))
+        try:
+            ti, pdf = engine.Teq_pdf(d47, Tmin=tmin, Tmax=tmax, Tinc=local_tinc)
+            if ti is None or len(ti) < 2:
+                raise ValueError("Teq_pdf returned an empty grid")
+            dx = float(ti[1] - ti[0])
+            if not np.isfinite(dx) or dx <= 0:
+                raise ValueError("Teq_pdf returned a non-positive grid spacing")
+            cdf = np.cumsum(np.asarray(pdf, dtype=float)) * dx
+            total = float(cdf[-1])
+            if not np.isfinite(total) or total <= 0:
+                raise ValueError("Teq_pdf CDF has zero / non-finite mass")
+            cdf /= total
+            t_lo, t_med, t_hi = np.interp(p_levels, cdf, ti)
+            results.append((float(t_lo), float(t_med), float(t_hi)))
+        except Exception:
+            results.append(_teq_gaussian_fallback(engine, d47, p_levels))
     return results
+
+
+def pairwise_covariances(xu: uarray, yu: uarray) -> np.ndarray:
+    """
+    Extract per-sample 2×2 covariance ``[[σ_x², σ_xy], [σ_xy, σ_y²]]`` for each
+    aligned (x_i, y_i) pair, returning an ``(N, 2, 2)`` array of plain floats.
+
+    This is used to collapse the heavy ``correldata.uarray`` output of
+    ``Engine.nearest_D47eq`` / ``Engine.projected_D47eq`` down to the only
+    information the per-point confidence ellipses actually need. After this
+    call the uarrays (which hold references to every parent variable in the
+    engine's derivative graph) can be released, which is what prevents the
+    session-state cache from pinning hundreds of MB of ``AffineScalarFunc``
+    nodes between Streamlit reruns.
+    """
+    n = xu.size if hasattr(xu, "size") else len(xu)
+    out = np.empty((n, 2, 2), dtype=float)
+    for i in range(n):
+        c = uc.covariance_matrix([xu[i], yu[i]])
+        out[i, 0, 0] = float(c[0][0])
+        out[i, 0, 1] = float(c[0][1])
+        out[i, 1, 0] = float(c[1][0])
+        out[i, 1, 1] = float(c[1][1])
+    return out
+
+
+def ellipse_from_cov(
+    cx: float,
+    cy: float,
+    cov: Union[np.ndarray, Sequence[Sequence[float]]],
+    p: float = 0.95,
+) -> Tuple[float, float, float, float, float]:
+    """
+    Build a ``(cx, cy, width, height, angle_deg)`` tuple from a 2×2 covariance.
+
+    Numerically equivalent to ``D95eq.conf_ellipse`` for a single point but
+    does not walk any ``correldata.uarray`` derivative tree. The width/height
+    convention matches :func:`ellipse_params_to_xy`.
+    """
+    from scipy.stats import chi2
+
+    cov_arr = np.asarray(cov, dtype=float)
+    vals, vecs = np.linalg.eigh(cov_arr)
+    order = np.argsort(vals)[::-1]
+    vals = vals[order]
+    vecs = vecs[:, order]
+    scale = math.sqrt(chi2.ppf(p, 2))
+    width = 2.0 * scale * math.sqrt(max(float(vals[0]), 0.0))
+    height = 2.0 * scale * math.sqrt(max(float(vals[1]), 0.0))
+    angle_deg = math.degrees(math.atan2(float(vecs[1, 0]), float(vecs[0, 0])))
+    return (float(cx), float(cy), float(width), float(height), float(angle_deg))
 
 
 def format_asym_temperature(
